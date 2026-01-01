@@ -2,6 +2,7 @@
 using Casasoft.Helpers;
 using IFBuilder64.Json;
 using Mono.Options;
+using System.Text;
 
 #region main
 bool ShouldShowHelp = false;
@@ -103,10 +104,23 @@ void BuildGame(string inputFile, string outputFile)
         Console.WriteLine($"Error: Unable to parse game file '{inputFile}'.");
         return;
     }
-    // Here would be the logic to convert the Game object into the binary format
-    // required by Adventure Player 64. This is a placeholder for demonstration.
 
-    Console.WriteLine($"Build completed: '{outputFile}' created.");
+    ushort topAddress = 0xbfff;
+
+    // intro
+    string text = Charset.PETSCII(game.intro, true) + (char)0;
+    int size = text.Length + 2;
+    ushort introAddress = (ushort)(topAddress - size + 1);
+    PrgFile prg = new(introAddress, Encoding.ASCII.GetBytes(text));
+    string filename = outputFile+".in.prg";
+    prg.Save(filename);
+    Console.WriteLine($"Build intro: '{outputFile}'.");
+    topAddress = (ushort)(introAddress - 1);
+
+    // messages
+    (byte[] msgPointers, byte[] msgStringsList) = Strings2Prg.CreateArrays(game.messages, 0, true);
+    size = msgPointers.Length + msgStringsList.Length;
+    ushort messagesAddress = (ushort)(topAddress - size + 1);
 }
 #endregion
 

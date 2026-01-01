@@ -6,4 +6,5 @@ internal partial class Game
     public List<Room> rooms { get; set; }
     public List<Verb> verbs { get; set; }
     public List<Item> items { get; set; }
+    public List<string> messages { get; set; }
 }
