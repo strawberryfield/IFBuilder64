@@ -1,0 +1,6 @@
+nord
+sud
+est
+ovest
+alto
+basso

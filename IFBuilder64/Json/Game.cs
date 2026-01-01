@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Text;
-
-namespace IFBuilder64.Json;
+﻿namespace IFBuilder64.Json;
 
 internal partial class Game
 {

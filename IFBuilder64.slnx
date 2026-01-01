@@ -1,9 +1,8 @@
 <Solution>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
-  </Folder>
-  <Folder Name="/Templates/">
-    <File Path="game.json" />
+    <File Path="LICENSE.txt" />
+    <File Path="README.md" />
   </Folder>
   <Project Path="IFBuilder64/IFBuilder64.csproj" />
 </Solution>

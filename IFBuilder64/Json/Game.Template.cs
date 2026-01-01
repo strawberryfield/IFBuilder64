@@ -12,9 +12,11 @@ internal partial class Game
     {
     }
 
+    protected string[] directions;
+
     public Game(TemplateLanguage language)
     {
-        string[] directions;
+        
 
         intro = string.Empty;
         verbs = new();
@@ -22,7 +24,6 @@ internal partial class Game
         switch (language)
         {
             case TemplateLanguage.English:
-                directions = ["north", "south", "east", "west", "up", "down"];
                 rooms =
                 [
                     new Room
@@ -36,8 +37,9 @@ internal partial class Game
                         down = 0
                     }
                 ];
-                verbs = VerbsFromDirections(directions);
-                items = ItemsFromDirections(directions);
+                LoadDirections(language);
+                verbs = VerbsFromDirections();
+                items = ItemsFromDirections();
                 break;
             case TemplateLanguage.Italiano:
                 directions = ["nord", "sud", "est", "ovest", "alto", "basso"];
@@ -54,8 +56,9 @@ internal partial class Game
                         down = 0
                     }
                 ];
-                verbs = VerbsFromDirections(directions);
-                items = ItemsFromDirections(directions);
+                LoadDirections(language);
+                verbs = VerbsFromDirections();
+                items = ItemsFromDirections();
                 break;
             default:
                 break;
@@ -63,7 +66,13 @@ internal partial class Game
         
     }
 
-    protected static List<Verb> VerbsFromDirections(string[] directions)
+    protected void LoadDirections(TemplateLanguage language)
+    {
+        string filename = "templates/directions." + language.ToString().ToLower().Substring(0,2) + ".txt";
+        directions = File.ReadAllLines(filename);
+    }
+
+    protected List<Verb> VerbsFromDirections()
     {
         List<Verb> ret = new();
         for (byte i = 0; i < directions.Length; i++)
@@ -74,7 +83,7 @@ internal partial class Game
         return ret;
     }
 
-    protected static List<Item> ItemsFromDirections(string[] directions)
+    protected List<Item> ItemsFromDirections()
     {
         List<Item> ret = new();
         foreach (var dir in directions)
