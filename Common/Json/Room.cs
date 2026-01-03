@@ -1,6 +1,6 @@
-﻿namespace IFBuilder64.Json;
+﻿namespace Casasoft.IFBuilder64.Json;
 
-internal class Room
+public class Room
 {
     public string description { get; set; }
     public byte north { get; set; }

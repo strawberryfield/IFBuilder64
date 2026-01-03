@@ -9,9 +9,14 @@
 
   
   <ItemGroup>
-    <PackageReference Include="Casasoft.Commodore" Version="1.0.0" />
+    <PackageReference Include="Casasoft.Commodore" Version="1.0.1-alpha2" />
     <PackageReference Include="Casasoft.Helpers" Version="1.0.0" />
     <PackageReference Include="Mono.Options" Version="6.12.0.148" />
+  </ItemGroup>
+
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj" />
   </ItemGroup>
 
   

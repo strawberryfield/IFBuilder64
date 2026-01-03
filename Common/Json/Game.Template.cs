@@ -1,4 +1,4 @@
-﻿namespace IFBuilder64.Json;
+﻿namespace Casasoft.IFBuilder64.Json;
 
 public enum TemplateLanguage
 {
@@ -6,7 +6,7 @@ public enum TemplateLanguage
     Italiano
 }
 
-internal partial class Game
+public partial class Game
 {
     public Game()
     {

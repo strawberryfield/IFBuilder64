@@ -1,6 +1,6 @@
-﻿namespace IFBuilder64.Json;
+﻿namespace Casasoft.IFBuilder64.Json;
 
-internal class Item
+public class Item
 {
     public string name { get; set; }
     public string description { get; set; }

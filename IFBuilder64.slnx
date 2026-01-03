@@ -4,5 +4,7 @@
     <File Path="LICENSE.txt" />
     <File Path="README.md" />
   </Folder>
+  <Project Path="Common/Common.csproj" Id="7ac29b88-fd1f-4fe6-b2aa-4de3941f9d98" />
   <Project Path="IFBuilder64/IFBuilder64.csproj" />
+  <Project Path="SeqConverter/SeqConverter.csproj" Id="4979f83e-5e36-4c14-a9fe-b51a80a87e35" />
 </Solution>
