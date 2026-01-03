@@ -16,8 +16,6 @@ public partial class Game
 
     public Game(TemplateLanguage language)
     {
-
-
         intro = string.Empty;
         verbs = new();
         items = new();
@@ -67,7 +65,6 @@ public partial class Game
             default:
                 break;
         }
-
     }
 
     protected void LoadMessages(TemplateLanguage language)

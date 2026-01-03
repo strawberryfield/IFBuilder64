@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SeqConverter": {
+      "commandName": "Project",
+      "commandLineArgs": "--template=it C:\\Commodore\\projects\\adventure\\orig\\latinorum.seq"
+    }
+  }
+}

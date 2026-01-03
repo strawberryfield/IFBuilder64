@@ -1,7 +1,4 @@
 ﻿using Casasoft.IFBuilder64.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Casasoft.IFBuilder64.Common;
 

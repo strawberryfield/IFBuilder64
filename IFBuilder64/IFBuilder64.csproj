@@ -9,7 +9,7 @@
 
   
   <ItemGroup>
-    <PackageReference Include="Casasoft.Commodore" Version="1.0.1-alpha2" />
+    <PackageReference Include="Casasoft.Commodore" Version="1.0.1-alpha3" />
     <PackageReference Include="Casasoft.Helpers" Version="1.0.0" />
     <PackageReference Include="Mono.Options" Version="6.12.0.148" />
   </ItemGroup>
@@ -17,28 +17,6 @@
   
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
-  </ItemGroup>
-
-  
-  <ItemGroup>
-    <None Update="templates\directions.en.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="templates\directions.it.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="templates\messages.en.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="templates\messages.it.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="templates\verbs.en.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="templates\verbs.it.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

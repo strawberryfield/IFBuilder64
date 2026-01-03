@@ -28,6 +28,36 @@ if (ShouldShowHelp)
     ShowHelp();
     return;
 }
+
+TemplateLanguage lang = TemplateLanguage.English; // default language
+if (!string.IsNullOrEmpty(TemplateType))
+{
+    lang = Casasoft.IFBuilder64.Common.Helpers.GetLanguage(TemplateType);
+}
+
+foreach (var file in FilesList)
+{
+    string outFile = OutputFile;
+    if (string.IsNullOrWhiteSpace(outFile))
+    {
+        outFile = Path.ChangeExtension(file, ".json");
+    }
+
+    Game game = new(lang);
+    string input = Charset.ASCII(File.ReadAllBytes(file), true);
+    string[] seqData = input.Split("\r");  
+
+    game.intro = seqData[0];
+
+    var json = System.Text.Json.JsonSerializer.Serialize(game, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+    File.WriteAllText(outFile, json);
+    Console.WriteLine($"Converted '{file}' to '{outFile}'.");
+}
+
+#endregion
+
+#region functions
+
 #endregion
 
 #region Help Procedures
