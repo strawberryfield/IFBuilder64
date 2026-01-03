@@ -1,0 +1,10 @@
+5;v
+5;vai
+6;g
+6;guarda
+7;i
+7;inventario
+8;p
+8;prendi
+9;l
+9;lascia

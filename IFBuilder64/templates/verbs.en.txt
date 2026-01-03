@@ -1,0 +1,10 @@
+5;g
+5;go
+6;l
+6;look
+7;i
+7;inventory
+8;t
+8;take
+9;d
+9;drop

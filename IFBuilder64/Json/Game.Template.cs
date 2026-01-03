@@ -16,11 +16,12 @@ internal partial class Game
 
     public Game(TemplateLanguage language)
     {
-        
+
 
         intro = string.Empty;
         verbs = new();
         items = new();
+        messages = new();
         switch (language)
         {
             case TemplateLanguage.English:
@@ -40,9 +41,10 @@ internal partial class Game
                 LoadDirections(language);
                 verbs = VerbsFromDirections();
                 items = ItemsFromDirections();
+                LoadMessages(language);
+                LoadVerbs(language);
                 break;
             case TemplateLanguage.Italiano:
-                directions = ["nord", "sud", "est", "ovest", "alto", "basso"];
                 rooms =
                 [
                     new Room
@@ -59,16 +61,24 @@ internal partial class Game
                 LoadDirections(language);
                 verbs = VerbsFromDirections();
                 items = ItemsFromDirections();
+                LoadMessages(language);
+                LoadVerbs(language);
                 break;
             default:
                 break;
         }
-        
+
+    }
+
+    protected void LoadMessages(TemplateLanguage language)
+    {
+        string filename = "templates/messages." + language.ToString().ToLower().Substring(0, 2) + ".txt";
+        messages = File.ReadAllLines(filename).ToList();
     }
 
     protected void LoadDirections(TemplateLanguage language)
     {
-        string filename = "templates/directions." + language.ToString().ToLower().Substring(0,2) + ".txt";
+        string filename = "templates/directions." + language.ToString().ToLower().Substring(0, 2) + ".txt";
         directions = File.ReadAllLines(filename);
     }
 
@@ -91,5 +101,16 @@ internal partial class Game
             ret.Add(new Item { name = dir, description = string.Empty, location = 255 });
         }
         return ret;
+    }
+
+    protected void LoadVerbs(TemplateLanguage language)
+    {
+        string filename = "templates/verbs." + language.ToString().ToLower().Substring(0, 2) + ".txt";
+        string[] verbsLines = File.ReadAllLines(filename);
+        foreach (var line in verbsLines)
+        {
+            string[] verb = line.Split(';');
+            verbs.Add(new Verb { command = verb[1], action = Convert.ToByte(verb[0]) });
+        }
     }
 }
