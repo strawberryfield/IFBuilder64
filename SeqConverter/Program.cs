@@ -63,9 +63,47 @@ foreach (var file in FilesList)
 
     Game game = new(lang);
     string input = Charset.ASCII(File.ReadAllBytes(file), true);
-    string[] seqData = input.Split("\r");  
+    string[] seqData = input.Split("\r");
 
     game.intro = seqData[0];
+    int numRooms = Convert.ToInt32(seqData[1]);
+    int numObjects = Convert.ToInt32(seqData[2]);
+    int numVerbs = Convert.ToInt32(seqData[3]);
+    int scorebased = Convert.ToInt32(seqData[4]);
+    int maxscore = Convert.ToInt32(seqData[5]);
+    int startRoom = Convert.ToInt32(seqData[6]);
+
+    for (int i = 0; i < numRooms; i++)
+    {
+        game.rooms.Add(new Room
+        {
+            description = seqData[7 + i * 7],
+            north = GetByte(seqData[8 + i * 7]),
+            south = GetByte(seqData[9 + i * 7]),
+            east = GetByte(seqData[10 + i * 7]),
+            west = GetByte(seqData[11 + i * 7]),
+            up = GetByte(seqData[12 + i * 7]),
+            down = GetByte(seqData[13 + i * 7])
+        });
+    }
+    int baseIndex = 7 + numRooms * 7;
+
+    for (int i = 0; i < numObjects; i++)
+    {
+        game.items.Add(new Item
+        {
+            name = seqData[baseIndex + i * 2],
+            location = GetByte(seqData[baseIndex + i * 2 + 1]),
+            description = ""
+        });
+    }
+    baseIndex += numObjects * 2;
+
+
+    for (int i = 0; i < numVerbs; i++)
+    {
+        game.messages.Add(seqData[baseIndex + i * 9 + 2]);
+    }
 
     var json = System.Text.Json.JsonSerializer.Serialize(game, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
     File.WriteAllText(outFile, json);
@@ -75,7 +113,11 @@ foreach (var file in FilesList)
 #endregion
 
 #region functions
-
+byte GetByte(string data)
+{
+    int x = Convert.ToInt32(data);
+    return x >= 0 ? (byte)x : (byte)255;
+}
 #endregion
 
 #region Help Procedures
