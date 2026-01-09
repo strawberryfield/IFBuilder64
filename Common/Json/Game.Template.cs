@@ -36,29 +36,35 @@ public enum TemplateLanguage
 }
 
 /// <summary>
-/// Partial representation of a game template used for initialization and loading
-/// template resources such as directions, messages and verbs.
+/// Partial representation of a game template used for initialization and loading template resources such as directions,
+/// messages and verbs.
 /// </summary>
 public partial class Game
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="Game"/> class.
-    /// Default parameterless constructor; may be used by serializers or other consumers.
+    /// Initializes a new instance of the <see cref="Game"/> class. Default parameterless constructor; may be used by
+    /// serializers or other consumers.
     /// </summary>
     public Game()
     {
+        intro = string.Empty;
+        rooms = new();
+        verbs = new();
+        items = new();
+        messages = new();
+        directions = Array.Empty<string>();
     }
 
     /// <summary>
-    /// Cached array of direction names loaded from the selected template.
-    /// Each entry corresponds to a direction such as "north", "south", etc.
+    /// Cached array of direction names loaded from the selected template. Each entry corresponds to a direction such as
+    /// "north", "south", etc.
     /// </summary>
     protected string[] directions;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Game"/> class using the specified template language.
-    /// The constructor initializes internal collections and loads language-specific templates
-    /// (rooms, directions, items, messages and verbs).
+    /// Initializes a new instance of the <see cref="Game"/> class using the specified template language. The
+    /// constructor initializes internal collections and loads language-specific templates (rooms, directions, items,
+    /// messages and verbs).
     /// </summary>
     /// <param name="language">The template language to use when loading template resources.</param>
     public Game(TemplateLanguage language)
@@ -67,61 +73,43 @@ public partial class Game
         verbs = new();
         items = new();
         messages = new();
+        rooms = [new Room { description = string.Empty, north = 0, south = 0, east = 0, west = 0, up = 0, down = 0 }];
         switch (language)
         {
             case TemplateLanguage.English:
-                rooms =
-                [
-                    new Room
-                    {
-                        description = "You look good",
-                        north = 0,
-                        south = 0,
-                        east = 0,
-                        west = 0,
-                        up = 0,
-                        down = 0
-                    }
-                ];
                 LoadDirections(language);
                 verbs = VerbsFromDirections();
                 items = ItemsFromDirections();
+                items.Add(new Item { name = "me", description = "As good-looking as ever.", location = 0 });
                 LoadMessages(language);
                 LoadVerbs(language);
                 break;
             case TemplateLanguage.Italiano:
-                rooms =
-                [
-                    new Room
-                    {
-                        description = "In gran forma, come sempre.",
-                        north = 0,
-                        south = 0,
-                        east = 0,
-                        west = 0,
-                        up = 0,
-                        down = 0
-                    }
-                ];
                 LoadDirections(language);
                 verbs = VerbsFromDirections();
                 items = ItemsFromDirections();
+                items.Add(new Item { name = "me", description = "In gran forma, come sempre.", location = 0 });
                 LoadMessages(language);
                 LoadVerbs(language);
                 break;
             default:
+                rooms = new();
+                directions = Array.Empty<string>();
+                verbs = new();
+                items = new();
+                messages = new();
                 break;
         }
     }
 
     /// <summary>
-    /// Loads message lines for the specified template language from the templates directory
-    /// and stores them in the <c>messages</c> collection.
+    /// Loads message lines for the specified template language from the templates directory and stores them in the
+    /// <c>messages</c> collection.
     /// </summary>
     /// <param name="language">The template language whose messages should be loaded.</param>
     /// <remarks>
-    /// The filename is built as "templates/messages.{xx}.txt" where {xx} is the two-letter
-    /// lowercase language code derived from the <see cref="TemplateLanguage"/> value.
+    /// The filename is built as "templates/messages.{xx}.txt" where {xx} is the two-letter lowercase language code
+    /// derived from the <see cref="TemplateLanguage"/> value.
     /// </remarks>
     /// <exception cref="System.IO.IOException">Thrown when the messages file cannot be read.</exception>
     /// <exception cref="System.UnauthorizedAccessException">Thrown when access to the messages file is denied.</exception>
@@ -132,13 +120,13 @@ public partial class Game
     }
 
     /// <summary>
-    /// Loads direction names for the specified template language from the templates directory
-    /// and stores them in the <see cref="directions"/> field.
+    /// Loads direction names for the specified template language from the templates directory and stores them in the
+    /// <see cref="directions"/> field.
     /// </summary>
     /// <param name="language">The template language whose directions should be loaded.</param>
     /// <remarks>
-    /// The filename is built as "templates/directions.{xx}.txt" where {xx} is the two-letter
-    /// lowercase language code derived from the <see cref="TemplateLanguage"/> value.
+    /// The filename is built as "templates/directions.{xx}.txt" where {xx} is the two-letter lowercase language code
+    /// derived from the <see cref="TemplateLanguage"/> value.
     /// </remarks>
     /// <exception cref="System.IO.IOException">Thrown when the directions file cannot be read.</exception>
     /// <exception cref="System.UnauthorizedAccessException">Thrown when access to the directions file is denied.</exception>
@@ -149,9 +137,9 @@ public partial class Game
     }
 
     /// <summary>
-    /// Builds a list of directional verbs from the currently loaded <see cref="directions"/> array.
-    /// For each direction it adds two <see cref="Verb"/> entries: one for the single-letter shorthand
-    /// and one for the full direction name.
+    /// Builds a list of directional verbs from the currently loaded <see cref="directions"/> array. For each direction
+    /// it adds two <see cref="Verb"/> entries: one for the single-letter shorthand and one for the full direction name.
+    ///
     /// </summary>
     /// <returns>A list of <see cref="Verb"/> objects representing directional commands.</returns>
     protected List<Verb> VerbsFromDirections()
@@ -166,8 +154,8 @@ public partial class Game
     }
 
     /// <summary>
-    /// Builds a list of <see cref="Item"/> objects representing directions so that directions
-    /// are available as items in the initial template (useful for scripting or referencing).
+    /// Builds a list of <see cref="Item"/> objects representing directions so that directions are available as items in
+    /// the initial template (useful for scripting or referencing).
     /// </summary>
     /// <returns>A list of <see cref="Item"/> objects containing the direction names as item names.</returns>
     protected List<Item> ItemsFromDirections()
@@ -181,13 +169,13 @@ public partial class Game
     }
 
     /// <summary>
-    /// Loads verb definitions from the verbs template file for the specified language
-    /// and appends them to the <c>verbs</c> collection.
+    /// Loads verb definitions from the verbs template file for the specified language and appends them to the
+    /// <c>verbs</c> collection.
     /// </summary>
     /// <param name="language">The template language whose verbs should be loaded.</param>
     /// <remarks>
-    /// Verb file lines are expected in the format "&lt;action&gt;;&lt;command&gt;".
-    /// The method converts the action portion to a byte for the <see cref="Verb.action"/> field.
+    /// Verb file lines are expected in the format "&lt;action&gt;;&lt;command&gt;". The method converts the action
+    /// portion to a byte for the <see cref="Verb.action"/> field.
     /// </remarks>
     /// <exception cref="System.IO.IOException">Thrown when the verbs file cannot be read.</exception>
     /// <exception cref="System.FormatException">Thrown when a verb action value cannot be parsed as a byte.</exception>
