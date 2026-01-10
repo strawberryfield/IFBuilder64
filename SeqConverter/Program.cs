@@ -73,6 +73,7 @@ foreach (var file in FilesList)
     int maxscore = Convert.ToInt32(seqData[5]);
     int startRoom = Convert.ToInt32(seqData[6]);
 
+    game.initialroom = (byte)startRoom;
     for (int i = 0; i < numRooms; i++)
     {
         game.rooms.Add(new Room

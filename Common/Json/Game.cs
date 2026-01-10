@@ -48,6 +48,11 @@ public partial class Game
     public List<Room> rooms { get; set; }
 
     /// <summary>
+    /// Gets or sets the number of the room in which the game starts.
+    /// </summary>
+    public byte initialroom { get; set; }
+
+    /// <summary>
     /// Gets or sets the set of verbs (actions) recognised by the game engine.
     /// </summary>
     /// <value>

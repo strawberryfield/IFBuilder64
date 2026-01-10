@@ -53,6 +53,7 @@ public partial class Game
         items = new();
         messages = new();
         directions = Array.Empty<string>();
+        initialroom = 1;
     }
 
     /// <summary>
@@ -67,12 +68,8 @@ public partial class Game
     /// messages and verbs).
     /// </summary>
     /// <param name="language">The template language to use when loading template resources.</param>
-    public Game(TemplateLanguage language)
+    public Game(TemplateLanguage language) : this()
     {
-        intro = string.Empty;
-        verbs = new();
-        items = new();
-        messages = new();
         rooms = [new Room { description = string.Empty, north = 0, south = 0, east = 0, west = 0, up = 0, down = 0 }];
         switch (language)
         {
@@ -93,11 +90,6 @@ public partial class Game
                 LoadVerbs(language);
                 break;
             default:
-                rooms = new();
-                directions = Array.Empty<string>();
-                verbs = new();
-                items = new();
-                messages = new();
                 break;
         }
     }
