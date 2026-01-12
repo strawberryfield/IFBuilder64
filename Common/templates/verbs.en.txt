@@ -8,3 +8,9 @@
 9;take
 10;d
 10;drop
+11;xyzzy
+12;hint
+12;help
+13;commands
+14;save
+15;load

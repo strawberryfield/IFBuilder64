@@ -8,3 +8,10 @@
 9;prendi
 10;l
 10;lascia
+11;xyzzy
+11;abracadabra
+12;aiuto
+12;help
+13;comandi
+14;salva
+15;carica

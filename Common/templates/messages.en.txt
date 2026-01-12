@@ -1,6 +1,6 @@
 I don't see any around here...
-There's nothing here that you're looking for.
-There really isn't anything here.
+You already have it.
+You don't have that item.
 If you tell me what...
 You're being a bit vague, don't you think?
 Tell me exactly what you want.
@@ -13,14 +13,15 @@ You can't get through there, try somewhere else.
 I don't understand, explain yourself better.
 I don't know how to do that.
 I don't understand what you want to do.
-Which direction?
+I would like to know in which direction.
 If you don't tell me where...
-I'd like to know which way.
-I haven't the faintest idea how to help you.
-I'm sorry, but I can't help you.
-Unfortunately, there's no one here who can get you out of this mess.
+File name
+You were hoping for that, weren't you?\rUnfortunately, there are no wizards here.
+I'm sorry, but I can't help you.\rType "Commands" for a list of all available commands.
+The available commands are:
 Here you can see:
 You can go towards:
 and
 Ok.
 You're carrying:
+You're carrying nothing.

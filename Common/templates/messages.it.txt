@@ -1,6 +1,6 @@
 Non ne vedo qui intorno...
-Non c'e' quello che cerchi.
-Qui non c'e' proprio.
+L'hai gia'.
+Non hai quell'oggetto.
 Se mi dici cosa...
 Sei un po' vago, non credi?
 Dimmi bene che cosa vuoi.
@@ -13,15 +13,16 @@ Li non si passa, prova altrove.
 Non ti capisco, spiegati meglio.
 Non so come svolgere questa azione.
 Non capisco quello che vuoi fare.
-In quale direzione?
+Vorrei sapere in quale direzione.
 Se non mi dici dove...
-Vorrei sapere da quale parte.
-Non ho la piu' pallida idea di come aiutarti.
-Mi dispiace ma non posso aiutarti.
-Purtroppo qui non c'e' nessuno che possa toglierti d'impaccio.
+Nome del file 
+Ci speravi vero?\rPurtroppo non ci sono maghi qui.
+Mi dispiace ma non posso aiutarti.\rScrivi "Comandi" per la lista di tutti i comandi disponibili.
+I comandi disponibili sono:
 Qui puoi vedere:
 Puoi dirigerti verso:
 e
 Ok.
 Con te stai portando:
+Non hai nulla con te.
  
