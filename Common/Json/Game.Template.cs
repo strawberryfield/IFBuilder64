@@ -70,7 +70,7 @@ public partial class Game
     /// <param name="language">The template language to use when loading template resources.</param>
     public Game(TemplateLanguage language) : this()
     {
-        rooms = [new Room { description = string.Empty, north = 0, south = 0, east = 0, west = 0, up = 0, down = 0 }];
+        rooms = [new Room { description = string.Empty }];
         switch (language)
         {
             case TemplateLanguage.English:

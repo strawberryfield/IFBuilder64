@@ -17,6 +17,8 @@
 // but WITHOUT ANY WARRANTY
 //-----------------------------------------------------------------------
 
+using System.Text.Json.Serialization;
+
 namespace Casasoft.IFBuilder64.Json;
 
 /// <summary>
@@ -38,7 +40,7 @@ public class Room
     /// A <see cref="string"/> containing the room description. May be empty but
     /// should not be <c>null</c> where consumers expect displayed text.
     /// </value>
-    public string description { get; set; }
+    public required string description { get; set; }
 
     /// <summary>
     /// Gets or sets the index of the room to the north.
@@ -49,7 +51,8 @@ public class Room
     /// <remarks>
     /// A value of <c>0</c> typically means there is no north exit.
     /// </remarks>
-    public byte north { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public byte? north { get; set; }
 
     /// <summary>
     /// Gets or sets the index of the room to the south.
@@ -60,7 +63,8 @@ public class Room
     /// <remarks>
     /// A value of <c>0</c> typically means there is no south exit.
     /// </remarks>
-    public byte south { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public byte? south { get; set; }
 
     /// <summary>
     /// Gets or sets the index of the room to the east.
@@ -71,7 +75,8 @@ public class Room
     /// <remarks>
     /// A value of <c>0</c> typically means there is no east exit.
     /// </remarks>
-    public byte east { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public byte? east { get; set; }
 
     /// <summary>
     /// Gets or sets the index of the room to the west.
@@ -82,7 +87,8 @@ public class Room
     /// <remarks>
     /// A value of <c>0</c> typically means there is no west exit.
     /// </remarks>
-    public byte west { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public byte? west { get; set; }
 
     /// <summary>
     /// Gets or sets the index of the room above (up).
@@ -93,7 +99,8 @@ public class Room
     /// <remarks>
     /// A value of <c>0</c> typically means there is no up exit.
     /// </remarks>
-    public byte up { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public byte? up { get; set; }
 
     /// <summary>
     /// Gets or sets the index of the room below (down).
@@ -104,7 +111,8 @@ public class Room
     /// <remarks>
     /// A value of <c>0</c> typically means there is no down exit.
     /// </remarks>
-    public byte down { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public byte? down { get; set; }
 
     /// <summary>
     /// Returns the directional exit indices in a fixed order.
@@ -122,5 +130,5 @@ public class Room
     /// should reuse a buffer or implement an alternative accessor that writes
     /// into a provided span or array.
     /// </remarks>
-    public byte[] Directions() => new byte[] { north, south, east, west, up, down };
+    public byte?[] Directions() => [north, south, east, west, up, down];
 }
