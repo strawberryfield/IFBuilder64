@@ -130,5 +130,5 @@ public class Room
     /// should reuse a buffer or implement an alternative accessor that writes
     /// into a provided span or array.
     /// </remarks>
-    public byte?[] Directions() => [north, south, east, west, up, down];
+    public byte[] Directions() => [north ?? 0, south ?? 0, east ?? 0, west ?? 0, up ?? 0, down ?? 0];
 }

@@ -36,7 +36,7 @@ public class Item
     /// This value is used as the primary human-readable identifier for the item.
     /// It is expected to be a short, descriptive string.
     /// </remarks>
-    public string name { get; set; }
+    public required string name { get; set; }
 
     /// <summary>
     /// Gets or sets the item's description.
@@ -46,7 +46,7 @@ public class Item
     /// and plain text suitable for display in UI or documentation.
     ///
     /// </remarks>
-    public string description { get; set; }
+    public required string description { get; set; }
 
     /// <summary>
     /// Gets or sets the item's location identifier.
@@ -56,5 +56,18 @@ public class Item
     /// of values depends on the consuming system; typically values map to
     /// predefined locations or slots within the environment.
     /// </remarks>
-    public byte location { get; set; }
+    public byte? location { get; set; }
+    public byte? initem { get; set; }
+
+    public bool? notportable { get; set; }
+    public bool? openable { get; set; }
+    public bool? open { get; set; }
+
+    public byte Options() {        
+        byte options = 0;
+        if (notportable == true) options |= 0x01;
+        if (openable == true) options |= 0x02;
+        if (open == true) options |= 0x04;
+        return options;
+    }
 }
