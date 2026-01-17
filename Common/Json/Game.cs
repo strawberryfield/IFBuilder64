@@ -78,4 +78,6 @@ public partial class Game
     /// or key from other game model elements.
     /// </value>
     public List<string> messages { get; set; }
+
+    public List<string> directions { get; set; }
 }

@@ -142,6 +142,12 @@ void BuildGame(string inputFile, string outputFile)
     ushort verbsAddress = AllocateDown(ref topAddress, size);
     Strings2Prg.RelocatePointers(verbsPtr, verbsAddress);
 
+    // directions
+    (byte[] dirPointers, byte[] dirStringsList) = Strings2Prg.CreateArrays(game.directions, 0, true);
+    size = dirPointers.Length + dirStringsList.Length;
+    ushort directionsAddress = AllocateDown(ref topAddress, size);
+    Strings2Prg.RelocatePointers(dirPointers, directionsAddress);
+
     // items
     List<string> itemNames = new();
     itemNames.AddRange(game.items.Select(item => item.name));
@@ -162,6 +168,7 @@ void BuildGame(string inputFile, string outputFile)
     prg = new(itemsDescAddress, new List<byte[]> {
         itemsDescPtr, itemsDescList,
         itemsPtr, itemsList,
+        dirPointers, dirStringsList,
         verbsPtr, verbsList,
         roomsDescPtr, roomsDescList,
         msgPointers, msgStringsList});
@@ -241,6 +248,8 @@ void BuildGame(string inputFile, string outputFile)
     sb.AppendLine($"{{var:itemsaddr=WF}}");
     sb.AppendLine($"{{var:itemstable=WG}}");
     sb.AppendLine($"{{var:itemsdescaddr=WH}}");
+    sb.AppendLine($"{{var:dirsaddr=WI}}");
+    sb.AppendLine($"{{var:dirstable=WJ}}");
     sb.AppendLine("'\n' Databases");
     sb.AppendLine($"{{var:curroomdbaddr=W0}}");
     sb.AppendLine($"{{var:roomsdbaddr=W1}}");
@@ -262,6 +271,8 @@ void BuildGame(string inputFile, string outputFile)
     sb.Append($"{{var:roomsdescaddr}}={roomsDescAddress}: ");
     sb.Append($"{{var:verbsaddr}}={verbsAddress}: ");
     sb.Append($"{{var:verbstable}}={verbsAddress + verbsPtr.Length}: ");
+    sb.Append($"{{var:dirstable}}={directionsAddress + dirPointers.Length}: ");
+    sb.AppendLine($"{{var:dirsaddr}}={directionsAddress}: ");
     sb.Append($"{{var:itemsaddr}}={itemsAddress}: ");
     sb.Append($"{{var:itemstable}}={itemsAddress + itemsPtr.Length}: ");
     sb.AppendLine($"{{var:itemsdescaddr}}={itemsDescAddress}");

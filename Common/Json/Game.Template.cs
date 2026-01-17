@@ -52,17 +52,11 @@ public partial class Game
         verbs = new();
         items = new();
         messages = new();
-        directions = Array.Empty<string>();
+        directions = new();
         initialroom = 1;
     }
 
-    /// <summary>
-    /// Cached array of direction names loaded from the selected template. Each entry corresponds to a direction such as
-    /// "north", "south", etc.
-    /// </summary>
-    protected string[] directions;
-
-    /// <summary>
+     /// <summary>
     /// Initializes a new instance of the <see cref="Game"/> class using the specified template language. The
     /// constructor initializes internal collections and loads language-specific templates (rooms, directions, items,
     /// messages and verbs).
@@ -71,23 +65,17 @@ public partial class Game
     public Game(TemplateLanguage language) : this()
     {
         rooms = [new Room { description = string.Empty }];
+        LoadDirections(language);
+        verbs = VerbsFromDirections();
+        LoadMessages(language);
+        LoadVerbs(language);
         switch (language)
         {
             case TemplateLanguage.English:
-                LoadDirections(language);
-                verbs = VerbsFromDirections();
-                items = ItemsFromDirections();
                 items.Add(new Item { name = "me", description = "As good-looking as ever.", location = 0 });
-                LoadMessages(language);
-                LoadVerbs(language);
                 break;
             case TemplateLanguage.Italiano:
-                LoadDirections(language);
-                verbs = VerbsFromDirections();
-                items = ItemsFromDirections();
                 items.Add(new Item { name = "me", description = "In gran forma, come sempre.", location = 0 });
-                LoadMessages(language);
-                LoadVerbs(language);
                 break;
             default:
                 break;
@@ -125,7 +113,7 @@ public partial class Game
     protected void LoadDirections(TemplateLanguage language)
     {
         string filename = "templates/directions." + language.ToString().ToLower().Substring(0, 2) + ".txt";
-        directions = File.ReadAllLines(filename);
+        directions = File.ReadAllLines(filename).ToList();
     }
 
     /// <summary>
@@ -137,25 +125,10 @@ public partial class Game
     protected List<Verb> VerbsFromDirections()
     {
         List<Verb> ret = new();
-        for (byte i = 0; i < directions.Length; i++)
+        for (byte i = 0; i < directions.Count; i++)
         {
             ret.Add(new Verb { command = directions[i].Substring(0, 1), action = i });
             ret.Add(new Verb { command = directions[i], action = i });
-        }
-        return ret;
-    }
-
-    /// <summary>
-    /// Builds a list of <see cref="Item"/> objects representing directions so that directions are available as items in
-    /// the initial template (useful for scripting or referencing).
-    /// </summary>
-    /// <returns>A list of <see cref="Item"/> objects containing the direction names as item names.</returns>
-    protected List<Item> ItemsFromDirections()
-    {
-        List<Item> ret = new();
-        foreach (var dir in directions)
-        {
-            ret.Add(new Item { name = dir, description = string.Empty, location = 255 });
         }
         return ret;
     }

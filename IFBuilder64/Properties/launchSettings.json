@@ -2,7 +2,7 @@
   "profiles": {
     "IFBuilder64": {
       "commandName": "Project",
-      "commandLineArgs": "--template=it"
+      "commandLineArgs": "C:\\Commodore\\projects\\adventure\\player2026\\latinorum.it.json"
     }
   }
 }
