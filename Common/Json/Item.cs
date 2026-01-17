@@ -61,13 +61,15 @@ public class Item
 
     public bool? notportable { get; set; }
     public bool? openable { get; set; }
+    public bool? closeable { get; set; }
     public bool? open { get; set; }
 
     public byte Options() {        
         byte options = 0;
         if (notportable == true) options |= 0x01;
-        if (openable == true) options |= 0x02;
-        if (open == true) options |= 0x04;
+        if (open == true) options |= 0x02;
+        if (openable == true) options |= 0x04;
+        if (closeable == true) options |= 0x08;
         return options;
     }
 }
