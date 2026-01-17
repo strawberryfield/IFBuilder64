@@ -64,7 +64,7 @@ public partial class Game
     /// <param name="language">The template language to use when loading template resources.</param>
     public Game(TemplateLanguage language) : this()
     {
-        rooms = [new Room { description = string.Empty }];
+        rooms = [new Room { description = string.Empty, name = "player" }];
         LoadDirections(language);
         verbs = VerbsFromDirections();
         LoadMessages(language);
@@ -72,10 +72,10 @@ public partial class Game
         switch (language)
         {
             case TemplateLanguage.English:
-                items.Add(new Item { name = "me", description = "As good-looking as ever.", location = 0 });
+                items.Add(new Item { name = "me", description = "As good-looking as ever.", location = "player" });
                 break;
             case TemplateLanguage.Italiano:
-                items.Add(new Item { name = "me", description = "In gran forma, come sempre.", location = 0 });
+                items.Add(new Item { name = "me", description = "In gran forma, come sempre.", location = "player" });
                 break;
             default:
                 break;

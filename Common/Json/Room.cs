@@ -33,6 +33,7 @@ namespace Casasoft.IFBuilder64.Json;
 /// </remarks>
 public class Room
 {
+    public required string name { get; set; }
     /// <summary>
     /// Gets or sets the human-readable description of the room.
     /// </summary>

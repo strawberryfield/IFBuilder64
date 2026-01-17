@@ -195,14 +195,14 @@ void BuildGame(string inputFile, string outputFile)
     byte[] itemsToLocations = new byte[game.items.Count];
     for (int i = 0; i < game.items.Count; i++)
     {
-        itemsToLocations[i] = game.items[i].location ?? 255;
+        itemsToLocations[i] = game.getRoomIndexByName(game.items[i].location);
     }
 
     // items to items
     byte[] itemsToItems = new byte[game.items.Count];
     for (int i = 0; i < game.items.Count; i++)
     {
-        itemsToItems[i] = game.items[i].initem ?? 255;
+        itemsToItems[i] = game.getItemIndexByName(game.items[i].initem);
     }
 
     // items properties

@@ -56,10 +56,10 @@ public class Item
     /// of values depends on the consuming system; typically values map to
     /// predefined locations or slots within the environment.
     /// </remarks>
-    public byte? location { get; set; }
-    public byte? initem { get; set; }
+    public string? location { get; set; }
+    public string? initem { get; set; }
 
-    public bool? notportable { get; set; }
+      public bool? notportable { get; set; }
     public bool? openable { get; set; }
     public bool? closeable { get; set; }
     public bool? open { get; set; }

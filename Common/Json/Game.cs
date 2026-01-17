@@ -80,4 +80,24 @@ public partial class Game
     public List<string> messages { get; set; }
 
     public List<string> directions { get; set; }
+
+    public byte getRoomIndexByName(string? roomName)
+    {
+        if (!string.IsNullOrEmpty(roomName))
+        {
+            int index = rooms.FindIndex(r => r.name == roomName);
+            return index >= 0 ? (byte)index : (byte)255;
+        }
+        return 255;
+    }
+
+    public byte getItemIndexByName(string? itemName)
+    {
+        if (!string.IsNullOrEmpty(itemName))
+        {
+            int index = items.FindIndex(i => i.name == itemName);
+            return index >= 0 ? (byte)index : (byte)255;
+        }
+        return 255;
+    }
 }
