@@ -53,7 +53,7 @@ public class Room
     /// A value of <c>0</c> typically means there is no north exit.
     /// </remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public byte? north { get; set; }
+    public string? north { get; set; }
 
     /// <summary>
     /// Gets or sets the index of the room to the south.
@@ -65,7 +65,7 @@ public class Room
     /// A value of <c>0</c> typically means there is no south exit.
     /// </remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public byte? south { get; set; }
+    public string? south { get; set; }
 
     /// <summary>
     /// Gets or sets the index of the room to the east.
@@ -77,7 +77,7 @@ public class Room
     /// A value of <c>0</c> typically means there is no east exit.
     /// </remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public byte? east { get; set; }
+    public string? east { get; set; }
 
     /// <summary>
     /// Gets or sets the index of the room to the west.
@@ -89,7 +89,7 @@ public class Room
     /// A value of <c>0</c> typically means there is no west exit.
     /// </remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public byte? west { get; set; }
+    public string? west { get; set; }
 
     /// <summary>
     /// Gets or sets the index of the room above (up).
@@ -101,7 +101,7 @@ public class Room
     /// A value of <c>0</c> typically means there is no up exit.
     /// </remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public byte? up { get; set; }
+    public string? up { get; set; }
 
     /// <summary>
     /// Gets or sets the index of the room below (down).
@@ -113,23 +113,6 @@ public class Room
     /// A value of <c>0</c> typically means there is no down exit.
     /// </remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public byte? down { get; set; }
+    public string? down { get; set; }
 
-    /// <summary>
-    /// Returns the directional exit indices in a fixed order.
-    /// </summary>
-    /// <returns>
-    /// A new <see cref="byte"/>[] with six elements containing the exit indices
-    /// in the following order: north, south, east, west, up, down.
-    /// Each element contains the index or identifier of the target room;
-    /// a value of <c>0</c> typically indicates the absence of an exit and
-    /// should be interpreted by callers according to their semantics.
-    /// </returns>
-    /// <remarks>
-    /// This method allocates and returns a new array on each call. If callers
-    /// need to avoid repeated allocations (for example in hot paths), they
-    /// should reuse a buffer or implement an alternative accessor that writes
-    /// into a provided span or array.
-    /// </remarks>
-    public byte[] Directions() => [north ?? 0, south ?? 0, east ?? 0, west ?? 0, up ?? 0, down ?? 0];
 }

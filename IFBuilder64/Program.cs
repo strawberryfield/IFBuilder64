@@ -181,7 +181,7 @@ void BuildGame(string inputFile, string outputFile)
     byte[] roomsExits = new byte[game.rooms.Count * 6];
     for (int i = 0; i < game.rooms.Count; i++)
     {
-        Array.Copy(game.rooms[i].Directions(), 0, roomsExits, i * 6, 6);
+        Array.Copy(game.RoomExits(game.rooms[i]), 0, roomsExits, i * 6, 6);
     }
 
     // verbs to actions
@@ -272,7 +272,7 @@ void BuildGame(string inputFile, string outputFile)
     sb.Append($"{{var:verbsaddr}}={verbsAddress}: ");
     sb.Append($"{{var:verbstable}}={verbsAddress + verbsPtr.Length}: ");
     sb.Append($"{{var:dirstable}}={directionsAddress + dirPointers.Length}: ");
-    sb.AppendLine($"{{var:dirsaddr}}={directionsAddress}: ");
+    sb.AppendLine($"{{var:dirsaddr}}={directionsAddress}");
     sb.Append($"{{var:itemsaddr}}={itemsAddress}: ");
     sb.Append($"{{var:itemstable}}={itemsAddress + itemsPtr.Length}: ");
     sb.AppendLine($"{{var:itemsdescaddr}}={itemsDescAddress}");

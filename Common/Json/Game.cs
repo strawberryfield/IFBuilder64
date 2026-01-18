@@ -100,4 +100,30 @@ public partial class Game
         }
         return 255;
     }
+
+    /// <summary>
+    /// Returns the directional exit indices in a fixed order.
+    /// </summary>
+    /// <returns>
+    /// A new <see cref="byte"/>[] with six elements containing the exit indices
+    /// in the following order: north, south, east, west, up, down.
+    /// Each element contains the index or identifier of the target room;
+    /// a value of <c>0</c> typically indicates the absence of an exit and
+    /// should be interpreted by callers according to their semantics.
+    /// </returns>
+    /// <remarks>
+    /// This method allocates and returns a new array on each call. If callers
+    /// need to avoid repeated allocations (for example in hot paths), they
+    /// should reuse a buffer or implement an alternative accessor that writes
+    /// into a provided span or array.
+    /// </remarks>
+    public byte[] RoomExits(Room room) => [
+        getRoomIndexByName(room.north),
+        getRoomIndexByName(room.south),
+        getRoomIndexByName(room.east),
+        getRoomIndexByName(room.west),
+        getRoomIndexByName(room.up),
+        getRoomIndexByName(room.down)
+    ];
+
 }
