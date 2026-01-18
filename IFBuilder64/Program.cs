@@ -111,10 +111,10 @@ void BuildGame(string inputFile, string outputFile)
     ushort topAddress = 0xbfff;
 
     // --- intro ----
-    string text = Charset.PETSCII(game.intro, true) + (char)0;
+    byte[] text = Charset.PETSCIIBytes(game.intro+(char)0, true);
     int size = text.Length;
     ushort introAddress = AllocateDown(ref topAddress, size);
-    PrgFile prg = new(introAddress, Encoding.UTF8.GetBytes(text));
+    PrgFile prg = new(introAddress, text);
     string filename = outputFile + "in.prg";
     prg.Save(filename);
     Console.WriteLine($"Build intro: '{filename}'.");
