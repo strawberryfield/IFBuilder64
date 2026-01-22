@@ -22,96 +22,108 @@ using System.Text.Json.Serialization;
 namespace Casasoft.IFBuilder64.Json;
 
 /// <summary>
-/// Represents a room in the JSON model used by IFBuilder64.
+/// Represents a navigable room in the JSON model used by IFBuilder64.
 /// </summary>
 /// <remarks>
-/// Each instance contains a textual description and up to seven directional exits.
-/// Directional properties are stored as <see cref="byte"/> and typically encode
-/// an index or identifier of the target room. A value of <c>0</c> commonly
-/// indicates the absence of an exit, but callers should rely on consumer logic
-/// for exact semantics.
+/// Instances of <see cref="Room"/> model a single location in the interactive
+/// fiction world. Each room exposes a human-readable <see cref="description"/>
+/// and a required <see cref="name"/> identifier. Exits are represented by string
+/// properties (for example a numeric index, a symbolic identifier or a GUID),
+/// one for each common direction. Exit properties are nullable: when serializing
+/// to JSON, properties with <c>null</c> values are omitted due to the
+/// <see cref="JsonIgnoreAttribute"/> configuration.
+/// 
+/// Notes:
+/// - The concrete meaning of exit strings (index, id, or name) is determined by
+///   the consuming code; this class treats them as opaque identifiers.
+/// - The class uses C# 11 required properties for <see cref="name"/> and
+///   <see cref="description"/>, indicating they must be present when creating
+///   instances (e.g., during deserialization or initialization).
 /// </remarks>
 public class Room
 {
+    /// <summary>
+    /// Gets or sets the unique identifier or short name for the room.
+    /// </summary>
+    /// <value>
+    /// A non-null <see cref="string"/> that identifies the room. This value is
+    /// required for correct model construction and may be used as a lookup key
+    /// by consumers.
+    /// </value>
     public required string name { get; set; }
+
     /// <summary>
     /// Gets or sets the human-readable description of the room.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> containing the room description. May be empty but
-    /// should not be <c>null</c> where consumers expect displayed text.
+    /// A non-null <see cref="string"/> with the description shown to players.
+    /// May be empty but should not be <c>null</c> where display text is expected.
     /// </value>
     public required string description { get; set; }
 
     /// <summary>
-    /// Gets or sets the index of the room to the north.
+    /// Gets or sets the identifier of the room reachable by going north.
     /// </summary>
     /// <value>
-    /// A <see cref="byte"/> representing the target room index for the north exit.
+    /// A <see cref="string"/> containing an identifier for the north exit,
+    /// or <c>null</c> if no north exit is present. The identifier's format
+    /// (numeric index, symbolic name, etc.) is defined by the consuming logic.
     /// </value>
     /// <remarks>
-    /// A value of <c>0</c> typically means there is no north exit.
+    /// When serializing the model to JSON, a <c>null</c> value will be omitted
+    /// from the output because of the <see cref="JsonIgnoreCondition.WhenWritingNull"/>
+    /// setting on the property.
     /// </remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? north { get; set; }
 
     /// <summary>
-    /// Gets or sets the index of the room to the south.
+    /// Gets or sets the identifier of the room reachable by going south.
     /// </summary>
     /// <value>
-    /// A <see cref="byte"/> representing the target room index for the south exit.
+    /// A <see cref="string"/> containing an identifier for the south exit,
+    /// or <c>null</c> if no south exit is present.
     /// </value>
-    /// <remarks>
-    /// A value of <c>0</c> typically means there is no south exit.
-    /// </remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? south { get; set; }
 
     /// <summary>
-    /// Gets or sets the index of the room to the east.
+    /// Gets or sets the identifier of the room reachable by going east.
     /// </summary>
     /// <value>
-    /// A <see cref="byte"/> representing the target room index for the east exit.
+    /// A <see cref="string"/> containing an identifier for the east exit,
+    /// or <c>null</c> if no east exit is present.
     /// </value>
-    /// <remarks>
-    /// A value of <c>0</c> typically means there is no east exit.
-    /// </remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? east { get; set; }
 
     /// <summary>
-    /// Gets or sets the index of the room to the west.
+    /// Gets or sets the identifier of the room reachable by going west.
     /// </summary>
     /// <value>
-    /// A <see cref="byte"/> representing the target room index for the west exit.
+    /// A <see cref="string"/> containing an identifier for the west exit,
+    /// or <c>null</c> if no west exit is present.
     /// </value>
-    /// <remarks>
-    /// A value of <c>0</c> typically means there is no west exit.
-    /// </remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? west { get; set; }
 
     /// <summary>
-    /// Gets or sets the index of the room above (up).
+    /// Gets or sets the identifier of the room reachable by going up.
     /// </summary>
     /// <value>
-    /// A <see cref="byte"/> representing the target room index for the up exit.
+    /// A <see cref="string"/> containing an identifier for the up exit,
+    /// or <c>null</c> if no up exit is present.
     /// </value>
-    /// <remarks>
-    /// A value of <c>0</c> typically means there is no up exit.
-    /// </remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? up { get; set; }
 
     /// <summary>
-    /// Gets or sets the index of the room below (down).
+    /// Gets or sets the identifier of the room reachable by going down.
     /// </summary>
     /// <value>
-    /// A <see cref="byte"/> representing the target room index for the down exit.
+    /// A <see cref="string"/> containing an identifier for the down exit,
+    /// or <c>null</c> if no down exit is present.
     /// </value>
-    /// <remarks>
-    /// A value of <c>0</c> typically means there is no down exit.
-    /// </remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? down { get; set; }
 

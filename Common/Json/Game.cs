@@ -75,12 +75,32 @@ public partial class Game
     /// </summary>
     /// <value>
     /// A <see cref="List{String}"/> where each entry is a message string referenced by index
-    /// or key from other game model elements.
+    /// or key from other game model elements. Entries may be empty strings; callers should
+    /// validate indices when resolving messages.
     /// </value>
     public List<string> messages { get; set; }
 
+    /// <summary>
+    /// Gets or sets the direction identifiers used by the engine.
+    /// </summary>
+    /// <value>
+    /// A <see cref="List{String}"/> enumerating textual direction names (for example "north", "south", ...)
+    /// in the order the engine expects. Consumers should not assume a fixed set of values unless
+    /// validated elsewhere in the codebase.
+    /// </value>
     public List<string> directions { get; set; }
 
+    /// <summary>
+    /// Looks up the zero-based index of a room by its name.
+    /// </summary>
+    /// <param name="roomName">The name of the room to search for. May be null or empty.</param>
+    /// <returns>
+    /// The zero-based index of the matching room when found; otherwise <c>255</c> to indicate "not found".
+    /// </returns>
+    /// <remarks>
+    /// This method performs a linear search using <see cref="List{T}.FindIndex"/>. The sentinel value
+    /// <c>255</c> is used because room indices are expressed as <see cref="byte"/> elsewhere in the model.
+    /// </remarks>
     public byte getRoomIndexByName(string? roomName)
     {
         if (!string.IsNullOrEmpty(roomName))
@@ -91,6 +111,17 @@ public partial class Game
         return 255;
     }
 
+    /// <summary>
+    /// Looks up the zero-based index of an item by its name.
+    /// </summary>
+    /// <param name="itemName">The name of the item to search for. May be null or empty.</param>
+    /// <returns>
+    /// The zero-based index of the matching item when found; otherwise <c>255</c> to indicate "not found".
+    /// </returns>
+    /// <remarks>
+    /// This method performs a linear search using <see cref="List{T}.FindIndex"/>. The sentinel value
+    /// <c>255</c> is used because item indices are represented as <see cref="byte"/> values.
+    /// </remarks>
     public byte getItemIndexByName(string? itemName)
     {
         if (!string.IsNullOrEmpty(itemName))
@@ -107,9 +138,9 @@ public partial class Game
     /// <returns>
     /// A new <see cref="byte"/>[] with six elements containing the exit indices
     /// in the following order: north, south, east, west, up, down.
-    /// Each element contains the index or identifier of the target room;
-    /// a value of <c>0</c> typically indicates the absence of an exit and
-    /// should be interpreted by callers according to their semantics.
+    /// Each element contains the zero-based index of the target room when an exit exists;
+    /// a value of <c>255</c> indicates the absence of an exit (i.e. "not found") and should
+    /// be handled by callers accordingly.
     /// </returns>
     /// <remarks>
     /// This method allocates and returns a new array on each call. If callers
@@ -125,5 +156,4 @@ public partial class Game
         getRoomIndexByName(room.up),
         getRoomIndexByName(room.down)
     ];
-
 }

@@ -111,7 +111,7 @@ void BuildGame(string inputFile, string outputFile)
     ushort topAddress = 0xbfff;
 
     // --- intro ----
-    byte[] text = Charset.PETSCIIBytes(game.intro+(char)0, true);
+    byte[] text = Charset.PETSCIIBytes(game.intro + (char)0, true);
     int size = text.Length;
     ushort introAddress = AllocateDown(ref topAddress, size);
     PrgFile prg = new(introAddress, text);
@@ -212,6 +212,14 @@ void BuildGame(string inputFile, string outputFile)
         itemsOptions[i] = game.items[i].Options();
     }
 
+    // items unlock items
+    byte[] itemsUnlocks = new byte[game.items.Count];
+    for (int i = 0; i < game.items.Count; i++)
+    {
+        itemsUnlocks[i] = game.getItemIndexByName(game.items[i].unlockitem);
+    }
+
+
     // initial room
     byte[] initialRoom = [game.initialroom];
 
@@ -220,6 +228,7 @@ void BuildGame(string inputFile, string outputFile)
     ushort itemsDbAddress = AllocateDown(ref topAddress, itemsToLocations.Length);
     ushort itemsInItemsDbAddress = AllocateDown(ref topAddress, itemsToItems.Length);
     ushort itemsOptionsDbAddress = AllocateDown(ref topAddress, itemsOptions.Length);
+    ushort itemsUnlocksDbAddress = AllocateDown(ref topAddress, itemsUnlocks.Length);
     ushort verbsDbAddress = AllocateDown(ref topAddress, verbsToActions.Length);
     ushort roomsDbAddress = AllocateDown(ref topAddress, roomsExits.Length);
     ushort initialRoomDbAddress = AllocateDown(ref topAddress, initialRoom.Length);
@@ -228,6 +237,7 @@ void BuildGame(string inputFile, string outputFile)
         initialRoom,
         roomsExits,
         verbsToActions,
+        itemsUnlocks,
         itemsOptions,
         itemsToItems,
         itemsToLocations});
@@ -257,6 +267,7 @@ void BuildGame(string inputFile, string outputFile)
     sb.AppendLine($"{{var:itemsdbaddr=W3}}");
     sb.AppendLine($"{{var:itemsinitemdbaddr=W4}}");
     sb.AppendLine($"{{var:itemsoptionsdbaddr=W5}}");
+    sb.AppendLine($"{{var:itemsunlockdbaddr=W6}}");
 
     filename = outputFile + "def.bas";
     File.WriteAllText(filename, sb.ToString());
@@ -282,6 +293,7 @@ void BuildGame(string inputFile, string outputFile)
     sb.Append($"{{var:verbsdbaddr}}={verbsDbAddress}: ");
     sb.Append($"{{var:itemsdbaddr}}={itemsDbAddress}: ");
     sb.Append($"{{var:itemsinitemdbaddr}}={itemsInItemsDbAddress}: ");
+    sb.Append($"{{var:itemsunlockdbaddr}}={itemsUnlocksDbAddress}: ");
     sb.AppendLine($"{{var:itemsoptionsdbaddr}}={itemsOptionsDbAddress}");
 
     filename = outputFile + "inc.bas";

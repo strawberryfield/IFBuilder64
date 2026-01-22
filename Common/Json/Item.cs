@@ -55,15 +55,85 @@ public class Item
     /// A numeric location code represented as a byte. The exact range and meaning
     /// of values depends on the consuming system; typically values map to
     /// predefined locations or slots within the environment.
+    /// Note: the property is declared as <c>string?</c> to match the JSON contract;
+    /// consumers may parse or interpret the value as needed.
     /// </remarks>
     public string? location { get; set; }
+
+    /// <summary>
+    /// Gets or sets the identifier of the container item that holds this item.
+    /// </summary>
+    /// <remarks>
+    /// When set, this value references another item (by its identifier or name)
+    /// indicating that this item is contained inside that item rather than
+    /// placed in a room or the player's inventory.
+    /// </remarks>
     public string? initem { get; set; }
 
-      public bool? notportable { get; set; }
+    /// <summary>
+    /// Gets or sets the identifier of an item that can unlock or interact with this item.
+    /// </summary>
+    /// <remarks>
+    /// If specified, this usually refers to an item required to unlock, open,
+    /// or otherwise change the state of this item (for example, a key).
+    /// Consumers should interpret the format according to the JSON schema used.
+    /// </remarks>
+    public string? unlockitem { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the item cannot be picked up.
+    /// </summary>
+    /// <remarks>
+    /// If <c>true</c>, the item is not portable and should not be moved into
+    /// the player's inventory by typical pickup actions.
+    /// A <c>null</c> value indicates no explicit portability instruction.
+    /// </remarks>
+    public bool? notportable { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the item can be opened.
+    /// </summary>
+    /// <remarks>
+    /// If <c>true</c>, the item supports an "open" operation. A <c>null</c>
+    /// value indicates the property is unspecified in the JSON input.
+    /// </remarks>
     public bool? openable { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the item can be closed.
+    /// </summary>
+    /// <remarks>
+    /// If <c>true</c>, the item supports a "close" operation. A <c>null</c>
+    /// value indicates the property is unspecified in the JSON input.
+    /// </remarks>
     public bool? closeable { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the item is currently open.
+    /// </summary>
+    /// <remarks>
+    /// When set to <c>true</c>, the item is considered open. When <c>false</c>,
+    /// it is considered closed. A <c>null</c> value indicates no explicit state.
+    /// </remarks>
     public bool? open { get; set; }
 
+    /// <summary>
+    /// Computes a compact options bitmask representing boolean item flags.
+    /// </summary>
+    /// <remarks>
+    /// The returned byte packs the following flags (bit values shown):
+    /// - 0x01: <c>notportable</c>
+    /// - 0x02: <c>open</c>
+    /// - 0x04: <c>openable</c>
+    /// - 0x08: <c>closeable</c>
+    ///
+    /// Each flag is included only if the corresponding nullable boolean is
+    /// explicitly <c>true</c>. This method is designed to provide a compact
+    /// representation for consumers that expect a single options byte.
+    /// </remarks>
+    /// <returns>
+    /// A <c>byte</c> containing the combined options flags.
+    /// </returns>
     public byte Options() {        
         byte options = 0;
         if (notportable == true) options |= 0x01;
