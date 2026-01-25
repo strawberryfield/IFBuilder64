@@ -44,7 +44,6 @@ public class Item
     /// <remarks>
     /// A longer, free-form text that describes the item. May contain punctuation
     /// and plain text suitable for display in UI or documentation.
-    ///
     /// </remarks>
     public required string description { get; set; }
 
@@ -52,11 +51,10 @@ public class Item
     /// Gets or sets the item's location identifier.
     /// </summary>
     /// <remarks>
-    /// A numeric location code represented as a byte. The exact range and meaning
-    /// of values depends on the consuming system; typically values map to
-    /// predefined locations or slots within the environment.
-    /// Note: the property is declared as <c>string?</c> to match the JSON contract;
-    /// consumers may parse or interpret the value as needed.
+    /// A numeric location code represented as a byte in the consuming system.
+    /// The JSON contract stores this as a <c>string?</c>, therefore consumers
+    /// should parse or validate the value according to the runtime expectations.
+    /// Typical semantics map values to rooms, inventory slots or special locations.
     /// </remarks>
     public string? location { get; set; }
 
@@ -118,6 +116,26 @@ public class Item
     public bool? open { get; set; }
 
     /// <summary>
+    /// Gets or sets a value indicating whether the item is currently switched on.
+    /// </summary>
+    /// <remarks>
+    /// This flag indicates the runtime powered/active state for items that can
+    /// be turned on (for example, lamps, radios). A <c>null</c> value means the
+    /// JSON input did not specify the state and consumers should use a default
+    /// or explicit initialization logic.
+    /// </remarks>
+    public bool? switchedon { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the item can be switched on or off.
+    /// </summary>
+    /// <remarks>
+    /// If <c>true</c>, the item supports being toggled between on/off states.
+    /// A <c>null</c> value indicates the switchability is unspecified in the JSON input.
+    /// </remarks>
+    public bool? switchable { get; set; }
+
+    /// <summary>
     /// Computes a compact options bitmask representing boolean item flags.
     /// </summary>
     /// <remarks>
@@ -126,20 +144,25 @@ public class Item
     /// - 0x02: <c>open</c>
     /// - 0x04: <c>openable</c>
     /// - 0x08: <c>closeable</c>
+    /// - 0x10: <c>switchedon</c>
+    /// - 0x20: <c>switchable</c>
     ///
     /// Each flag is included only if the corresponding nullable boolean is
-    /// explicitly <c>true</c>. This method is designed to provide a compact
-    /// representation for consumers that expect a single options byte.
+    /// explicitly <c>true</c>. This method provides a compact representation
+    /// for consumers that expect a single options byte when converting the
+    /// JSON model to legacy or binary formats.
     /// </remarks>
     /// <returns>
     /// A <c>byte</c> containing the combined options flags.
     /// </returns>
-    public byte Options() {        
+    public byte Options() {
         byte options = 0;
         if (notportable == true) options |= 0x01;
         if (open == true) options |= 0x02;
         if (openable == true) options |= 0x04;
         if (closeable == true) options |= 0x08;
+        if (switchedon == true) options |= 0x10;
+        if (switchable == true) options |= 0x20;
         return options;
     }
 }

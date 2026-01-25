@@ -81,6 +81,16 @@ public partial class Game
     public List<string> messages { get; set; }
 
     /// <summary>
+    /// Gets or sets game specific textual messages used by the game engine (for UI, errors, prompts, etc.).
+    /// </summary>
+    /// <value>
+    /// A <see cref="List{String}"/> where each entry is a message string referenced by index
+    /// or key from other game model elements. Entries may be empty strings; callers should
+    /// validate indices when resolving messages.
+    /// </value>
+    public List<string> usermessages { get; set; }
+
+    /// <summary>
     /// Gets or sets the direction identifiers used by the engine.
     /// </summary>
     /// <value>
