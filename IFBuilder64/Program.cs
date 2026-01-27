@@ -20,6 +20,7 @@
 using Casasoft.Commodore;
 using Casasoft.Helpers;
 using Casasoft.IFBuilder64.Json;
+using IFBuilder64;
 using Mono.Options;
 using System.Text;
 
@@ -108,13 +109,18 @@ void BuildGame(string inputFile, string outputFile)
         return;
     }
 
+    ConfigPrg config = new();
+    config.roomsCount = (byte)game.rooms.Count;
+    config.itemsCount = (byte)game.items.Count;
+    config.verbsCount = (byte)game.verbs.Count;
+
     ushort topAddress = 0xbfff;
 
     // --- intro ----
     byte[] text = Charset.PETSCIIBytes(game.intro + (char)0, true);
     int size = text.Length;
-    ushort introAddress = AllocateDown(ref topAddress, size);
-    PrgFile prg = new(introAddress, text);
+    config.introAddress = AllocateDown(ref topAddress, size);
+    PrgFile prg = new(config.introAddress, text);
     string filename = outputFile + "in.prg";
     prg.Save(filename);
     Console.WriteLine($"Build intro file: '{filename}'.");
@@ -123,58 +129,67 @@ void BuildGame(string inputFile, string outputFile)
     // messages
     (byte[] msgPointers, byte[] msgStringsList) = Strings2Prg.CreateArrays(game.messages, 0, true);
     size = msgPointers.Length + msgStringsList.Length;
-    ushort messagesAddress = AllocateDown(ref topAddress, size);
-    Strings2Prg.RelocatePointers(msgPointers, messagesAddress);
+    config.messagesAddress = AllocateDown(ref topAddress, size);
+    Strings2Prg.RelocatePointers(msgPointers, config.messagesAddress);
 
     // user messages
     (byte[] userMsgPointers, byte[] userMsgStringsList) = Strings2Prg.CreateArrays(game.usermessages, 0, true);
     size = userMsgPointers.Length + userMsgStringsList.Length;
-    ushort userMessagesAddress = AllocateDown(ref topAddress, size);
-    Strings2Prg.RelocatePointers(userMsgPointers, userMessagesAddress);
+    config.userMessagesAddress = AllocateDown(ref topAddress, size);
+    Strings2Prg.RelocatePointers(userMsgPointers, config.userMessagesAddress);
 
     // rooms descrptions 
     List<string> roomDescriptions = new();
     roomDescriptions.AddRange(game.rooms.Select(room => room.description));
     (byte[] roomsDescPtr, byte[] roomsDescList) = Strings2Prg.CreateArrays(roomDescriptions, 0, true);
     size = roomsDescPtr.Length + roomsDescList.Length;
-    ushort roomsDescAddress = AllocateDown(ref topAddress, size);
-    Strings2Prg.RelocatePointers(roomsDescPtr, roomsDescAddress);
+    config.roomsDescriptionAddress = AllocateDown(ref topAddress, size);
+    Strings2Prg.RelocatePointers(roomsDescPtr, config.roomsDescriptionAddress);
 
     // verbs
     List<string> verbCommands = new();
     verbCommands.AddRange(game.verbs.Select(verb => verb.command));
     (byte[] verbsPtr, byte[] verbsList) = Strings2Prg.CreateArrays(verbCommands, 0, true);
     size = verbsPtr.Length + verbsList.Length;
-    ushort verbsAddress = AllocateDown(ref topAddress, size);
-    Strings2Prg.RelocatePointers(verbsPtr, verbsAddress);
+    config.verbsAddress = AllocateDown(ref topAddress, size);
+    Strings2Prg.RelocatePointers(verbsPtr, config.verbsAddress);
+
+    // verbs to actions
+    byte[] verbsToActions = new byte[game.verbs.Count];
+    for (int i = 0; i < game.verbs.Count; i++)
+    {
+        verbsToActions[i] = game.verbs[i].action;
+    }
+    ushort verbsToActionsAddress = AllocateDown(ref topAddress, verbsToActions.Length);
 
     // directions
     (byte[] dirPointers, byte[] dirStringsList) = Strings2Prg.CreateArrays(game.directions, 0, true);
     size = dirPointers.Length + dirStringsList.Length;
-    ushort directionsAddress = AllocateDown(ref topAddress, size);
-    Strings2Prg.RelocatePointers(dirPointers, directionsAddress);
+    config.dirsAddress = AllocateDown(ref topAddress, size);
+    Strings2Prg.RelocatePointers(dirPointers, config.dirsAddress);
 
     // items
     List<string> itemNames = new();
     itemNames.AddRange(game.items.Select(item => item.name));
     (byte[] itemsPtr, byte[] itemsList) = Strings2Prg.CreateArrays(itemNames, 0, true);
     size = itemsPtr.Length + itemsList.Length;
-    ushort itemsAddress = AllocateDown(ref topAddress, size);
-    Strings2Prg.RelocatePointers(itemsPtr, itemsAddress);
+    config.itemsNameAddress = AllocateDown(ref topAddress, size);
+    Strings2Prg.RelocatePointers(itemsPtr, config.itemsNameAddress);
 
     // items descriptions
     List<string> itemDescriptions = new();
     itemDescriptions.AddRange(game.items.Select(item => item.description));
     (byte[] itemsDescPtr, byte[] itemsDescList) = Strings2Prg.CreateArrays(itemDescriptions, 0, true);
     size = itemsDescPtr.Length + itemsDescList.Length;
-    ushort itemsDescAddress = AllocateDown(ref topAddress, size);
-    Strings2Prg.RelocatePointers(itemsDescPtr, itemsDescAddress);
+    config.itemsDescriptionAddress = AllocateDown(ref topAddress, size);
+    Strings2Prg.RelocatePointers(itemsDescPtr, config.itemsDescriptionAddress);
 
     // save data file
-    prg = new(itemsDescAddress, new List<byte[]> {
+    prg = new(config.itemsDescriptionAddress, new List<byte[]> {
         itemsDescPtr, itemsDescList,
         itemsPtr, itemsList,
         dirPointers, dirStringsList,
+        verbsToActions,
         verbsPtr, verbsList,
         roomsDescPtr, roomsDescList,
         userMsgPointers, userMsgStringsList,
@@ -189,13 +204,6 @@ void BuildGame(string inputFile, string outputFile)
     for (int i = 0; i < game.rooms.Count; i++)
     {
         Array.Copy(game.RoomExits(game.rooms[i]), 0, roomsExits, i * 6, 6);
-    }
-
-    // verbs to actions
-    byte[] verbsToActions = new byte[game.verbs.Count];
-    for (int i = 0; i < game.verbs.Count; i++)
-    {
-        verbsToActions[i] = game.verbs[i].action;
     }
 
     // items to locations
@@ -237,14 +245,12 @@ void BuildGame(string inputFile, string outputFile)
     ushort itemsInItemsDbAddress = AllocateDown(ref topAddress, itemsToItems.Length);
     ushort itemsOptionsDbAddress = AllocateDown(ref topAddress, itemsOptions.Length);
     ushort itemsUnlocksDbAddress = AllocateDown(ref topAddress, itemsUnlocks.Length);
-    ushort verbsDbAddress = AllocateDown(ref topAddress, verbsToActions.Length);
     ushort roomsDbAddress = AllocateDown(ref topAddress, roomsExits.Length);
-    ushort initialRoomDbAddress = AllocateDown(ref topAddress, initialRoom.Length);
+    config.initialRoomAddress = AllocateDown(ref topAddress, initialRoom.Length);
 
-    prg = new(initialRoomDbAddress, new List<byte[]> {
+    prg = new(config.initialRoomAddress, new List<byte[]> {
         initialRoom,
         roomsExits,
-        verbsToActions,
         itemsUnlocks,
         itemsOptions,
         itemsToItems,
@@ -253,6 +259,11 @@ void BuildGame(string inputFile, string outputFile)
     prg.Save(filename);
     Console.WriteLine($"Build database file: '{filename}'.");
 
+
+    prg = new(0x02a7, config.GetConfigArray());
+    filename = outputFile + "cf.prg";
+    prg.Save(filename);
+    Console.WriteLine($"Build config file: '{filename}'.");
 
     // --- basic definitions include file ---
     StringBuilder sb = new();
@@ -277,7 +288,7 @@ void BuildGame(string inputFile, string outputFile)
     sb.AppendLine($"{{var:itemsinitemdbaddr=W4}}");
     sb.AppendLine($"{{var:itemsoptionsdbaddr=W5}}");
     sb.AppendLine($"{{var:itemsunlockdbaddr=W6}}");
-    sb.AppendLine($"'\n{{def:DBtopAddress={DBtopAddress}}}");
+    sb.AppendLine($"'\n{{def:DBtopAddress={DBtopAddress+1}}}");
 
     filename = outputFile + "def.bas";
     File.WriteAllText(filename, sb.ToString());
@@ -287,21 +298,21 @@ void BuildGame(string inputFile, string outputFile)
     sb = new();
     sb.AppendLine("' Generated by Casasoft IFBuilder\n'");
     sb.AppendLine("' Strings addresses");
-    sb.Append($"{{var:introaddr}}={introAddress}: ");
-    sb.Append($"{{var:messagesaddr}}={messagesAddress}: ");
-    sb.Append($"{{var:usrmsgaddr}}={userMessagesAddress}: ");
-    sb.Append($"{{var:roomsdescaddr}}={roomsDescAddress}: ");
-    sb.Append($"{{var:verbsaddr}}={verbsAddress}: ");
-    sb.Append($"{{var:verbstable}}={verbsAddress + verbsPtr.Length}: ");
-    sb.Append($"{{var:dirstable}}={directionsAddress + dirPointers.Length}: ");
-    sb.AppendLine($"{{var:dirsaddr}}={directionsAddress}");
-    sb.Append($"{{var:itemsaddr}}={itemsAddress}: ");
-    sb.Append($"{{var:itemstable}}={itemsAddress + itemsPtr.Length}: ");
-    sb.AppendLine($"{{var:itemsdescaddr}}={itemsDescAddress}");
+    sb.Append($"{{var:introaddr}}={config.introAddress}: ");
+    sb.Append($"{{var:messagesaddr}}={config.messagesAddress}: ");
+    sb.Append($"{{var:usrmsgaddr}}={config.userMessagesAddress}: ");
+    sb.Append($"{{var:roomsdescaddr}}={config.roomsDescriptionAddress}: ");
+    sb.Append($"{{var:verbsaddr}}={config.verbsAddress}: ");
+    sb.Append($"{{var:verbstable}}={config.verbsAddress + verbsPtr.Length}: ");
+    sb.Append($"{{var:dirstable}}={config.dirsAddress + dirPointers.Length}: ");
+    sb.AppendLine($"{{var:dirsaddr}}={config.dirsAddress}");
+    sb.Append($"{{var:itemsaddr}}={config.itemsNameAddress}: ");
+    sb.Append($"{{var:itemstable}}={config.itemsNameAddress + itemsPtr.Length}: ");
+    sb.AppendLine($"{{var:itemsdescaddr}}={config.itemsDescriptionAddress}");
     sb.AppendLine("'\n' Databases addresses");
-    sb.Append($"{{var:curroomdbaddr}}={initialRoomDbAddress}: ");
+    sb.Append($"{{var:curroomdbaddr}}={config.initialRoomAddress}: ");
     sb.Append($"{{var:roomsdbaddr}}={roomsDbAddress}: ");
-    sb.Append($"{{var:verbsdbaddr}}={verbsDbAddress}: ");
+    sb.Append($"{{var:verbsdbaddr}}={verbsToActionsAddress}: ");
     sb.Append($"{{var:itemsdbaddr}}={itemsDbAddress}: ");
     sb.Append($"{{var:itemsinitemdbaddr}}={itemsInItemsDbAddress}: ");
     sb.Append($"{{var:itemsunlockdbaddr}}={itemsUnlocksDbAddress}: ");
@@ -315,7 +326,7 @@ void BuildGame(string inputFile, string outputFile)
     sb = new();
     sb.AppendLine("' Generated by Casasoft IFBuilder\n'");
     sb.AppendLine("' Limit memory to free space for data");
-    ushort basicEnd = (ushort)(itemsDescAddress > 40960 ? 40960 : itemsDescAddress);
+    ushort basicEnd = (ushort)(config.itemsDescriptionAddress > 40960 ? 40960 : config.itemsDescriptionAddress);
     sb.AppendLine($"if ld=0 then poke 52, {basicEnd / 256}: poke 56, {basicEnd / 256}: clr: ld=1");
 
     filename = outputFile + "mem.bas";
