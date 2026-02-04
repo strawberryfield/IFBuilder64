@@ -47,6 +47,11 @@ internal class ConfigPrg
     public byte verbsCount { get; set; }
 
     /// <summary>
+    /// Number of doors in the game (stored as a single byte in the config).
+    /// </summary>
+    public byte doorsCount { get; set; }
+
+    /// <summary>
     /// Address of the initial room record.
     /// </summary>
     public ushort initialRoomAddress { get; set; }
@@ -77,6 +82,16 @@ internal class ConfigPrg
     public ushort dirsAddress { get; set; }
 
     /// <summary>
+    /// Address where door names are stored.
+    /// </summary>
+    public ushort doorsNameAddress { get; set; }
+
+    /// <summary>
+    /// Address where door descriptions are stored.
+    /// </summary>
+    public ushort doorsDescriptionAddress { get; set; }
+
+    /// <summary>
     /// Address where item names are stored.
     /// </summary>
     public ushort itemsNameAddress { get; set; }
@@ -92,44 +107,52 @@ internal class ConfigPrg
     public ushort roomsDescriptionAddress { get; set; }
 
     /// <summary>
-    /// Serializes the configuration into the 21-byte binary block expected by the PRG.
+    /// Serializes the configuration into the 26-byte binary block produced by this class.
     /// </summary>
     /// <returns>
-    /// A 21-byte array containing:
-    /// - byte 0: <see cref="roomsCount"/>,
-    /// - byte 1: <see cref="itemsCount"/>,
-    /// - byte 2: <see cref="verbsCount"/>,
-    /// - bytes 3-4: <see cref="initialRoomAddress"/> (inserted via <see cref="Conversions.InsertUShort"/>),
-    /// - bytes 5-6: <see cref="introAddress"/>,
-    /// - bytes 7-8: <see cref="messagesAddress"/>,
-    /// - bytes 9-10: <see cref="userMessagesAddress"/>,
-    /// - bytes 11-12: <see cref="verbsAddress"/>,
-    /// - bytes 13-14: <see cref="dirsAddress"/>,
-    /// - bytes 15-16: <see cref="itemsNameAddress"/>,
-    /// - bytes 17-18: <see cref="itemsDescriptionAddress"/>,
-    /// - bytes 19-20: <see cref="roomsDescriptionAddress"/>.
+    /// A 26-byte array containing the configuration in the following layout:
+    /// - byte 0 : <see cref="roomsCount"/> (number of rooms),
+    /// - byte 1 : <see cref="itemsCount"/> (number of items),
+    /// - byte 2 : duplicate of <see cref="roomsCount"/> (preserved to match the runtime format),
+    /// - byte 3 : <see cref="verbsCount"/> (number of verbs),
+    /// - bytes 4-5   : <see cref="initialRoomAddress"/> (little-endian, written via <see cref="Conversions.InsertUShort(byte[], int, ushort)"/>),
+    /// - bytes 6-7   : <see cref="introAddress"/>,
+    /// - bytes 8-9   : <see cref="messagesAddress"/>,
+    /// - bytes 10-11 : <see cref="userMessagesAddress"/>,
+    /// - bytes 12-13 : <see cref="verbsAddress"/>,
+    /// - bytes 14-15 : <see cref="dirsAddress"/>,
+    /// - bytes 16-17 : <see cref="doorsNameAddress"/>,
+    /// - bytes 18-19 : <see cref="doorsDescriptionAddress"/>,
+    /// - bytes 20-21 : <see cref="itemsNameAddress"/>,
+    /// - bytes 22-23 : <see cref="itemsDescriptionAddress"/>,
+    /// - bytes 24-25 : <see cref="roomsDescriptionAddress"/>.
     /// </returns>
     /// <remarks>
     /// The method uses <see cref="Conversions.InsertUShort(byte[], int, ushort)"/>
-    /// to write 16-bit addresses into the array at the specified offsets.
+    /// to write 16-bit addresses into the array at the specified offsets (little-endian).
+    /// The duplicate of <see cref="roomsCount"/> at byte index 2 is intentional to match the
+    /// expected runtime/PRG layout produced by this tool.
     /// </remarks>
     public byte[] GetConfigArray()
     {
-        byte[] ret = new byte[21];
+        byte[] ret = new byte[26];
 
         ret[0] = roomsCount;
         ret[1] = itemsCount;
-        ret[2] = verbsCount;
+        ret[2] = roomsCount;
+        ret[3] = verbsCount;
 
-        Conversions.InsertUShort(ret, 3, initialRoomAddress);
-        Conversions.InsertUShort(ret, 5, introAddress);
-        Conversions.InsertUShort(ret, 7, messagesAddress);
-        Conversions.InsertUShort(ret, 9, userMessagesAddress);
-        Conversions.InsertUShort(ret, 11, verbsAddress);
-        Conversions.InsertUShort(ret, 13, dirsAddress);
-        Conversions.InsertUShort(ret, 15, itemsNameAddress);
-        Conversions.InsertUShort(ret, 17, itemsDescriptionAddress);
-        Conversions.InsertUShort(ret, 19, roomsDescriptionAddress);
+        Conversions.InsertUShort(ret, 4, initialRoomAddress);
+        Conversions.InsertUShort(ret, 6, introAddress);
+        Conversions.InsertUShort(ret, 8, messagesAddress);
+        Conversions.InsertUShort(ret, 10, userMessagesAddress);
+        Conversions.InsertUShort(ret, 12, verbsAddress);
+        Conversions.InsertUShort(ret, 14, dirsAddress);
+        Conversions.InsertUShort(ret, 16, doorsNameAddress);
+        Conversions.InsertUShort(ret, 18, doorsDescriptionAddress);
+        Conversions.InsertUShort(ret, 20, itemsNameAddress);
+        Conversions.InsertUShort(ret, 22, itemsDescriptionAddress);
+        Conversions.InsertUShort(ret, 24, roomsDescriptionAddress);
         return ret;
     }
 }

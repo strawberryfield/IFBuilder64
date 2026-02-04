@@ -31,7 +31,7 @@ namespace Casasoft.IFBuilder64.Json;
 /// the builder and runtime to determine how the connection behaves (locked,
 /// open/closed state, directional targets, etc.).
 /// </remarks>
-public class Door
+public class Door : IExits
 {
     /// <summary>
     /// Gets or sets the door's name.

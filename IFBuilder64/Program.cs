@@ -113,6 +113,7 @@ void BuildGame(string inputFile, string outputFile)
     config.roomsCount = (byte)game.rooms.Count;
     config.itemsCount = (byte)game.items.Count;
     config.verbsCount = (byte)game.verbs.Count;
+    config.doorsCount = (byte)game.doors.Count;
 
     ushort topAddress = 0xbfff;
 
@@ -184,8 +185,26 @@ void BuildGame(string inputFile, string outputFile)
     config.itemsDescriptionAddress = AllocateDown(ref topAddress, size);
     Strings2Prg.RelocatePointers(itemsDescPtr, config.itemsDescriptionAddress);
 
+    // doors
+    List<string> doorNames = new();
+    doorNames.AddRange(game.doors.Select(item => item.name));
+    (byte[] doorsPtr, byte[] doorsList) = Strings2Prg.CreateArrays(doorNames, 0, true);
+    size = doorsPtr.Length + doorsList.Length;
+    config.doorsNameAddress = AllocateDown(ref topAddress, size);
+    Strings2Prg.RelocatePointers(doorsPtr, config.doorsNameAddress);
+
+    // doors descriptions
+    List<string> doorDescriptions = new();
+    doorDescriptions.AddRange(game.doors.Select(item => item.description));
+    (byte[] doorsDescPtr, byte[] doorsDescList) = Strings2Prg.CreateArrays(doorDescriptions, 0, true);
+    size = doorsDescPtr.Length + doorsDescList.Length;
+    config.doorsDescriptionAddress = AllocateDown(ref topAddress, size);
+    Strings2Prg.RelocatePointers(doorsDescPtr, config.doorsDescriptionAddress);
+
     // save data file
     prg = new(config.itemsDescriptionAddress, new List<byte[]> {
+        doorsDescPtr, doorsDescList,
+        doorsPtr, doorsList,
         itemsDescPtr, itemsDescList,
         itemsPtr, itemsList,
         dirPointers, dirStringsList,
@@ -234,6 +253,26 @@ void BuildGame(string inputFile, string outputFile)
         itemsUnlocks[i] = game.getItemIndexByName(game.items[i].unlockitem);
     }
 
+    // doors properties
+    byte[] doorsOptions = new byte[game.doors.Count];
+    for (int i = 0; i < game.doors.Count; i++)
+    {
+        doorsOptions[i] = game.doors[i].Options();
+    }
+
+    // doors unlock items
+    byte[] doorsUnlocks = new byte[game.doors.Count];
+    for (int i = 0; i < game.doors.Count; i++)
+    {
+        doorsUnlocks[i] = game.getItemIndexByName(game.doors[i].unlockitem);
+    }
+
+    // doors exits
+    byte[] doorsExits = new byte[game.doors.Count * 6];
+    for (int i = 0; i < game.doors.Count; i++)
+    {
+        Array.Copy(game.RoomExits(game.doors[i]), 0, doorsExits, i * 6, 6);
+    }
 
     // initial room
     byte[] initialRoom = [game.initialroom];
@@ -241,6 +280,9 @@ void BuildGame(string inputFile, string outputFile)
     // save databases file
     ushort DBtopAddress = 0xc9ff;
     topAddress = DBtopAddress;
+    ushort doorsExitsAddress = AllocateDown(ref topAddress, doorsExits.Length);
+    ushort doorsUnlocksAddress = AllocateDown(ref topAddress, doorsUnlocks.Length);
+    ushort doorsOptionsAddress = AllocateDown(ref topAddress, doorsOptions.Length);
     ushort itemsDbAddress = AllocateDown(ref topAddress, itemsToLocations.Length);
     ushort itemsInItemsDbAddress = AllocateDown(ref topAddress, itemsToItems.Length);
     ushort itemsOptionsDbAddress = AllocateDown(ref topAddress, itemsOptions.Length);
@@ -254,7 +296,11 @@ void BuildGame(string inputFile, string outputFile)
         itemsUnlocks,
         itemsOptions,
         itemsToItems,
-        itemsToLocations});
+        itemsToLocations,
+        doorsOptions,
+        doorsUnlocks,
+        doorsExits
+    });
     filename = outputFile + "db.prg";
     prg.Save(filename);
     Console.WriteLine($"Build database file: '{filename}'.");
@@ -288,7 +334,7 @@ void BuildGame(string inputFile, string outputFile)
     sb.AppendLine($"{{var:itemsinitemdbaddr=W4}}");
     sb.AppendLine($"{{var:itemsoptionsdbaddr=W5}}");
     sb.AppendLine($"{{var:itemsunlockdbaddr=W6}}");
-    sb.AppendLine($"'\n{{def:DBtopAddress={DBtopAddress+1}}}");
+    sb.AppendLine($"'\n{{def:DBtopAddress={DBtopAddress + 1}}}");
 
     filename = outputFile + "def.bas";
     File.WriteAllText(filename, sb.ToString());

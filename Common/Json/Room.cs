@@ -40,7 +40,7 @@ namespace Casasoft.IFBuilder64.Json;
 ///   <see cref="description"/>, indicating they must be present when creating
 ///   instances (e.g., during deserialization or initialization).
 /// </remarks>
-public class Room
+public class Room : IExits
 {
     /// <summary>
     /// Gets or sets the unique identifier or short name for the room.

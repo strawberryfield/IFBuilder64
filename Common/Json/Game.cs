@@ -26,6 +26,12 @@ namespace Casasoft.IFBuilder64.Json;
 /// This partial class maps the primary collections and metadata present in the game's JSON
 /// representation such as rooms, verbs, items and global messages. Instances are typically
 /// (de)serialized using a JSON serializer to load or persist game data.
+/// 
+/// Notes:
+/// - Instances are expected to be populated from JSON; callers should validate required
+///   collections (for example, <see cref="rooms"/> and <see cref="items"/>) after deserialization.
+/// - Several methods use the sentinel value <c>255</c> to denote "not found" because indices
+///   are expressed as <see cref="byte"/> in other parts of the model.
 /// </remarks>
 public partial class Game
 {
@@ -70,6 +76,13 @@ public partial class Game
     /// </value>
     public List<Item> items { get; set; }
 
+    /// <summary>
+    /// Gets or sets the collection of doors used by the game.
+    /// </summary>
+    /// <value>
+    /// A <see cref="List{Door}"/> describing door objects and their properties such as
+    /// locked/unlocked state, linked rooms, and any custom behaviour. May be empty.
+    /// </value>
     public List<Door> doors { get; set; }
 
     /// <summary>
@@ -147,6 +160,7 @@ public partial class Game
     /// <summary>
     /// Returns the directional exit indices in a fixed order.
     /// </summary>
+    /// <param name="room">The room-like object implementing <see cref="IExits"/> whose exits will be resolved.</param>
     /// <returns>
     /// A new <see cref="byte"/>[] with six elements containing the exit indices
     /// in the following order: north, south, east, west, up, down.
@@ -160,12 +174,13 @@ public partial class Game
     /// should reuse a buffer or implement an alternative accessor that writes
     /// into a provided span or array.
     /// </remarks>
-    public byte[] RoomExits(Room room) => [
+    public byte[] RoomExits(IExits room) => new byte[]
+    {
         getRoomIndexByName(room.north),
         getRoomIndexByName(room.south),
         getRoomIndexByName(room.east),
         getRoomIndexByName(room.west),
         getRoomIndexByName(room.up),
         getRoomIndexByName(room.down)
-    ];
+    };
 }
