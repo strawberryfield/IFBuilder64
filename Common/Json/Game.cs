@@ -70,6 +70,8 @@ public partial class Game
     /// </value>
     public List<Item> items { get; set; }
 
+    public List<Door> doors { get; set; }
+
     /// <summary>
     /// Gets or sets global textual messages used by the game engine (for UI, errors, prompts, etc.).
     /// </summary>
