@@ -139,8 +139,8 @@ internal class ConfigPrg
 
         ret[0] = roomsCount;
         ret[1] = itemsCount;
-        ret[2] = roomsCount;
-        ret[3] = verbsCount;
+        ret[2] = verbsCount;
+        ret[3] = doorsCount;
 
         Conversions.InsertUShort(ret, 4, initialRoomAddress);
         Conversions.InsertUShort(ret, 6, introAddress);
@@ -148,11 +148,11 @@ internal class ConfigPrg
         Conversions.InsertUShort(ret, 10, userMessagesAddress);
         Conversions.InsertUShort(ret, 12, verbsAddress);
         Conversions.InsertUShort(ret, 14, dirsAddress);
-        Conversions.InsertUShort(ret, 16, doorsNameAddress);
-        Conversions.InsertUShort(ret, 18, doorsDescriptionAddress);
-        Conversions.InsertUShort(ret, 20, itemsNameAddress);
-        Conversions.InsertUShort(ret, 22, itemsDescriptionAddress);
-        Conversions.InsertUShort(ret, 24, roomsDescriptionAddress);
+        Conversions.InsertUShort(ret, 16, itemsNameAddress);
+        Conversions.InsertUShort(ret, 18, itemsDescriptionAddress);
+        Conversions.InsertUShort(ret, 20, roomsDescriptionAddress);
+        Conversions.InsertUShort(ret, 22, doorsNameAddress);
+        Conversions.InsertUShort(ret, 24, doorsDescriptionAddress);
         return ret;
     }
 }
