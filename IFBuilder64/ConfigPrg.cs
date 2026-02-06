@@ -111,27 +111,27 @@ internal class ConfigPrg
     /// </summary>
     /// <returns>
     /// A 26-byte array containing the configuration in the following layout:
-    /// - byte 0 : <see cref="roomsCount"/> (number of rooms),
-    /// - byte 1 : <see cref="itemsCount"/> (number of items),
-    /// - byte 2 : duplicate of <see cref="roomsCount"/> (preserved to match the runtime format),
-    /// - byte 3 : <see cref="verbsCount"/> (number of verbs),
+    /// - byte 0  : <see cref="roomsCount"/> (number of rooms),
+    /// - byte 1  : <see cref="itemsCount"/> (number of items),
+    /// - byte 2  : <see cref="verbsCount"/> (number of verbs),
+    /// - byte 3  : <see cref="doorsCount"/> (number of doors),
     /// - bytes 4-5   : <see cref="initialRoomAddress"/> (little-endian, written via <see cref="Conversions.InsertUShort(byte[], int, ushort)"/>),
     /// - bytes 6-7   : <see cref="introAddress"/>,
     /// - bytes 8-9   : <see cref="messagesAddress"/>,
     /// - bytes 10-11 : <see cref="userMessagesAddress"/>,
     /// - bytes 12-13 : <see cref="verbsAddress"/>,
     /// - bytes 14-15 : <see cref="dirsAddress"/>,
-    /// - bytes 16-17 : <see cref="doorsNameAddress"/>,
-    /// - bytes 18-19 : <see cref="doorsDescriptionAddress"/>,
-    /// - bytes 20-21 : <see cref="itemsNameAddress"/>,
-    /// - bytes 22-23 : <see cref="itemsDescriptionAddress"/>,
-    /// - bytes 24-25 : <see cref="roomsDescriptionAddress"/>.
+    /// - bytes 16-17 : <see cref="itemsNameAddress"/>,
+    /// - bytes 18-19 : <see cref="itemsDescriptionAddress"/>,
+    /// - bytes 20-21 : <see cref="roomsDescriptionAddress"/>,
+    /// - bytes 22-23 : <see cref="doorsNameAddress"/>,
+    /// - bytes 24-25 : <see cref="doorsDescriptionAddress"/>.
     /// </returns>
     /// <remarks>
     /// The method uses <see cref="Conversions.InsertUShort(byte[], int, ushort)"/>
     /// to write 16-bit addresses into the array at the specified offsets (little-endian).
-    /// The duplicate of <see cref="roomsCount"/> at byte index 2 is intentional to match the
-    /// expected runtime/PRG layout produced by this tool.
+    /// The exact byte offsets listed above match the order in which fields are written
+    /// into the array inside this method.
     /// </remarks>
     public byte[] GetConfigArray()
     {

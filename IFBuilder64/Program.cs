@@ -201,8 +201,33 @@ void BuildGame(string inputFile, string outputFile)
     config.doorsDescriptionAddress = AllocateDown(ref topAddress, size);
     Strings2Prg.RelocatePointers(doorsDescPtr, config.doorsDescriptionAddress);
 
+    // doors exits
+    byte[] doorsExits = new byte[game.doors.Count * 6];
+    for (int i = 0; i < game.doors.Count; i++)
+    {
+        Array.Copy(game.RoomExits(game.doors[i]), 0, doorsExits, i * 6, 6);
+    }
+    ushort doorsExitAddress = AllocateDown(ref topAddress, doorsExits.Length);
+
+    // rooms to doors
+    byte[] roomsDoors = new byte[game.rooms.Count * 6];
+    for (int i = 0; i < game.rooms.Count; i++)
+    {
+        Array.Copy(game.RoomDoors(game.rooms[i]), 0, roomsDoors, i * 6, 6);
+    }
+    ushort roomsDoorsAddress = AllocateDown(ref topAddress, roomsDoors.Length);
+
+    // rooms doors count
+    byte[] roomsDoorsCount = new byte[game.rooms.Count];
+    for (int i = 0; i < game.rooms.Count; i++)
+    {
+        roomsDoorsCount[i] = game.RoomDoorsCount(game.rooms[i]);
+    }
+    ushort roomsDoorsCountAddress = AllocateDown(ref topAddress, roomsDoorsCount.Length);
+
     // save data file
-    prg = new(config.doorsDescriptionAddress, new List<byte[]> {
+    prg = new(roomsDoorsCountAddress, new List<byte[]> {
+        roomsDoorsCount, roomsDoors, doorsExits,
         doorsDescPtr, doorsDescList,
         doorsPtr, doorsList,
         itemsDescPtr, itemsDescList,
@@ -267,12 +292,6 @@ void BuildGame(string inputFile, string outputFile)
         doorsUnlocks[i] = game.getItemIndexByName(game.doors[i].unlockitem);
     }
 
-    // doors exits
-    byte[] doorsExits = new byte[game.doors.Count * 6];
-    for (int i = 0; i < game.doors.Count; i++)
-    {
-        Array.Copy(game.RoomExits(game.doors[i]), 0, doorsExits, i * 6, 6);
-    }
 
     // initial room
     byte[] initialRoom = [game.initialroom];
@@ -280,7 +299,6 @@ void BuildGame(string inputFile, string outputFile)
     // save databases file
     ushort DBtopAddress = 0xc9ff;
     topAddress = DBtopAddress;
-    ushort doorsExitsAddress = AllocateDown(ref topAddress, doorsExits.Length);
     ushort doorsUnlocksAddress = AllocateDown(ref topAddress, doorsUnlocks.Length);
     ushort doorsOptionsAddress = AllocateDown(ref topAddress, doorsOptions.Length);
     ushort itemsDbAddress = AllocateDown(ref topAddress, itemsToLocations.Length);
@@ -298,8 +316,7 @@ void BuildGame(string inputFile, string outputFile)
         itemsToItems,
         itemsToLocations,
         doorsOptions,
-        doorsUnlocks,
-        doorsExits
+        doorsUnlocks
     });
     filename = outputFile + "db.prg";
     prg.Save(filename);

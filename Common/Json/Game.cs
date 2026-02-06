@@ -174,13 +174,56 @@ public partial class Game
     /// should reuse a buffer or implement an alternative accessor that writes
     /// into a provided span or array.
     /// </remarks>
-    public byte[] RoomExits(IExits room) => new byte[]
-    {
+    public byte[] RoomExits(IExits room) =>
+    [
         getRoomIndexByName(room.north),
         getRoomIndexByName(room.south),
         getRoomIndexByName(room.east),
         getRoomIndexByName(room.west),
         getRoomIndexByName(room.up),
         getRoomIndexByName(room.down)
-    };
+    ];
+
+    /// <summary>
+    /// Resolves the door indices associated with the specified room for each direction.
+    /// </summary>
+    /// <param name="room">The room whose adjacent doors are being resolved.</param>
+    /// <returns>
+    /// A new <see cref="byte"/>[] with six elements containing the door indices in the following order:
+    /// north, south, east, west, up, down. Each element contains the zero-based index of the matching door
+    /// in the <see cref="doors"/> list; a value of <c>255</c> indicates that no door is present for that
+    /// direction.
+    /// </returns>
+    /// <remarks>
+    /// The method performs a separate <see cref="List{T}.FindIndex"/> call per direction, matching the
+    /// door side name against <paramref name="room"/>.name. For performance-sensitive scenarios consider
+    /// building a lookup map instead of repeated linear searches.
+    /// </remarks>
+    public byte[] RoomDoors(Room room) =>
+    [
+        doors.FindIndex(d => d.north == room.name) >= 0 ? (byte)doors.FindIndex(d => d.north == room.name) : (byte)255,
+        doors.FindIndex(d => d.south == room.name) >= 0 ? (byte)doors.FindIndex(d => d.south == room.name) : (byte)255,
+        doors.FindIndex(d => d.east == room.name) >= 0 ? (byte)doors.FindIndex(d => d.east == room.name) : (byte)255,
+        doors.FindIndex(d => d.west == room.name) >= 0 ? (byte)doors.FindIndex(d => d.west == room.name) : (byte)255,
+        doors.FindIndex(d => d.up == room.name) >= 0 ? (byte)doors.FindIndex(d => d.up == room.name) : (byte)255,
+        doors.FindIndex(d => d.down == room.name) >= 0 ? (byte)doors.FindIndex(d => d.down == room.name) : (byte)255
+    ];
+
+    /// <summary>
+    /// Counts how many doors reference the specified room across all directions.
+    /// </summary>
+    /// <param name="room">The room to inspect for attached doors.</param>
+    /// <returns>
+    /// The number of doors referencing <paramref name="room"/>.name cast to a <see cref="byte"/>.
+    /// The count is computed by checking each door's directional fields (north, south, east, west, up, down).
+    /// </returns>
+    /// <remarks>
+    /// The returned value is cast to <see cref="byte"/>; if the true count exceeds 255 it will wrap or be truncated.
+    /// Callers that may encounter very large door collections should validate the result or use an alternative
+    /// integer-returning API.
+    /// </remarks>
+    public byte RoomDoorsCount(Room room) =>
+        (byte)doors.Count(d => d.north == room.name || d.south == room.name 
+            || d.east == room.name || d.west == room.name 
+            || d.up == room.name || d.down == room.name);
 }
