@@ -17,6 +17,8 @@
 // but WITHOUT ANY WARRANTY
 //-----------------------------------------------------------------------
 
+using System.Text.Json.Serialization;
+
 namespace Casasoft.IFBuilder64.Json;
 
 /// <summary>
@@ -48,6 +50,17 @@ public class Item
     public required string description { get; set; }
 
     /// <summary>
+    /// Gets or sets an optional description shown when the item is opened.
+    /// </summary>
+    /// <remarks>
+    /// This text, when present, can be displayed to the player or consumer
+    /// when the item's "open" action is performed. The property is nullable
+    /// and will be omitted from serialized JSON when <c>null</c>.
+    /// </remarks>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? opendescription { get; set; }
+
+    /// <summary>
     /// Gets or sets the item's location identifier.
     /// </summary>
     /// <remarks>
@@ -56,6 +69,7 @@ public class Item
     /// should parse or validate the value according to the runtime expectations.
     /// Typical semantics map values to rooms, inventory slots or special locations.
     /// </remarks>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? location { get; set; }
 
     /// <summary>
@@ -66,6 +80,7 @@ public class Item
     /// indicating that this item is contained inside that item rather than
     /// placed in a room or the player's inventory.
     /// </remarks>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? initem { get; set; }
 
     /// <summary>
@@ -76,6 +91,7 @@ public class Item
     /// or otherwise change the state of this item (for example, a key).
     /// Consumers should interpret the format according to the JSON schema used.
     /// </remarks>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? unlockitem { get; set; }
 
     /// <summary>
@@ -86,6 +102,7 @@ public class Item
     /// the player's inventory by typical pickup actions.
     /// A <c>null</c> value indicates no explicit portability instruction.
     /// </remarks>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? notportable { get; set; }
 
     /// <summary>
@@ -95,6 +112,7 @@ public class Item
     /// If <c>true</c>, the item supports an "open" operation. A <c>null</c>
     /// value indicates the property is unspecified in the JSON input.
     /// </remarks>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? openable { get; set; }
 
     /// <summary>
@@ -104,6 +122,7 @@ public class Item
     /// If <c>true</c>, the item supports a "close" operation. A <c>null</c>
     /// value indicates the property is unspecified in the JSON input.
     /// </remarks>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? closeable { get; set; }
 
     /// <summary>
@@ -113,6 +132,7 @@ public class Item
     /// When set to <c>true</c>, the item is considered open. When <c>false</c>,
     /// it is considered closed. A <c>null</c> value indicates no explicit state.
     /// </remarks>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? open { get; set; }
 
     /// <summary>
@@ -124,6 +144,7 @@ public class Item
     /// JSON input did not specify the state and consumers should use a default
     /// or explicit initialization logic.
     /// </remarks>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? switchedon { get; set; }
 
     /// <summary>
@@ -133,7 +154,19 @@ public class Item
     /// If <c>true</c>, the item supports being toggled between on/off states.
     /// A <c>null</c> value indicates the switchability is unspecified in the JSON input.
     /// </remarks>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? switchable { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the item acts as a container.
+    /// </summary>
+    /// <remarks>
+    /// When <c>true</c>, the item is intended to hold other items (for example,
+    /// a box or a chest). A <c>null</c> value indicates the container status is unspecified.
+    /// The property is nullable and omitted from JSON when <c>null</c>.
+    /// </remarks>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public bool? container { get; set; }
 
     /// <summary>
     /// Computes a compact options bitmask representing boolean item flags.
@@ -146,6 +179,7 @@ public class Item
     /// - 0x08: <c>closeable</c>
     /// - 0x10: <c>switchedon</c>
     /// - 0x20: <c>switchable</c>
+    /// - 0x40: <c>container</c>
     ///
     /// Each flag is included only if the corresponding nullable boolean is
     /// explicitly <c>true</c>. This method provides a compact representation
@@ -163,6 +197,7 @@ public class Item
         if (closeable == true) options |= 0x08;
         if (switchedon == true) options |= 0x10;
         if (switchable == true) options |= 0x20;
+        if (container == true) options |= 0x40;
         return options;
     }
 }

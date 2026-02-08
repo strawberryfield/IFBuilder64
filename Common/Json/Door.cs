@@ -17,7 +17,6 @@
 // but WITHOUT ANY WARRANTY
 //-----------------------------------------------------------------------
 
-using System;
 using System.Text.Json.Serialization;
 
 namespace Casasoft.IFBuilder64.Json;
