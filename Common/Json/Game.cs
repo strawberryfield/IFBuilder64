@@ -116,6 +116,19 @@ public partial class Game
     public List<string> directions { get; set; }
 
     /// <summary>
+    /// Gets or sets the maximum number of items the player can carry.
+    /// </summary>
+    /// <value>
+    /// A <see cref="byte"/> representing the player's carrying capacity (measured in item units).
+    /// Defaults to <c>10</c>. Values are serialized to/from JSON and should be within 0..255.
+    /// </value>
+    /// <remarks>
+    /// This property is part of the game model only and does not enforce behaviour by itself;
+    /// the game engine should consult this value when applying inventory limits.
+    /// </remarks>
+    public byte maxload { get; set; } = 10;
+
+    /// <summary>
     /// Looks up the zero-based index of a room by its name.
     /// </summary>
     /// <param name="roomName">The name of the room to search for. May be null or empty.</param>

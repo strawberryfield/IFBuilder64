@@ -306,6 +306,8 @@ void BuildGame(string inputFile, string outputFile)
         doorsUnlocks[i] = game.getItemIndexByName(game.doors[i].unlockitem);
     }
 
+    // maxload
+    byte[] playerLoad = [game.maxload, 0];
 
     // initial room
     byte[] initialRoom = [game.initialroom];
@@ -320,10 +322,12 @@ void BuildGame(string inputFile, string outputFile)
     ushort itemsOptionsDbAddress = AllocateDown(ref topAddress, itemsOptions.Length);
     ushort itemsUnlocksDbAddress = AllocateDown(ref topAddress, itemsUnlocks.Length);
     ushort roomsDbAddress = AllocateDown(ref topAddress, roomsExits.Length);
+    AllocateDown(ref topAddress, playerLoad.Length);
     config.initialRoomAddress = AllocateDown(ref topAddress, initialRoom.Length);
 
     prg = new(config.initialRoomAddress, new List<byte[]> {
         initialRoom,
+        playerLoad,
         roomsExits,
         itemsUnlocks,
         itemsOptions,
