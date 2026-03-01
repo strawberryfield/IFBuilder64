@@ -212,6 +212,14 @@ void BuildGame(string inputFile, string outputFile)
     config.doorsDescriptionAddress = AllocateDown(ref topAddress, size);
     Strings2Prg.RelocatePointers(doorsDescPtr, config.doorsDescriptionAddress);
 
+    // doors deny open descriptions
+    List<string> doorDenyOpen = new();
+    doorDenyOpen.AddRange(game.doors.Select(item => item.denyopen ?? string.Empty));
+    (byte[] doorsDenyOpenPtr, byte[] doorsDenyOpenList) = Strings2Prg.CreateArrays(doorDenyOpen, 0, true);
+    size = doorsDenyOpenPtr.Length + doorsDenyOpenList.Length;
+    config.doorsDenyOpenAddress = AllocateDown(ref topAddress, size);
+    Strings2Prg.RelocatePointers(doorsDescPtr, config.doorsDenyOpenAddress);
+
     // doors exits
     byte[] doorsExits = new byte[game.doors.Count * 6];
     for (int i = 0; i < game.doors.Count; i++)
@@ -239,6 +247,7 @@ void BuildGame(string inputFile, string outputFile)
     // save data file
     prg = new(roomsDoorsCountAddress, new List<byte[]> {
         roomsDoorsCount, roomsDoors, doorsExits,
+        doorsDenyOpenPtr, doorsDenyOpenList,
         doorsDescPtr, doorsDescList,
         doorsPtr, doorsList,
         itemsOpenDescPtr, itemsOpenDescList,

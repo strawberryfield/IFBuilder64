@@ -92,6 +92,11 @@ internal class ConfigPrg
     public ushort doorsDescriptionAddress { get; set; }
 
     /// <summary>
+    /// Address where door deny open descriptions are stored.
+    /// </summary>
+    public ushort doorsDenyOpenAddress { get; set; }
+
+    /// <summary>
     /// Address where item names are stored.
     /// </summary>
     public ushort itemsNameAddress { get; set; }
@@ -115,7 +120,7 @@ internal class ConfigPrg
     /// Serializes the configuration into the 28-byte binary block produced by this class.
     /// </summary>
     /// <returns>
-    /// A 26-byte array containing the configuration in the following layout:
+    /// A 30-byte array containing the configuration in the following layout:
     /// - byte 0  : <see cref="roomsCount"/> (number of rooms),
     /// - byte 1  : <see cref="itemsCount"/> (number of items),
     /// - byte 2  : <see cref="verbsCount"/> (number of verbs),
@@ -132,6 +137,7 @@ internal class ConfigPrg
     /// - bytes 22-23 : <see cref="doorsNameAddress"/>,
     /// - bytes 24-25 : <see cref="doorsDescriptionAddress"/>.
     /// - bytes 26-27 : <see cref="itemsOpenDescriptionAddress"/>
+    /// - bytes 28-29 : <see cref="doorsDenyOpenAddress"/>.
     /// </returns>
     /// <remarks>
     /// The method uses <see cref="Conversions.InsertUShort(byte[], int, ushort)"/>
@@ -141,7 +147,7 @@ internal class ConfigPrg
     /// </remarks>
     public byte[] GetConfigArray()
     {
-        byte[] ret = new byte[28];
+        byte[] ret = new byte[30];
 
         ret[0] = roomsCount;
         ret[1] = itemsCount;
@@ -160,6 +166,7 @@ internal class ConfigPrg
         Conversions.InsertUShort(ret, 22, doorsNameAddress);
         Conversions.InsertUShort(ret, 24, doorsDescriptionAddress);
         Conversions.InsertUShort(ret, 26, itemsOpenDescriptionAddress);
+        Conversions.InsertUShort(ret, 28, doorsDenyOpenAddress);
         return ret;
     }
 }

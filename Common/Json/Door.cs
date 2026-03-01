@@ -51,6 +51,16 @@ public class Door : IExits
     public required string description { get; set; }
 
     /// <summary>
+    /// Message to display when the door cannot be opened.
+    /// </summary>
+    /// <remarks>
+    /// Null values are omitted from serialized JSON because of the
+    /// <see cref="JsonIgnoreAttribute"/> applied to this member.
+    /// </remarks>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? denyopen { get; set; }
+
+    /// <summary>
     /// Gets or sets the identifier of an item that can unlock or interact with this door.
     /// </summary>
     /// <remarks>
@@ -58,6 +68,7 @@ public class Door : IExits
     /// or otherwise change the state of this item (for example, a key).
     /// Consumers should interpret the format according to the JSON schema used.
     /// </remarks>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? unlockitem { get; set; }
 
     /// <summary>
