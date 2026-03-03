@@ -76,6 +76,7 @@ public partial class Game
     /// </value>
     public List<Item> items { get; set; }
 
+
     /// <summary>
     /// Gets or sets the collection of doors used by the game.
     /// </summary>
@@ -239,4 +240,24 @@ public partial class Game
         (byte)doors.Count(d => d.north == room.name || d.south == room.name 
             || d.east == room.name || d.west == room.name 
             || d.up == room.name || d.down == room.name);
+
+    /// <summary>
+    /// Returns the game's item list sorted first by the `notportable` flag (non-portable items first)
+    /// and then by the item's `location` ascending (nulls treated as empty strings).
+    /// </summary>
+    public void SortItems()
+    {
+        if (items is null || items.Count <= 1) return;
+
+        var first = items[0];
+        var tailSorted = items
+            .Skip(1)
+            .OrderBy(i => i.notportable)
+            .ThenBy(i => i.location ?? string.Empty)
+            .ToList();
+
+        var rebuilt = new List<Item>(1 + tailSorted.Count) { first };
+        rebuilt.AddRange(tailSorted);
+        items = rebuilt;
+    }
 }

@@ -18,6 +18,7 @@
 //-----------------------------------------------------------------------
 
 using Casasoft.Commodore;
+using Casasoft.IFBuilder64.Json;
 
 namespace IFBuilder64;
 
@@ -31,6 +32,25 @@ namespace IFBuilder64;
 /// </remarks>
 internal class ConfigPrg
 {
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ConfigPrg"/> class from the provided <see cref="Game"/>.
+    /// Copies the counts of rooms, items, verbs and doors from the game's collections into the corresponding
+    /// configuration fields (each stored as a single <see cref="byte"/>).
+    /// </summary>
+    /// <param name="game">The game model whose collections are used to populate the configuration counts. Must not be <c>null</c>.</param>
+    /// <remarks>
+    /// The constructor performs an explicit cast of each collection's <see cref="System.Collections.ICollection.Count"/> to <see cref="byte"/>.
+    /// If any collection count exceeds 255 the value will be truncated to fit into a <see cref="byte"/>. Passing a <c>null</c>
+    /// <paramref name="game"/> (or null collections on the model) will produce a runtime exception; callers should validate inputs if needed.
+    /// </remarks>
+    public ConfigPrg(Game game) {         
+        roomsCount = (byte)game.rooms.Count;
+        itemsCount = (byte)game.items.Count;
+        verbsCount = (byte)game.verbs.Count;
+        doorsCount = (byte)game.doors.Count;
+    }
+
     /// <summary>
     /// Number of rooms in the game (stored as a single byte in the config).
     /// </summary>

@@ -103,18 +103,14 @@ void BuildGame(string inputFile, string outputFile)
     Console.WriteLine($"Building '{inputFile}' to '{outputFile}*'...");
     var jsonText = File.ReadAllText(inputFile);
     var game = System.Text.Json.JsonSerializer.Deserialize<Game>(jsonText);
-    if (game == null)
+    if (game is null)
     {
         Console.WriteLine($"Error: Unable to parse game file '{inputFile}'.");
         return;
     }
 
-    ConfigPrg config = new();
-    config.roomsCount = (byte)game.rooms.Count;
-    config.itemsCount = (byte)game.items.Count;
-    config.verbsCount = (byte)game.verbs.Count;
-    config.doorsCount = (byte)game.doors.Count;
-
+    game.SortItems();
+    ConfigPrg config = new(game);
     ushort topAddress = 0xbfff;
 
     #region intro
@@ -219,7 +215,7 @@ void BuildGame(string inputFile, string outputFile)
     size = doorsDescPtr.Length + doorsDescList.Length;
     config.doorsDescriptionAddress = AllocateDown(ref topAddress, size);
     Strings2Prg.RelocatePointers(doorsDescPtr, config.doorsDescriptionAddress);
-     
+
     // doors exits
     byte[] doorsExits = new byte[game.doors.Count * 6];
     for (int i = 0; i < game.doors.Count; i++)
@@ -388,11 +384,6 @@ void BuildGame(string inputFile, string outputFile)
     {
         sb.AppendLine($"{{def:item_{game.items[i].name}={i}}}");
     }
-    //sb.AppendLine("'\n' Doors");
-    //for (int i = 0; i < game.doors.Count; i++)
-    //{
-    //    sb.AppendLine($"{{def:door_{game.doors[i].name}={i}}}");
-    //}
 
     sb.AppendLine("{endif}");
     filename = outputFile + "def.bas";

@@ -35,7 +35,7 @@ public class Verb
     /// A <see cref="string"/> that contains the command text (for example, "take", "open").
     /// This value is used when matching or displaying verb names.
     /// </value>
-    public string command { get; set; }
+    public required string command { get; set; }
 
     /// <summary>
     /// Gets or sets the numeric action code associated with the verb.
