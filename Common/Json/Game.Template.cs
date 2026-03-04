@@ -52,8 +52,10 @@ public partial class Game
         verbs = new();
         items = new();
         messages = new();
+        usermessages = new();
         directions = new();
-        initialroom = 1;
+        doors = new();
+        initialroom = string.Empty;
     }
 
      /// <summary>

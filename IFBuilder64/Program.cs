@@ -109,6 +109,7 @@ void BuildGame(string inputFile, string outputFile)
         return;
     }
 
+    game.SortRooms();
     game.SortItems();
     ConfigPrg config = new(game);
     ushort topAddress = 0xbfff;
@@ -315,7 +316,7 @@ void BuildGame(string inputFile, string outputFile)
     byte[] playerLoad = [game.maxload, 0];
 
     // initial room
-    byte[] initialRoom = [game.initialroom];
+    byte[] initialRoom = [game.getRoomIndexByName(game.initialroom)];
 
     // save databases file
     ushort DBtopAddress = 0xc9ff;

@@ -54,9 +54,9 @@ public partial class Game
     public List<Room> rooms { get; set; }
 
     /// <summary>
-    /// Gets or sets the number of the room in which the game starts.
+    /// Gets or sets the room in which the game starts.
     /// </summary>
-    public byte initialroom { get; set; }
+    public string initialroom { get; set; }
 
     /// <summary>
     /// Gets or sets the set of verbs (actions) recognised by the game engine.
@@ -259,5 +259,22 @@ public partial class Game
         var rebuilt = new List<Item>(1 + tailSorted.Count) { first };
         rebuilt.AddRange(tailSorted);
         items = rebuilt;
+    }
+
+    /// <summary>
+    /// Returns the game's room list sorted by the `name` property in ascending order.
+    /// The first room (index 0) is preserved in place to maintain the initial room reference.
+    /// </summary>
+    public void SortRooms()
+    {
+        if (rooms is null || rooms.Count <= 1) return;
+        var first = rooms[0];
+        var tailSorted = rooms
+            .Skip(1)
+            .OrderBy(r => r.name)
+            .ToList();
+        var rebuilt = new List<Room>(1 + tailSorted.Count) { first };
+        rebuilt.AddRange(tailSorted);
+        rooms = rebuilt;
     }
 }
