@@ -241,8 +241,13 @@ void BuildGame(string inputFile, string outputFile)
     }
     ushort roomsDoorsCountAddress = AllocateDown(ref topAddress, roomsDoorsCount.Length);
 
+    // rooms first item index
+    byte[] roomsFirstItem = game.GetFirstNotPortableItemIndexPerRoom();
+    ushort roomsFirstItemAddress = AllocateDown(ref topAddress, roomsFirstItem.Length);
+
     // save data file
-    prg = new(roomsDoorsCountAddress, new List<byte[]> {
+    prg = new(roomsFirstItemAddress, new List<byte[]> {
+        roomsFirstItem,
         roomsDoorsCount, roomsDoors, doorsExits,
         doorsDescPtr, doorsDescList,
         doorsDenyOpenPtr, doorsDenyOpenList,

@@ -277,4 +277,44 @@ public partial class Game
         rebuilt.AddRange(tailSorted);
         rooms = rebuilt;
     }
+
+    /// <summary>
+    /// Gets the zero-based index of the first item in each room that is marked as not portable.
+    /// </summary>
+    /// <returns>
+    /// A new <see cref="byte"/>[] array where each element corresponds to a room in the
+    /// <see cref="rooms"/> collection. Each value represents the zero-based index of the first
+    /// not portable item in the respective room, or <c>255</c> if no such item exists.
+    /// </returns>
+    /// <remarks>
+    /// Uses 255 as a sentinel value to indicate "not found", consistent with other lookup methods.
+    /// This method is primarily useful for optimizing initial inventory checks or UI summaries.
+    /// </remarks>
+    public byte[] GetFirstNotPortableItemIndexPerRoom()
+    {
+        if (rooms is null || rooms.Count == 0)
+        {
+            return Array.Empty<byte>();
+        }
+
+        var result = new byte[rooms.Count];
+
+        if (items is null || items.Count == 0)
+        {
+            for (int i = 0; i < result.Length; i++)
+                result[i] = 255;
+            return result;
+        }
+
+        for (int r = 0; r < rooms.Count; r++)
+        {
+            var roomName = rooms[r].name;
+            // `notportable` is `bool?` — compare explicitly to `true` to avoid CS0019.
+            int idx = items.FindIndex(it => (it.notportable == true) && it.location == roomName);
+            result[r] = idx >= 0 ? (byte)idx : (byte)255;
+        }
+
+        return result;
+    }
+
 }
