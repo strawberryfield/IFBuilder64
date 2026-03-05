@@ -171,9 +171,38 @@ void BuildGame(string inputFile, string outputFile)
 
     // items
     List<string> itemNames = new();
-    itemNames.AddRange(game.items.Select(item => item.name));
-    (byte[] itemsPtr, byte[] itemsList) = Strings2Prg.CreateArrays(itemNames, 0, true);
-    size = itemsPtr.Length + itemsList.Length;
+    itemNames.AddRange(game.items.Where(item => item.notportable != true).Select(item => item.name));
+    (byte[] portableItemsPtr, byte[] portableItemsList) = Strings2Prg.CreateArrays(itemNames, 0, true);
+    Strings2Prg.RelocatePointers(portableItemsPtr, (ushort)game.items.Count);
+    int offset = portableItemsList.Length;
+
+    byte[][] ptrItemArray = new byte[game.rooms.Count][];
+    byte[][] listItemArray = new byte[game.rooms.Count][];
+    for (int i = 0; i < game.rooms.Count; i++)
+    {
+        List<string> itemNamesInRoom = new();
+        itemNamesInRoom.AddRange(game.items.Where(item => item.location == game.rooms[i].name && item.notportable is true).Select(item => item.name));
+        (byte[] tmpPtr, byte[] tmpList) = Strings2Prg.CreateArrays(itemNamesInRoom, (ushort)offset, true);
+        offset += tmpList.Length;
+        ptrItemArray[i] = tmpPtr;
+        listItemArray[i] = tmpList;
+    }
+
+    byte[] itemsPtr = new byte[game.items.Count * 2 + 2];
+    byte[] itemsList = new byte[offset];
+    Array.Copy(portableItemsPtr, 0, itemsPtr, 0, portableItemsPtr.Length);
+    Conversions.InsertUShort(itemsPtr, 0, (ushort)game.items.Count);
+    int ptrOffset = portableItemsPtr.Length;
+    Array.Copy(portableItemsList, 0, itemsList, 0, portableItemsList.Length);
+    offset = portableItemsList.Length;
+    for (int i = 0; i < game.rooms.Count; i++)
+    {
+        Array.Copy(ptrItemArray[i], 2, itemsPtr, ptrOffset, ptrItemArray[i].Length-2);
+        ptrOffset += ptrItemArray[i].Length-2;
+        Array.Copy(listItemArray[i], 0, itemsList, offset, listItemArray[i].Length);
+        offset += listItemArray[i].Length;
+    }
+    size = offset + itemsPtr.Length;
     config.itemsNameAddress = AllocateDown(ref topAddress, size);
     Strings2Prg.RelocatePointers(itemsPtr, config.itemsNameAddress);
 
