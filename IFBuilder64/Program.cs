@@ -22,6 +22,7 @@ using Casasoft.Helpers;
 using Casasoft.IFBuilder64.Json;
 using IFBuilder64;
 using Mono.Options;
+using System.Dynamic;
 using System.Text;
 
 #region main
@@ -173,7 +174,8 @@ void BuildGame(string inputFile, string outputFile)
     List<string> itemNames = new();
     itemNames.AddRange(game.items.Where(item => item.notportable != true).Select(item => item.name));
     (byte[] portableItemsPtr, byte[] portableItemsList) = Strings2Prg.CreateArrays(itemNames, 0, true);
-    Strings2Prg.RelocatePointers(portableItemsPtr, (ushort)game.items.Count);
+    int delta = game.items.Count * 2 - portableItemsPtr.Length + 2;
+    Strings2Prg.RelocatePointers(portableItemsPtr, (ushort)delta);
     int offset = portableItemsList.Length;
 
     byte[][] ptrItemArray = new byte[game.rooms.Count][];
@@ -183,7 +185,10 @@ void BuildGame(string inputFile, string outputFile)
         List<string> itemNamesInRoom = new();
         itemNamesInRoom.AddRange(game.items.Where(item => item.location == game.rooms[i].name && item.notportable is true).Select(item => item.name));
         (byte[] tmpPtr, byte[] tmpList) = Strings2Prg.CreateArrays(itemNamesInRoom, (ushort)offset, true);
-        offset += tmpList.Length;
+        if (tmpPtr.Length > 2)
+        {
+            offset += tmpList.Length;
+        }
         ptrItemArray[i] = tmpPtr;
         listItemArray[i] = tmpList;
     }
@@ -197,8 +202,14 @@ void BuildGame(string inputFile, string outputFile)
     offset = portableItemsList.Length;
     for (int i = 0; i < game.rooms.Count; i++)
     {
-        Array.Copy(ptrItemArray[i], 2, itemsPtr, ptrOffset, ptrItemArray[i].Length-2);
-        ptrOffset += ptrItemArray[i].Length-2;
+        if (ptrItemArray[i].Length < 4)
+        {
+            continue;
+        }
+        delta = (game.items.Count + 1) * 2 - ptrItemArray[i].Length;
+        Strings2Prg.RelocatePointers(ptrItemArray[i], (ushort)delta);
+        Array.Copy(ptrItemArray[i], 2, itemsPtr, ptrOffset, ptrItemArray[i].Length - 2);
+        ptrOffset += ptrItemArray[i].Length - 2;
         Array.Copy(listItemArray[i], 0, itemsList, offset, listItemArray[i].Length);
         offset += listItemArray[i].Length;
     }
