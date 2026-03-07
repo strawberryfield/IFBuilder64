@@ -22,7 +22,6 @@ using Casasoft.Helpers;
 using Casasoft.IFBuilder64.Json;
 using IFBuilder64;
 using Mono.Options;
-using System.Dynamic;
 using System.Text;
 
 #region main
@@ -141,16 +140,14 @@ void BuildGame(string inputFile, string outputFile)
     Strings2Prg.RelocatePointers(userMsgPointers, config.userMessagesAddress);
 
     // rooms descrptions 
-    List<string> roomDescriptions = new();
-    roomDescriptions.AddRange(game.rooms.Select(room => room.description));
+    List<string> roomDescriptions = [.. game.rooms.Select(room => room.description)];
     (byte[] roomsDescPtr, byte[] roomsDescList) = Strings2Prg.CreateArrays(roomDescriptions, 0, true);
     size = roomsDescPtr.Length + roomsDescList.Length;
     config.roomsDescriptionAddress = AllocateDown(ref topAddress, size);
     Strings2Prg.RelocatePointers(roomsDescPtr, config.roomsDescriptionAddress);
 
     // verbs
-    List<string> verbCommands = new();
-    verbCommands.AddRange(game.verbs.Select(verb => verb.command));
+    List<string> verbCommands = [.. game.verbs.Select(verb => verb.command)];
     (byte[] verbsPtr, byte[] verbsList) = Strings2Prg.CreateArrays(verbCommands, 0, true);
     size = verbsPtr.Length + verbsList.Length;
     config.verbsAddress = AllocateDown(ref topAddress, size);
@@ -171,8 +168,7 @@ void BuildGame(string inputFile, string outputFile)
     Strings2Prg.RelocatePointers(dirPointers, config.dirsAddress);
 
     // items
-    List<string> itemNames = new();
-    itemNames.AddRange(game.items.Where(item => item.notportable != true).Select(item => item.name));
+    List<string> itemNames = [.. game.items.Where(item => item.notportable != true).Select(item => item.name)];
     (byte[] portableItemsPtr, byte[] portableItemsList) = Strings2Prg.CreateArrays(itemNames, 0, true);
     int delta = game.items.Count * 2 - portableItemsPtr.Length + 2;
     Strings2Prg.RelocatePointers(portableItemsPtr, (ushort)delta);
@@ -182,8 +178,8 @@ void BuildGame(string inputFile, string outputFile)
     byte[][] listItemArray = new byte[game.rooms.Count][];
     for (int i = 0; i < game.rooms.Count; i++)
     {
-        List<string> itemNamesInRoom = new();
-        itemNamesInRoom.AddRange(game.items.Where(item => item.location == game.rooms[i].name && item.notportable is true).Select(item => item.name));
+        List<string> itemNamesInRoom =
+        [.. game.items.Where(item => item.location == game.rooms[i].name && item.notportable is true).Select(item => item.name)];
         (byte[] tmpPtr, byte[] tmpList) = Strings2Prg.CreateArrays(itemNamesInRoom, (ushort)offset, true);
         if (tmpPtr.Length > 2)
         {
@@ -218,40 +214,35 @@ void BuildGame(string inputFile, string outputFile)
     Strings2Prg.RelocatePointers(itemsPtr, config.itemsNameAddress);
 
     // items descriptions
-    List<string> itemDescriptions = new();
-    itemDescriptions.AddRange(game.items.Select(item => item.description));
+    List<string> itemDescriptions = [.. game.items.Select(item => item.description)];
     (byte[] itemsDescPtr, byte[] itemsDescList) = Strings2Prg.CreateArrays(itemDescriptions, 0, true);
     size = itemsDescPtr.Length + itemsDescList.Length;
     config.itemsDescriptionAddress = AllocateDown(ref topAddress, size);
     Strings2Prg.RelocatePointers(itemsDescPtr, config.itemsDescriptionAddress);
 
     // items open descriptions
-    List<string> itemOpenDescriptions = new();
-    itemOpenDescriptions.AddRange(game.items.Select(item => item.opendescription ?? string.Empty));
+    List<string> itemOpenDescriptions = [.. game.items.Select(item => item.opendescription ?? string.Empty)];
     (byte[] itemsOpenDescPtr, byte[] itemsOpenDescList) = Strings2Prg.CreateArrays(itemOpenDescriptions, 0, true);
     size = itemsOpenDescPtr.Length + itemsOpenDescList.Length;
     config.itemsOpenDescriptionAddress = AllocateDown(ref topAddress, size);
     Strings2Prg.RelocatePointers(itemsOpenDescPtr, config.itemsOpenDescriptionAddress);
 
     // doors
-    List<string> doorNames = new();
-    doorNames.AddRange(game.doors.Select(item => item.name));
+    List<string> doorNames = [.. game.doors.Select(item => item.name)];
     (byte[] doorsPtr, byte[] doorsList) = Strings2Prg.CreateArrays(doorNames, 0, true);
     size = doorsPtr.Length + doorsList.Length;
     config.doorsNameAddress = AllocateDown(ref topAddress, size);
     Strings2Prg.RelocatePointers(doorsPtr, config.doorsNameAddress);
 
     // doors deny open descriptions
-    List<string> doorDenyOpen = new();
-    doorDenyOpen.AddRange(game.doors.Select(item => item.denyopen ?? string.Empty));
+    List<string> doorDenyOpen = [.. game.doors.Select(item => item.denyopen ?? string.Empty)];
     (byte[] doorsDenyOpenPtr, byte[] doorsDenyOpenList) = Strings2Prg.CreateArrays(doorDenyOpen, 0, true);
     size = doorsDenyOpenPtr.Length + doorsDenyOpenList.Length;
     config.doorsDenyOpenAddress = AllocateDown(ref topAddress, size);
     Strings2Prg.RelocatePointers(doorsDenyOpenPtr, config.doorsDenyOpenAddress);
 
     // doors descriptions
-    List<string> doorDescriptions = new();
-    doorDescriptions.AddRange(game.doors.Select(item => item.description));
+    List<string> doorDescriptions = [.. game.doors.Select(item => item.description)];
     (byte[] doorsDescPtr, byte[] doorsDescList) = Strings2Prg.CreateArrays(doorDescriptions, 0, true);
     size = doorsDescPtr.Length + doorsDescList.Length;
     config.doorsDescriptionAddress = AllocateDown(ref topAddress, size);
@@ -326,7 +317,7 @@ void BuildGame(string inputFile, string outputFile)
     byte[] itemsToItems = new byte[game.items.Count];
     for (int i = 0; i < game.items.Count; i++)
     {
-        itemsToItems[i] = game.getItemIndexByName(game.items[i].initem);
+        itemsToItems[i] = game.getItemIndexById(game.items[i].initem);
     }
 
     // items properties
@@ -428,7 +419,7 @@ void BuildGame(string inputFile, string outputFile)
     sb.AppendLine("'\n' Items");
     for (int i = 0; i < game.items.Count; i++)
     {
-        sb.AppendLine($"{{def:item_{game.items[i].name}={i}}}");
+        sb.AppendLine($"{{def:item_{game.items[i].id}={i}}}");
     }
 
     sb.AppendLine("{endif}");

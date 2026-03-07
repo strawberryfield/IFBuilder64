@@ -163,9 +163,26 @@ public partial class Game
     /// </remarks>
     public byte getItemIndexByName(string? itemName)
     {
-        if (!string.IsNullOrEmpty(itemName))
+        if (!string.IsNullOrEmpty(itemName) && items is not null)
         {
             int index = items.FindIndex(i => i.name == itemName);
+            return index >= 0 ? (byte)index : (byte)255;
+        }
+        return 255;
+    }
+
+    /// <summary>
+    /// Looks up the zero-based index of an item by its identifier.
+    /// </summary>
+    /// <param name="itemId">The identifier of the item to search for. May be null or empty.</param>
+    /// <returns>
+    /// The zero-based index of the matching item when found; otherwise <c>255</c> to indicate "not found".
+    /// </returns>
+    public byte getItemIndexById(string? itemId)
+    {
+        if (!string.IsNullOrEmpty(itemId) && items is not null)
+        {
+            int index = items.FindIndex(i => i.id == itemId);
             return index >= 0 ? (byte)index : (byte)255;
         }
         return 255;

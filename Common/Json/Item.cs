@@ -41,6 +41,26 @@ public class Item
     public required string name { get; set; }
 
     /// <summary>
+    /// Computed identifier for the item.
+    /// </summary>
+    /// <remarks>
+    /// Returns "name@location" when the item is marked as not portable and a
+    /// location is present; otherwise returns the plain name.
+    /// This property follows the JSON naming convention (lowercase `id`).
+    /// </remarks>
+    public string id
+    {
+        get
+        {
+            if (notportable == true && !string.IsNullOrEmpty(location))
+            {
+                return $"{name}@{location}";
+            }
+            return name;
+        }
+    }
+
+    /// <summary>
     /// Gets or sets the item's description.
     /// </summary>
     /// <remarks>
@@ -119,7 +139,7 @@ public class Item
     /// Gets or sets a value indicating whether the item can be closed.
     /// </summary>
     /// <remarks>
-    /// If <c>true</c>, the item supports a "close" operation. A <c>null</c>
+    /// If <c>true</c>, the item supports a "close" operation. A <c>null</c> 
     /// value indicates the property is unspecified in the JSON input.
     /// </remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -200,4 +220,5 @@ public class Item
         if (container == true) options |= 0x40;
         return options;
     }
+
 }
