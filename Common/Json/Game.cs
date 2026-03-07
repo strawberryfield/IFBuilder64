@@ -334,4 +334,54 @@ public partial class Game
         return result;
     }
 
+    /// <summary>
+    /// Returns the number of not-portable items present in each room.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="byte"/>[] where each element corresponds to a room in <see cref="rooms"/> and
+    /// contains the count of items with <c>notportable == true</c> whose <c>location</c> matches the room's name.
+    /// The counts are cast to <see cref="byte"/>; values exceeding 255 will be truncated.
+    /// If <c>rooms</c> is null or empty, an empty array is returned. If <c>items</c> is null or empty,
+    /// the returned array is filled with zeros.
+    /// </returns>
+    public byte[] sceneryPerRoom()
+    {
+        if (rooms is null || rooms.Count == 0)
+        {
+            return Array.Empty<byte>();
+        }
+
+        var result = new byte[rooms.Count];
+
+        if (items is null || items.Count == 0)
+        {
+            for (int i = 0; i < result.Length; i++)
+                result[i] = 0;
+            return result;
+        }
+
+        for (int r = 0; r < rooms.Count; r++)
+        {
+            var roomName = rooms[r].name;
+            int count = items.Count(it => it.notportable == true && it.location == roomName);
+            result[r] = (byte)count;
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Returns the number of items whose <c>notportable</c> flag is unset (<c>null</c>).
+    /// </summary>
+    /// <returns>
+    /// The count of items with <c>notportable != true</c>. Returns <c>0</c> if the <c>items</c>
+    /// collection is null or empty.
+    /// </returns>
+    public byte portableItemsCount()
+    {
+        if (items is null || items.Count == 0)
+            return 0;
+
+        return (byte)items.Count(i => i.notportable != true);
+    }
 }
