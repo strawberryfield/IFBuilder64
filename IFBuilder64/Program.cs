@@ -395,6 +395,17 @@ void BuildGame(string inputFile, string outputFile)
     Console.WriteLine($"Build config file: '{filename}'.");
     #endregion
 
+    #region ifiction
+    if(game.ifiction is not null)
+    {
+        if (!string.IsNullOrWhiteSpace(game.ifiction.ifid)) { 
+            filename = outputFile + "ifid.seq";
+            File.WriteAllText(filename, game.ifiction.ifid.ToUpper());
+            Console.WriteLine($"Build IFID include: '{filename}'.");
+        }
+    }
+    #endregion 
+
     #region memory resize
     // --- memory resize include file ---
     StringBuilder sb = new();

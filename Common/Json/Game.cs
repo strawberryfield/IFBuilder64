@@ -17,6 +17,8 @@
 // but WITHOUT ANY WARRANTY
 //-----------------------------------------------------------------------
 
+using Casasoft.IFBuilder64.Common.Json;
+
 namespace Casasoft.IFBuilder64.Json;
 
 /// <summary>
@@ -128,6 +130,20 @@ public partial class Game
     /// the game engine should consult this value when applying inventory limits.
     /// </remarks>
     public byte maxload { get; set; } = 10;
+
+    /// <summary>
+    /// Gets or sets the IFiction backend metadata associated with the game.
+    /// </summary>
+    /// <value>
+    /// An <see cref="IFiction"/> instance containing engine-specific settings,
+    /// metadata and per-game configuration used by IFBuilder64. May be <c>null</c>
+    /// when the JSON document does not include engine-specific sections.
+    /// </value>
+    /// <remarks>
+    /// This property stores a model implementing the <see cref="IFiction"/> interface.
+    /// Consumers should check for <c>null</c> before accessing runtime-specific fields.
+    /// </remarks>
+    public IFiction? ifiction { get; set; }
 
     /// <summary>
     /// Looks up the zero-based index of a room by its name.
