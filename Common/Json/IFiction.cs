@@ -17,6 +17,9 @@
 // but WITHOUT ANY WARRANTY
 //-----------------------------------------------------------------------
 
+using System.Reflection;
+using System.Xml.Linq;
+
 namespace Casasoft.IFBuilder64.Common.Json;
 
 /// <summary>
@@ -113,38 +116,68 @@ public class IFiction
     /// </summary>
     public string? email { get; set; }
 
-    public System.Xml.Linq.XElement ToIFictionXml()
+    /// <summary>
+    /// Build XML following the Babel iFiction/iFIndex structure like the example:
+    /// <ifindex version="1.0" xmlns="http://babel.ifarchive.org/protocol/iFiction/">
+    ///   <story>
+    ///     <identification>...</identification>
+    ///     <bibliographic>...</bibliographic>
+    ///     ...
+    ///   </story>
+    /// </ifindex>
+    /// </summary>
+    /// <returns></returns>
+    public XElement ToIFictionXml()
     {
-        var root = new System.Xml.Linq.XElement("ifiction",
-            new System.Xml.Linq.XElement("title", title),
-            new System.Xml.Linq.XElement("author", author)
+        XNamespace ns = XNamespace.Get("http://babel.ifarchive.org/protocol/iFiction/");
+
+        XElement root = new(ns + "ifindex",
+            new XAttribute("version", "1.0")
         );
 
-        if (!string.IsNullOrWhiteSpace(ifid))
-            root.Add(new System.Xml.Linq.XElement("ifid", ifid));
+        XElement story = new(ns + "story");
+        root.Add(story);
 
-        // include defaults provided by the properties
-        root.Add(new System.Xml.Linq.XElement("headline", headline));
-        root.Add(new System.Xml.Linq.XElement("genre", genre));
+        // identification (ifid, format if available in future)
+        XElement identification = new(ns + "identification");
+        if (!string.IsNullOrWhiteSpace(ifid))
+            identification.Add(new XElement(ns + "ifid", ifid));
+
+        // only add identification if we produced any children
+        if (identification.HasElements)
+            story.Add(identification);
+
+        // bibliographic in the order commonly used by iFiction
+        XElement bibliographic = new(ns + "bibliographic",
+            new XElement(ns + "title", title),
+            new XElement(ns + "author", author),
+            new XElement(ns + "headline", headline),
+            new XElement(ns + "genre", genre)
+        );
 
         if (firstpublished.HasValue)
-            root.Add(new System.Xml.Linq.XElement("firstpublished", firstpublished.Value));
-
-        if (version.HasValue)
-            root.Add(new System.Xml.Linq.XElement("version", version.Value));
+            bibliographic.Add(new XElement(ns + "firstpublished", firstpublished.Value));
 
         if (!string.IsNullOrWhiteSpace(description))
-            root.Add(new System.Xml.Linq.XElement("description", new System.Xml.Linq.XCData(description)));
+        {
+            // Convert HTML <br/> variants to newlines and store the whole text in a CDATA section.
+            XElement descElem = new XElement(ns + "description");
+            var normalized = description.Replace("\r\n", "\n");
+            normalized = normalized.Replace("<br/>", "\n").Replace("<br />", "\n").Replace("<br>", "\n");
+            descElem.Add(new XCData(normalized));
+            bibliographic.Add(descElem);
+        }
 
         if (!string.IsNullOrWhiteSpace(language))
-            root.Add(new System.Xml.Linq.XElement("language", language));
+            bibliographic.Add(new XElement(ns + "language", language));
 
-        if (!string.IsNullOrWhiteSpace(url))
-            root.Add(new System.Xml.Linq.XElement("url", url));
+        // Add bibliographic even if it contains only required fields.
+        story.Add(bibliographic);
 
-        if (!string.IsNullOrWhiteSpace(email))
-            root.Add(new System.Xml.Linq.XElement("email", email));
-
+        // Additional sections (resources, releases, cover, etc.) are not present in this model.
+        // They can be added in future if the data model is extended.
+        string today = DateTime.Now.Date.ToString("yyyy-MM-dd");
+       
         return root;
     }
 }
