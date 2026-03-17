@@ -427,32 +427,25 @@ void BuildGame(string inputFile, string outputFile)
         }
 
         // ifiction.xml
-        XElement oXml = game.ifiction.ToIFictionXml();
-
-        // Find elements regardless of namespace
-        XElement? oStory = oXml.Descendants().FirstOrDefault(e => e.Name.LocalName == "story");
-        XElement? oIdentification = oXml.Descendants().FirstOrDefault(e => e.Name.LocalName == "identification");
-
-        // Add the format element using the same namespace as identification
-        XNamespace idNs = oStory?.Name.Namespace ?? "http://babel.ifarchive.org/protocol/iFiction/";
-        oIdentification?.Add(new XElement(idNs + "format", "Commodore64"));
-
         Assembly assembly = Assembly.GetExecutingAssembly();
         System.Diagnostics.FileVersionInfo fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
         string version = fvi.FileVersion ?? "0";
         var buildDateAttribute = assembly.GetCustomAttribute<BuildDateAttribute>();
-        string buildDate = buildDateAttribute is not null ? buildDateAttribute.DateTime.ToString("yyyy-MM-dd") : "unknown";
-        XElement colophon = new(idNs + "colophon",
-            new XElement(idNs + "generator", "Casasoft IFBuilder64"),
-            new XElement(idNs + "generatorversion", version),
-            new XElement(idNs + "originated", buildDate)
-        );
-        oStory?.Add(colophon);
+        string buildDate = buildDateAttribute is not null ? buildDateAttribute.DateTime.ToString("yyyy-MM-dd") : "";
 
-        string outPath = Path.GetDirectoryName(outputFile) ?? string.Empty;
-        string ifictionXmlPath = Path.Combine(outPath, "iFiction.xml");
-        oXml.Save(ifictionXmlPath);
-        Console.WriteLine($"Build IFiction XML: '{ifictionXmlPath}'.");
+        XElement oXml = game.ifiction.ToIFictionXml("Casasoft IFBuilder64", $"{version} {buildDate}");
+
+        // Find elements regardless of namespace
+        XElement? oStory = oXml.Descendants().FirstOrDefault(e => e.Name.LocalName == "story");
+        XElement? oExecutable = oXml.Descendants().FirstOrDefault(e => e.Name.LocalName == "executable");
+
+        // Add the format element using the same namespace as story
+        XNamespace ns = oStory?.Name.Namespace ?? "http://babel.ifarchive.org/protocol/iFiction/";
+        oExecutable?.Add(new XElement(ns + "platform", "Commodore64"));
+
+        filename= outputFile + "iFiction.xml";
+        oXml.Save(filename);
+        Console.WriteLine($"Build IFiction XML: '{filename}'.");
     }
     #endregion 
 

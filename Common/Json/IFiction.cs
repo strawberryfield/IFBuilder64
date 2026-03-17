@@ -17,6 +17,7 @@
 // but WITHOUT ANY WARRANTY
 //-----------------------------------------------------------------------
 
+using System.Net;
 using System.Reflection;
 using System.Xml.Linq;
 
@@ -127,7 +128,7 @@ public class IFiction
     /// </ifindex>
     /// </summary>
     /// <returns></returns>
-    public XElement ToIFictionXml()
+    public XElement ToIFictionXml(string builderName = "CASASOFT IFBuilder", string builderVersion = "")
     {
         XNamespace ns = XNamespace.Get("http://babel.ifarchive.org/protocol/iFiction/");
 
@@ -139,7 +140,9 @@ public class IFiction
         root.Add(story);
 
         // identification (ifid, format if available in future)
-        XElement identification = new(ns + "identification");
+        XElement identification = new(ns + "identification",
+            new XElement(ns + "format", "executable")
+        );
         if (!string.IsNullOrWhiteSpace(ifid))
             identification.Add(new XElement(ns + "ifid", ifid));
 
@@ -174,10 +177,42 @@ public class IFiction
         // Add bibliographic even if it contains only required fields.
         story.Add(bibliographic);
 
-        // Additional sections (resources, releases, cover, etc.) are not present in this model.
-        // They can be added in future if the data model is extended.
         string today = DateTime.Now.Date.ToString("yyyy-MM-dd");
-       
+        XElement release = new(ns + "releases",
+            new XElement(ns + "attached", 
+                new XElement(ns + "release",
+                    new XElement(ns + "releasedate", today),
+                    new XElement(ns + "version", version.HasValue ? version.Value.ToString() : "1"),
+                    new XElement(ns + "compiler", builderName.Trim()),
+                    new XElement(ns + "compilerversion", builderVersion.Trim())
+                )
+            )
+        );
+        story.Add(release);
+
+        XElement colophon = new(ns + "colophon",
+            new XElement(ns + "generator", builderName.Trim()),
+            new XElement(ns + "generatorversion", builderVersion.Trim()),
+            new XElement(ns + "originated", today)
+        );
+        story.Add(colophon);
+
+        if (!string.IsNullOrWhiteSpace(url) || !string.IsNullOrWhiteSpace(email)) {             
+            XElement contact = new(ns + "contacts");
+            if (!string.IsNullOrWhiteSpace(url))
+                contact.Add(new XElement(ns + "url", url));
+            if (!string.IsNullOrWhiteSpace(email))
+                contact.Add(new XElement(ns + "authoremail", email));
+            story.Add(contact);
+        }
+
+        XElement executable = new(ns + "executable",
+            new XElement(ns + "compiler", builderName.Trim()),
+            new XElement(ns + "compilerversion", builderVersion.Trim()),
+            new XElement(ns + "serial", DateTime.Now.Date.ToString("yyyyMMdd"))
+        );
+        story.Add(executable);
+
         return root;
     }
 }
