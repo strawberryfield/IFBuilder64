@@ -1,0 +1,847 @@
+
+; 64tass Turbo Assembler Macro V1.60.3243 listing file
+; 64tass.exe -a -o lm.prg --list=lm.lst lm.asm
+; Mon Feb 23 20:39:35 2026
+
+;Offset	;Hex		;Monitor	;Source
+
+;******  Processing input file: lm.asm
+
+
+;******  Processing file: include/parser.inc.asm
+
+=$aefd					SearchComma		= $AEFD ; check for comma
+=$b79e					GetByte  		= $B79E ; get 8-bit parameter into X
+=$ad8a					GetFloat    		= $AD8A ; get float into FAC1
+=$b7f7					FloatToWord  		= $B7F7 ; convert to word in $14-$15 if needed
+=$ad9e					GetExpression		= $AD9E ; Get any expression.
+=$a437					PrintError		= $A437 ; print erroe message with number in X
+=$b6db					StringStackClean	= $B6DB ; CLEAN-UP TEMPORARY STRING DESCRIPTOR STACK
+=$b08b					VarFindCreate		= $B08B ; Find a variable and create it if needed
+=$a8f8					EndStatement		= $A8F8 ; MOVE TEXT POINTER TO END-OF-LINE OR END-OF-STATEMENT
+=$14					WAC_LO			= $14	; Word from FAC1
+=$15					WAC_HI			= $15
+=$61					FAC1			= $61	; Floating point accumulator #1
+=$64					FACMO			= $64   ; String print Index
+=$0d					EXPR_TYPE		= $0d	; 0 = numeric, $ff = string
+=$47					CurVarPtr		= $47	; pointer to current variable data
+=$45					CurVarName		= $45	; two bytes with current variable name
+=$0311					usr_pointer		= $0311 ; pointer to USR function
+=$12					Error_BAD_SUBSCRIPT		= $12
+=$1e					Error_BREAK			= $1E
+=$1a					Error_CANT_CONTINUE		= $1A
+=$05					Error_DEVICE_NOT_PRESENT	= $05
+=$14					Error_DIVISION_BY_ZERO		= $14
+=$18					Error_FILE_DATA			= $18
+=$04					Error_FILE_NOT_FOUND		= $04
+=$03					Error_FILE_NOT_OPEN		= $03
+=$02					Error_FILE_OPEN			= $02
+=$19					Error_FORMULA_TOO_COMPLEX	= $19
+=$09					Error_ILLEGAL_DEVICE_NUMBER	= $09
+=$15					Error_ILLEGAL_DIRECT		= $15
+=$0e					Error_ILLEGAL_QUANTITY		= $0E
+=$1d					Error_LOAD			= $1D
+=$08					Error_MISSING_FILENAME		= $08
+=$0a					Error_NEXT_WITHOUT_FOR		= $0A
+=$06					Error_NOT_INPUT_FILE		= $06
+=$07					Error_NOT_OUTPUT_FILE		= $07
+=$0d					Error_OUT_OF_DATA		= $0D
+=$10					Error_OUT_OF_MEMORY		= $10
+=$0f					Error_OVERFLOW			= $0F
+=$13					Error_REDIMD_ARRAY		= $13
+=$0c					Error_RETURN_WITHOUT_GOSUB	= $0C
+=$17					Error_STRING_TOO_LONG		= $17
+=$0b					Error_SYNTAX			= $0B
+=$01					Error_TOO_MANY_FILES		= $01
+=$16					Error_TYPE_MISMATCH		= $16
+=$1b					Error_UNDEFD_FUNCTION		= $1B
+=$11					Error_UNDEFD_STATEMENT		= $11
+=$1c					Error_VERIFY			= $1C
+
+;******  Return to file: lm.asm
+
+
+;******  Processing file: include/kernal.inc.asm
+
+=$ff90					SETMSG  	= $FF90         ; set kernel message control flag
+=$ff93					SECOND  	= $FF93         ; set secondary address after LISTEN
+=$ff96					TKSA    	= $FF96         ; send secondary address after TALK
+=$ffb1					LISTEN  	= $FFB1         ; command serial bus device to LISTEN
+=$ffb4					TALK    	= $FFB4         ; command serial bus device to TALK
+=$ffba					SETLFS  	= $FFBA         ; set logical file parameters
+=$ffbd					SETNAM  	= $FFBD         ; set filename
+=$ffa5					ACPTR   	= $FFA5         ; input byte from serial bus
+=$ffa8					CIOUT   	= $FFA8         ; output byte to serial bus
+=$ffab					UNTLK   	= $FFAB         ; command serial bus device to UNTALK
+=$ffae					UNLSN   	= $FFAE         ; command serial bus device to UNLISTEN
+=$ffc6					CHKIN   	= $FFC6         ; define input channel
+=$ffcc					CLRCHN  	= $FFCC         ; restore default devices
+=$ffcf					INPUT   	= $FFCF         ; input a character (official name CHRIN)
+=$ffd2					CHROUT  	= $FFD2         ; output a character
+=$ffd5					LOAD    	= $FFD5         ; load from device
+=$ffd8					SAVE    	= $FFD8         ; save to device
+=$ffe1					STOP    	= $FFE1         ; check the STOP key
+=$ffe4					GETIN   	= $FFE4         ; get a character
+=$e50c					SetCursor	= $e50c		; X register = row ,Y register = column
+=$e50a					GetSetCursor	= $e50a		; X register = row ,Y register = column; carry 0 = read, carry 1 = write
+=$e9ff					CleanTextRow	= $e9ff		; Clear screen line. Input: X = Row number.
+=$e544					ClearScreen	= $E544
+=$e566					HomeCursor	= $E566
+=$e8ea					ScrollUp	= $E8EA		; Scroll complete screen upwards.
+=$e965					ScrollDown	= $E965		; Insert line before current line and scroll lower part of screen downwards.
+=$e56c					SetRowPointer	= $E56C		; Set pointer at memory addresses $00D1-$00D2 to current line in screen memory
+=$d3					CURCOL  	= $D3		; Current screen column
+=$d5					CurColLen	= $D5		; Current logical line length
+=$d6					CURROW		= $D6		; Current screen row
+=$d1					CurRowPtr	= $D1		; Pointer to current screen row
+=$d9					RowLinks	= $D9		; links for logical lines
+
+;******  Return to file: lm.asm
+
+
+;******  Processing file: include/memory.inc.asm
+
+=$a3bf					MoveMemory		= $A3BF ; This move can be used by your machine language routine as
+=$b4f4					AllocateString		= $B4F4	; Allocate Space for String, Accumulator = length of string to be allocated.
+=$b475					AlocateStringFAC	= $B475 ; ALLOCATE AREA FOR STRING IN ACTIVE STRING LEAVE LENGTH IN 61 AND POINTER IN (62)
+=$b67a					CopyStringFromFAC	= $B67A ; Copy String Pointed to by Descriptor to Allocated Area (35)
+=$b68c					CopyStringFrom22	= $B68C ; Copy String Pointed at (22) to allocated area (35), Accumulator = length
+=$5f					MemMoveStart		= $5F	; Pointer to start area to meve
+=$5a					MemMoveEnd		= $5A	; Pointer to end area to meve (plus 1)
+=$58					MemMoveDest		= $58	; pointer to the end of the destination move area plus one.
+=$35					StringDest		= $35	; Pointer to allocated area
+=$22					StringSrc		= $22	; Pointer to source string
+
+;******  Return to file: lm.asm
+
+
+;******  Processing file: include/math.inc.asm
+
+=$bba2					CopyFVARtoFAC1		= $BBA2 ; Copy FVAR to FAC1; accumulator = low order, Yregister= high order address of FVAR.
+=$ba8c					CopyFVARtoFAC2		= $BA8C ; Copy FVAR to FAC2; accumulator = low order, Yregister= high order address of FVAR.
+=$bbd0					CopyFAC1toInd49		= $BBD0 ; Copy FAC1 to (49); (49)
+=$bbd4					CopyFAC1toXY		= $BBD4 ; Copy FAC1 to address specified by X-register (low order) and Y-register (high order).
+=$bbc7					CopyFAC1to5C		= $BBC7 ; Copy FAC1 to 5C-60.
+=$bbca					CopyFAC1to57		= $BBCA ; Copy FAC1 to 57-5B.
+=$bbfc					CopyFAC2toFAC1		= $BBFC ; Copy FAC2 to FAC1
+=$bc0c					CopyFAC1toFAC2		= $BC0C ; Copy FAC1 to FAC2.
+=$b86a					FAC1plusFAC2		= $B86A ; FAC1 = FAC2 + FAC1.
+=$bd7e					FAC1plusACC		= $BD7E ; FAC1 = FAC1 + accumulator
+=$b867					FAC1plusFVAR		= $B867 ; FAC1 = FVAR + FAC1; accumulator = low order, Y-register = high order address of FVAR.
+=$b853					FAC2minusFAC1		= $B853 ; FAC1 = FAC2 - FAC1.
+=$b850					FVARminusFAC1		= $B850 ; FAC1 = FVAR - FAC1; accumulator = low order, Y-register = high order address of FVAR.
+=$b849					FAC1plus0dot5		= $B849 ; FAC1 = FAC1 + 0.5
+=$ba2b					FAC1mulFAC2 		= $BA2B ; FAC1 = FAC1 * FAC2.
+=$ba28					FAC1mulFVAR 		= $BA28 ; FAC1 = FAC1 * FVAR; accumulator = low order, Yregister= high order address of FVAR.
+=$bae2					FAC1mul10 		= $BAE2 ; FAC1 = FAC1 * 10.
+=$bb12					FAC2divFAC1 		= $BB12 ; FAC1 = FAC2 / FAC1.
+=$bb0f					FVARdivFAC1 		= $BB0F ; FAC1 = FVAR / FAC1; accumulator = low order, Yregister= high order address of FVAR.
+=$bafe					FAC1div10 		= $BAFE ; FAC1 = FAC1 / 10.
+=$bb07					FAC2div2PI		= $BB07 ; divide FAC2 by 2*PI and leave the result in FAC1.
+=$bc1b					MathRound		= $BC1B ; Round FAC1.
+=$bf7b					MathExponentiation	= $BF7B ; Exponentiation: FAC1 = FAC1 raised to the power FAC2.
+=$bf71					MathSQR			= $BF71 ; SQR: FAC1 = SQR(FACl).
+=$afe9					MathAND			= $AFE9 ; AND: FAC1 = FAC1 AND FAC2.
+=$afe6					MathOR			= $AFE6 ; OR: FAC1 = FAC1 OR FAC2.
+=$bccc					MathINT			= $BCCC ; INT: FAC1 = INT(FACl).
+=$b947					MathTwoComp		= $B947 ; Two's Comp: FAC1 = Two's Comp of FAC1.
+=$bc39					MathSGN			= $BC39 ; SGN: FAC1 = SGN(FACl).
+=$bc58					MathABS			= $BC58 ; ABS: FAC1 = ABS(FACl).
+=$bc5b					MathComparison		= $BC5B ; Comparison: FAC1 = FAC1 comparison to FVAR;
+=$bc44					WordToDecimal		= $BC44 ; Convert two-byte integer in 62 and 63 (of FAC1) to floating point in FAC1.
+=$bc3c					ACCtoDecimal		= $BC3C ; Convert accumulator to floating point in FAC1
+=$bdcd					AXtoOutput		= $BDCD ; Convert accumulator (low order) and X-register (high order) to floating point
+=$b3a2					Yplus05toDecimal	= $B3A2 ; Convert Y-register to floating point in FAC1 plus0dot5
+=$bcf3					ASCIItoDecimal		= $BCF3 ; Convert ASCII decimal number (such as -23E+07) to floating point in FAC1
+=$bddd					DecimalToASCII		= $BDDD ; Convert FAC1 floating point to ASCII string at 0100
+=$bc9b					DecimalToInt32		= $BC9B ; Convert floating point FACl to fixed point four-byte integer in FAC1
+=$b1bf					DecimalToInt16		= $B1BF ; Convert floating point FACl to fixed point integer in the range —32,768 to 32,767 and store in 64 and 65.
+=$b1d2					DecimalToWord		= $B1D2 ; Convert numeric expression from floating point to fixed point integer in 64 and 65.
+=$b1aa					DecimalToYA		= $B1AA ; Convert floating point FACl to two-byte integer with low order in Y-register and high order in accumulator.
+=$b7a1					DecimalToX		= $B7A1 ; Convert floating point FACl to integer in the range 0-255 and leave integer in X-register.
+=$b79e					ExprToX			= $B79E ; Evaluate expression and convert FACl floating point expression value to integer in the 0-255 range left in Xregister.
+=$e26b					MathSIN			= $E26B
+=$e264					MathCOS			= $E264
+=$e2b4					MathTAN			= $E2B4
+=$e30e					MathATN			= $E30E
+=$bfed					MathEXP 		= $BFED
+=$b9ea					MathLOG			= $B9EA
+=$69					FAC2			= $69	; Floating point accumulator #2
+=$aeab					fp_pi			= $AEAB ; Pi Value
+=$e376					fp_one			= $E376 ; 1
+=$bf11					fp_half			= $bf11 ; 0.5
+=$b9d6					fp_SQR2HLF		= $B9D6 ; 1/sqr(2) = .707
+=$b9db					fp_SQR2			= $B9DB ; sqr(2) = 1.41
+=$b9e0					fp_NEGHLF 		= $B9E0 ; -0.5
+=$b9e5					fp_Log2			= $B9E5 ; log(2) = .693147181
+=$baf9					fp_ten			= $BAF9 ; 10
+=$e2e0					fp_pihalf		= $E2E0 ; pi/2
+=$e2e5					fp_twopi		= $E2E5 ; 2*PI
+
+;******  Return to file: lm.asm
+
+
+;******  Processing file: include/cpu.inc.asm
+
+=$00					CPU_DDR		= $00		; Processor port data direction register.
+=$01					CPU_PORT	= $01		; Processor port.
+
+;******  Return to file: lm.asm
+
+.c000	4c b7 c4	jmp $c4b7	setupUSR		jmp x_setusr			; set pointer for USR function
+.c003	4c e2 c0	jmp $c0e2	PrintStringTable	jmp Strings.Print		; Stampa una stringa da una tabella
+.c006	4c 95 c1	jmp $c195	PrintStringSingle	jmp Strings.PrintSingle		; Stampa una singola stringa null-terminated
+.c009	4c f3 c1	jmp $c1f3	NormalizeCase		jmp Strings.Normalize_Case	; converts alpha chars to default set
+.c00c	4c ee c2	jmp $c2ee	search_text		jmp Search.Search_Word		; search a string in a table
+.c00f	4c ac c1	jmp $c1ac	StringLength		jmp Strings.GetLength		; return the string length (up to 255) in accumulator
+.c012	4c be c1	jmp $c1be	CopyToVar		jmp Strings.CopyString		; copy a string to a var (third parameter)
+.c015	4c 8a c2	jmp $c28a	poscursor		jmp TextMode.PosCursor 		; posizionamento cursore modo testo
+.c018	4c 9d c2	jmp $c29d	cleanRow		jmp TextMode.CleanRow		; cancella una riga dello schermo
+.c01b	4c a0 c3	jmp $c3a0	PeekByte		jmp Peek.PeekByte		; get a byte under the Basic ROM
+.c01e	4c bf c3	jmp $c3bf	PeekWord		jmp Peek.PeekWord		; get a word under the Basic ROM
+.c021	4c d5 c3	jmp $c3d5	PokeWord		jmp Peek.PokeWord		; poke a 16 bit value
+.c024	4c b0 c0	jmp $c0b0	WaitPage		jmp Strings.wait_page		; wait for a key pressed
+.c027	4c da c0	jmp $c0da	PrintStringLine		jmp Strings.PrintLine		; same as PrintStringTable with a final CR added
+.c02a	4c 9f c1	jmp $c19f	CopySingleToVar		jmp Strings.CopySingle		; same as CopyToVar but with absolute address
+.c02d	4c 43 c2	jmp $c243	CopyVarToMem		jmp Strings.CopyVarToMem	; copy a string to a location of memory
+.c030	4c ed c3	jmp $c3ed	GetBit			jmp Peek.GetBit			; same as peekbyte with an and mask
+.c033	4c 13 c4	jmp $c413	SetBit			jmp Peek.SetBit			; applies an or mask to the byte
+.c036	4c 1b c4	jmp $c41b	ResetBit		jmp Peek.ResetBit		; applies an and mask to the byte
+.c039	4c 25 c4	jmp $c425	ScanDB			jmp Peek.Scan			; scan from the address for the second parameter times
+.c03c	4c a6 c2	jmp $c2a6	CopyScreen		jmp TextMode.CopyScreen		; Copy chars and color from memory
+.c03f	4c 64 c4	jmp $c464	CopyMem			jmp MemCopy.CopyRAM		; copy area from first address until second address page
+
+;******  Processing file: common.asm
+
+.c042					Common
+.c042					GetNumVar
+.c042	20 fd ae	jsr $aefd			jsr SearchComma
+.c045	20 8b b0	jsr $b08b			jsr VarFindCreate
+.c048	a9 00		lda #$00	check_type_num	lda #0
+.c04a	c5 0d		cmp $0d				cmp EXPR_TYPE		; is a num var?
+.c04c	d0 01		bne $c04f			bne var_mismatch
+.c04e	60		rts				rts
+.c04f	a6 16		ldx $16		var_mismatch	ldx Error_TYPE_MISMATCH
+.c051	4c 37 a4	jmp $a437			jmp PrintError
+.c054					GetStringVar
+.c054	20 fd ae	jsr $aefd			jsr SearchComma
+.c057	20 8b b0	jsr $b08b			jsr VarFindCreate
+.c05a	a9 ff		lda #$ff	check_type_str	lda #$ff
+.c05c	c5 0d		cmp $0d				cmp EXPR_TYPE		; is a string var?
+.c05e	d0 ef		bne $c04f			bne var_mismatch
+.c060	60		rts				rts
+.c061					GetWordToFE
+.c061	20 fd ae	jsr $aefd			jsr SearchComma
+.c064	20 8a ad	jsr $ad8a			jsr GetFloat
+.c067	20 f7 b7	jsr $b7f7			jsr FloatToWord
+.c06a	a5 14		lda $14				lda WAC_LO
+.c06c	85 fe		sta $fe				sta $fe
+.c06e	a5 15		lda $15				lda WAC_HI
+.c070	85 ff		sta $ff				sta $ff
+.c072	60		rts				rts
+.c073					GetString
+.c073	20 fd ae	jsr $aefd			jsr SearchComma
+.c076	20 9e ad	jsr $ad9e			jsr GetExpression
+.c079	4c 5a c0	jmp $c05a			jmp check_type_str
+
+;******  Return to file: lm.asm
+
+
+;******  Processing file: strings.asm
+
+=$11					chr_cursor_down	= $11
+=$0d					chr_return	= $0d
+=$0c					chr_formfeed	= $0c
+=$93					chr_clearscreen = $93
+.c07c					Strings
+=40					WrapAt		= 40
+=$fa					TmpPtr		= $fa
+=$fc					WordLen		= $fc
+=$fe					StringPtr	= $fe			; final pointer to the string
+.c07c					GetIndexPtr
+.c07c	20 fd ae	jsr $aefd			jsr SearchComma
+.c07f	20 8a ad	jsr $ad8a			jsr GetFloat
+.c082	20 f7 b7	jsr $b7f7			jsr FloatToWord
+.c085					GetStringPtr
+.c085	20 fd ae	jsr $aefd			jsr SearchComma
+.c088	20 9e b7	jsr $b79e			jsr GetByte
+.c08b	a9 36		lda #$36			lda #%00110110
+.c08d	85 01		sta $01				sta CPU_PORT	; disattiva ROM Basic
+.c08f	8a		txa				txa
+.c090	a0 00		ldy #$00			ldy #0
+.c092	18		clc				clc
+.c093	f1 14		sbc ($14),y			sbc (WAC_LO),y
+.c095	90 0b		bcc $c0a2			bcc StringExists	; controllo se l'indice esite
+.c097	a9 37		lda #$37			lda #%00110111
+.c099	85 01		sta $01				sta CPU_PORT
+.c09b	a2 12		ldx #$12			ldx #Error_BAD_SUBSCRIPT
+.c09d	68		pla				pla
+.c09e	68		pla				pla
+.c09f	4c 37 a4	jmp $a437			jmp PrintError
+.c0a2	e8		inx		StringExists	inx
+.c0a3	8a		txa				txa
+.c0a4	0a		asl a				asl
+.c0a5	a8		tay				tay
+.c0a6	b1 14		lda ($14),y			lda (WAC_LO),y
+.c0a8	85 fe		sta $fe				sta StringPtr
+.c0aa	c8		iny				iny
+.c0ab	b1 14		lda ($14),y			lda (WAC_LO),y
+.c0ad	85 ff		sta $ff				sta StringPtr+1
+.c0af	60		rts				rts
+.c0b0	a2 18		ldx #$18	wait_page	ldx #24
+.c0b2	a0 22		ldy #$22			ldy #34
+.c0b4	20 0c e5	jsr $e50c			jsr SetCursor
+.c0b7	a9 84		lda #$84			lda #<more_str
+.c0b9	85 69		sta $69				sta FAC2
+.c0bb	a9 c2		lda #$c2			lda #>more_str
+.c0bd	85 6a		sta $6a				sta FAC2+1
+.c0bf	a0 00		ldy #$00			ldy #0
+.c0c1	b1 69		lda ($69),y	wait_page_loop	lda (FAC2),y
+.c0c3	f0 07		beq $c0cc			beq wait_char
+.c0c5	20 d2 ff	jsr $ffd2			jsr CHROUT
+.c0c8	c8		iny				iny
+.c0c9	4c c1 c0	jmp $c0c1			jmp wait_page_loop
+.c0cc	20 e4 ff	jsr $ffe4	wait_char	jsr GETIN
+.c0cf	f0 fb		beq $c0cc			beq wait_char
+.c0d1	60		rts				rts
+.c0d2	20 b0 c0	jsr $c0b0	print_page	jsr wait_page
+.c0d5	a9 93		lda #$93			lda #chr_clearscreen
+.c0d7	4c f3 c0	jmp $c0f3			jmp print_and_go
+.c0da	20 e2 c0	jsr $c0e2	PrintLine	jsr print
+.c0dd	a9 0d		lda #$0d			lda #chr_return
+.c0df	4c d2 ff	jmp $ffd2			jmp CHROUT
+.c0e2	20 7c c0	jsr $c07c	Print		jsr GetIndexPtr
+.c0e5	a0 00		ldy #$00	Print_loop	ldy #0
+.c0e7	b1 fe		lda ($fe),y			lda (StringPtr),y
+.c0e9	f0 2d		beq $c118			beq print_end		; null terminated
+.c0eb	c9 0c		cmp #$0c			cmp #chr_formfeed       ; forced newpage
+.c0ed	f0 e3		beq $c0d2			beq print_page
+.c0ef	c9 0d		cmp #$0d	print_not_ff	cmp #chr_return		; is forced newline?
+.c0f1	d0 06		bne $c0f9			bne print_not_nl
+.c0f3	20 d2 ff	jsr $ffd2	print_and_go	jsr CHROUT
+.c0f6	4c 0f c1	jmp $c10f			jmp print_advance
+.c0f9	c9 20		cmp #$20	print_not_nl	cmp #' '
+.c0fb	d0 20		bne $c11d			bne pw_word
+.c0fd	a5 d3		lda $d3				lda CURCOL
+.c0ff	f0 0e		beq $c10f			beq print_advance   	; Se siamo a colonna 0, scarta lo spazio
+.c101	c9 27		cmp #$27			cmp #WrapAt-1
+.c103	d0 05		bne $c10a			bne print_space
+.c105	a9 0d		lda #$0d			lda #chr_return
+.c107	4c 0c c1	jmp $c10c			jmp print_space_do
+.c10a	a9 20		lda #$20	print_space	lda #' '
+.c10c	20 d2 ff	jsr $ffd2	print_space_do	jsr CHROUT
+.c10f	e6 fe		inc $fe		print_advance	inc StringPtr
+.c111	d0 d2		bne $c0e5			bne print_loop		; if no more than 255 chars
+.c113	e6 ff		inc $ff				inc StringPtr+1
+.c115	4c e5 c0	jmp $c0e5			jmp print_loop
+.c118					print_end
+.c118	a9 37		lda #$37			lda #%00110111
+.c11a	85 01		sta $01				sta CPU_PORT
+.c11c	60		rts				rts
+.c11d	a5 fe		lda $fe		pw_word		lda StringPtr		; scan lunghezza parola
+.c11f	85 fa		sta $fa				sta TmpPtr
+.c121	a5 ff		lda $ff				lda StringPtr+1
+.c123	85 fb		sta $fb				sta TmpPtr+1
+.c125	a9 00		lda #$00			lda #0
+.c127	85 fc		sta $fc				sta WordLen
+.c129	a0 00		ldy #$00	pw_scan		ldy #0
+.c12b	b1 fa		lda ($fa),y			lda (TmpPtr),y
+.c12d	f0 17		beq $c146			beq pw_scan_done
+.c12f	c9 20		cmp #$20			cmp #' '
+.c131	f0 13		beq $c146			beq pw_scan_done
+.c133	c9 0d		cmp #$0d			cmp #chr_return
+.c135	f0 0f		beq $c146			beq pw_scan_done
+.c137	c9 0c		cmp #$0c			cmp #chr_formfeed
+.c139	f0 0b		beq $c146			beq pw_scan_done
+.c13b	e6 fc		inc $fc				inc WordLen
+.c13d	e6 fa		inc $fa				inc TmpPtr
+.c13f	d0 e8		bne $c129			bne pw_scan
+.c141	e6 fb		inc $fb				inc TmpPtr+1
+.c143	4c 29 c1	jmp $c129			jmp pw_scan
+.c146	a5 d3		lda $d3		pw_scan_done	lda CURCOL
+.c148	f0 0c		beq $c156			beq pw_print_word		; Se siamo già a colonna 0, non forzare l'a capo (evita riga vuota)
+.c14a	18		clc				clc
+.c14b	65 fc		adc $fc				adc WordLen
+.c14d	c9 29		cmp #$29			cmp #WrapAt+1			; ci sta nella riga?
+.c14f	90 05		bcc $c156			bcc pw_print_word
+.c151	a9 0d		lda #$0d			lda #chr_return			; no <U+2192> vai a capo prima
+.c153	20 d2 ff	jsr $ffd2			jsr CHROUT
+.c156	a0 00		ldy #$00	pw_print_word	ldy #0
+.c158	b1 fe		lda ($fe),y			lda (StringPtr),y
+.c15a	f0 bc		beq $c118			beq print_end
+.c15c	c9 20		cmp #$20			cmp #' '
+.c15e	f0 85		beq $c0e5			beq Print_loop
+.c160	c9 0d		cmp #$0d			cmp #chr_return
+.c162	f0 18		beq $c17c			beq jmp_print_loop
+.c164	c9 0c		cmp #$0c			cmp #chr_formfeed
+.c166	f0 14		beq $c17c			beq jmp_print_loop
+.c168	20 d2 ff	jsr $ffd2			jsr CHROUT
+.c16b	a5 d3		lda $d3				lda CURCOL
+.c16d	f0 a0		beq $c10f			beq print_advance
+.c16f	c9 28		cmp #$28			cmp #WrapAt
+.c171	f0 0c		beq $c17f			beq disable_link		; if kernal creates a logical line delete it
+.c173	e6 fe		inc $fe				inc StringPtr
+.c175	d0 df		bne $c156			bne pw_print_word
+.c177	e6 ff		inc $ff				inc StringPtr+1
+.c179	4c 56 c1	jmp $c156			jmp pw_print_word
+.c17c	4c e5 c0	jmp $c0e5	jmp_print_loop	jmp Print_loop
+.c17f	a9 27		lda #$27	disable_link	lda #WrapAt-1
+.c181	85 d5		sta $d5				sta CurColLen			; reset line length
+.c183	a9 00		lda #$00			lda #0
+.c185	85 d3		sta $d3				sta CURCOL			; reset column
+.c187	a6 d6		ldx $d6				ldx CURROW
+.c189	b5 d9		lda $d9,x			lda RowLinks,x
+.c18b	09 80		ora #$80			ora #$80
+.c18d	95 d9		sta $d9,x			sta RowLinks,x			; reset link
+.c18f	20 6c e5	jsr $e56c			jsr SetRowPointer
+.c192	4c 0f c1	jmp $c10f			jmp print_advance
+.c195	20 61 c0	jsr $c061	PrintSingle	jsr Common.GetWordToFE
+.c198	a9 36		lda #$36			lda #%00110110
+.c19a	85 01		sta $01				sta CPU_PORT	; disattiva ROM Basic
+.c19c	4c e5 c0	jmp $c0e5			jmp Print_loop
+.c19f	20 61 c0	jsr $c061	CopySingle	jsr Common.GetWordToFE
+.c1a2	a9 36		lda #$36			lda #%00110110
+.c1a4	85 01		sta $01				sta CPU_PORT	; disattiva ROM Basic
+.c1a6	20 af c1	jsr $c1af			jsr calcLength
+.c1a9	4c c1 c1	jmp $c1c1			jmp doCopyString
+.c1ac	20 7c c0	jsr $c07c	GetLength	jsr GetIndexPtr
+.c1af	a0 00		ldy #$00	calcLength	ldy #0
+.c1b1	b1 fe		lda ($fe),y	len_cycle	lda (StringPtr),y
+.c1b3	f0 03		beq $c1b8			beq len_scan_done
+.c1b5	c8		iny				iny
+.c1b6	d0 f9		bne $c1b1			bne len_cycle
+.c1b8					len_scan_done
+.c1b8	a9 37		lda #$37			lda #%00110111
+.c1ba	85 01		sta $01				sta CPU_PORT
+.c1bc	98		tya				tya
+.c1bd	60		rts		len_rts		rts
+.c1be	20 ac c1	jsr $c1ac	CopyString	jsr GetLength
+.c1c1	c9 00		cmp #$00	doCopyString	cmp #0
+.c1c3	f0 f8		beq $c1bd			beq len_rts
+.c1c5	85 02		sta $02				sta $02
+.c1c7	20 54 c0	jsr $c054			jsr Common.GetStringVar
+.c1ca	a5 02		lda $02				lda $02
+.c1cc	20 75 b4	jsr $b475			jsr AlocateStringFAC
+.c1cf	a0 00		ldy #$00			ldy #0				; copy descriptor to var
+.c1d1	a5 61		lda $61				lda $61
+.c1d3	91 47		sta ($47),y			sta (CurVarPtr),y
+.c1d5	c8		iny				iny
+.c1d6	a5 62		lda $62				lda $62
+.c1d8	91 47		sta ($47),y			sta (CurVarPtr),y
+.c1da	c8		iny				iny
+.c1db	a5 63		lda $63				lda $63
+.c1dd	91 47		sta ($47),y			sta (CurVarPtr),y
+.c1df	a9 36		lda #$36			lda #%00110110
+.c1e1	85 01		sta $01				sta CPU_PORT	; disattiva ROM Basic
+.c1e3	a4 02		ldy $02				ldy $02
+.c1e5	88		dey		copy_loop	dey
+.c1e6	b1 fe		lda ($fe),y			lda (StringPtr),y
+.c1e8	91 62		sta ($62),y			sta ($62),y
+.c1ea	c0 00		cpy #$00			cpy #0
+.c1ec	d0 f7		bne $c1e5			bne copy_loop
+.c1ee	a4 02		ldy $02				ldy $02
+.c1f0	4c b8 c1	jmp $c1b8			jmp len_scan_done
+.c1f3	20 54 c0	jsr $c054	Normalize_Case	jsr Common.GetStringVar
+.c1f6	a0 00		ldy #$00			ldy #0
+.c1f8	b1 47		lda ($47),y			lda (CurVarPtr),y
+.c1fa	f0 2e		beq $c22a			beq normalize_end
+.c1fc	85 fc		sta $fc				sta WordLen
+.c1fe	c8		iny				iny
+.c1ff	b1 47		lda ($47),y			lda (CurVarPtr),y
+.c201	85 fe		sta $fe				sta StringPtr
+.c203	c8		iny				iny
+.c204	b1 47		lda ($47),y			lda (CurVarPtr),y
+.c206	85 ff		sta $ff				sta StringPtr+1
+.c208	a0 00		ldy #$00			ldy #0
+.c20a	b1 fe		lda ($fe),y	normalize_loop	lda (StringPtr),y
+.c20c	aa		tax				tax
+.c20d	29 e0		and #$e0			and #%11100000			; first area of uppercase
+.c20f	c9 60		cmp #$60			cmp #$60
+.c211	d0 07		bne $c21a			bne norm_try192
+.c213	8a		txa				txa
+.c214	29 df		and #$df			and #%11011111
+.c216	aa		tax				tax
+.c217	4c 22 c2	jmp $c222			jmp norm_write
+.c21a	c9 c0		cmp #$c0	norm_try192	cmp #$c0
+.c21c	d0 04		bne $c222			bne norm_write
+.c21e	8a		txa				txa
+.c21f	29 7f		and #$7f			and #$7f
+.c221	aa		tax				tax
+.c222	8a		txa		norm_write	txa
+.c223	91 fe		sta ($fe),y			sta (StringPtr),y
+.c225	c8		iny				iny
+.c226	c4 fc		cpy $fc				cpy WordLen
+.c228	d0 e0		bne $c20a			bne normalize_loop
+.c22a	60		rts		normalize_end	rts
+.c22b	a0 00		ldy #$00	CopyStrExpr	ldy #0
+.c22d	b1 64		lda ($64),y			lda (FACMO),y
+.c22f	f0 f9		beq $c22a			beq normalize_end
+.c231	85 fc		sta $fc				sta WordLen
+.c233	c8		iny				iny
+.c234	b1 64		lda ($64),y			lda (FACMO),y
+.c236	85 fe		sta $fe				sta StringPtr
+.c238	aa		tax				tax
+.c239	c8		iny				iny
+.c23a	b1 64		lda ($64),y			lda (FACMO),y
+.c23c	85 ff		sta $ff				sta StringPtr+1
+.c23e	a8		tay				tay
+.c23f	8a		txa				txa
+.c240	4c db b6	jmp $b6db			jmp StringStackClean
+.c243	20 73 c0	jsr $c073	CopyVarToMem	jsr Common.GetString
+.c246	20 2b c2	jsr $c22b			jsr CopyStrExpr
+.c249	20 fd ae	jsr $aefd			jsr SearchComma
+.c24c	20 8a ad	jsr $ad8a			jsr GetFloat
+.c24f	20 f7 b7	jsr $b7f7			jsr FloatToWord
+.c252	a9 00		lda #$00			lda#0
+.c254	a4 fc		ldy $fc				ldy WordLen
+.c256	91 14		sta ($14),y			sta (WAC_LO),y
+.c258	88		dey		copyvarloop	dey
+.c259	b1 fe		lda ($fe),y			lda (StringPtr),y
+.c25b	91 14		sta ($14),y			sta (WAC_LO),y
+.c25d	c0 00		cpy #$00			cpy #0
+.c25f	d0 f7		bne $c258			bne copyvarloop
+.c261	60		rts				rts
+.c262	20 5a c0	jsr $c05a	Search_Char	jsr Common.check_type_str
+.c265	20 2b c2	jsr $c22b			jsr CopyStrExpr
+.c268	20 fd ae	jsr $aefd			jsr SearchComma
+.c26b	20 9e b7	jsr $b79e			jsr GetByte
+.c26e	86 02		stx $02				stx $02				; temporary save
+.c270	a0 00		ldy #$00			ldy #0
+.c272	b1 fe		lda ($fe),y	search_loop	lda (StringPtr),y
+.c274	c5 02		cmp $02				cmp $02
+.c276	f0 07		beq $c27f			beq search_found
+.c278	c8		iny				iny
+.c279	c4 fc		cpy $fc				cpy WordLen
+.c27b	d0 f5		bne $c272			bne search_loop
+.c27d	a0 ff		ldy #$ff			ldy #$ff
+.c27f	c8		iny		search_found	iny
+.c280	98		tya				tya
+.c281	4c 3c bc	jmp $bc3c			jmp ACCtoDecimal
+>c284	5b 2e 2e 2e 5d			more_str	.text "[...]"
+>c289	00						.byte 0
+
+;******  Return to file: lm.asm
+
+
+;******  Processing file: lm_text.asm
+
+.c28a					TextMode
+=$fa					ColorSrc	= $fa
+=$fc					CharDest	= $fc
+=$fe					ColorDest	= $fe
+.c28a					PosCursor
+.c28a	20 fd ae	jsr $aefd			jsr SearchComma
+.c28d	20 9e b7	jsr $b79e			jsr GetByte
+.c290	8a		txa				txa
+.c291	48		pha				pha			; memorizza nello stack
+.c292	20 fd ae	jsr $aefd			jsr SearchComma
+.c295	20 9e b7	jsr $b79e			jsr GetByte
+.c298	68		pla				pla
+.c299	a8		tay				tay			; recupera colonna
+.c29a	4c 0c e5	jmp $e50c			jmp SetCursor		; posiziona cursore
+.c29d					CleanRow
+.c29d	20 fd ae	jsr $aefd			jsr SearchComma
+.c2a0	20 9e b7	jsr $b79e			jsr GetByte
+.c2a3	4c ff e9	jmp $e9ff			jmp CleanTextRow
+.c2a6					CopyScreen
+.c2a6	20 fd ae	jsr $aefd			jsr SearchComma
+.c2a9	20 8a ad	jsr $ad8a			jsr GetFloat
+.c2ac	20 f7 b7	jsr $b7f7			jsr FloatToWord
+.c2af	a5 14		lda $14		 		lda WAC_LO
+.c2b1	85 fa		sta $fa				sta ColorSrc
+.c2b3	18		clc				clc
+.c2b4	a5 15		lda $15				lda WAC_HI
+.c2b6	69 04		adc #$04			adc #$4
+.c2b8	85 fb		sta $fb				sta ColorSrc+1
+.c2ba	a9 04		lda #$04			lda #$4
+.c2bc	85 fd		sta $fd				sta CharDest+1
+.c2be	a9 d8		lda #$d8			lda #$d8
+.c2c0	85 ff		sta $ff				sta ColorDest+1
+.c2c2	a9 00		lda #$00			lda #0
+.c2c4	85 fc		sta $fc				sta CharDest
+.c2c6	85 fe		sta $fe				sta ColorDest
+.c2c8	a9 36		lda #$36			lda #%00110110
+.c2ca	85 01		sta $01				sta CPU_PORT	; disattiva ROM Basic
+.c2cc	a2 04		ldx #$04			ldx #4
+.c2ce	a0 00		ldy #$00			ldy #0
+.c2d0	b1 14		lda ($14),y	CopyLoop	lda (WAC_LO),y
+.c2d2	91 fc		sta ($fc),y			sta (CharDest),y
+.c2d4	b1 fa		lda ($fa),y			lda (ColorSrc),y
+.c2d6	91 fe		sta ($fe),y			sta (ColorDest),y
+.c2d8	c8		iny				iny
+.c2d9	d0 f5		bne $c2d0			bne CopyLoop
+.c2db	ca		dex				dex
+.c2dc	f0 0b		beq $c2e9			beq CopyEnd
+.c2de	e6 15		inc $15				inc WAC_HI
+.c2e0	e6 fd		inc $fd				inc CharDest+1
+.c2e2	e6 fb		inc $fb				inc ColorSrc+1
+.c2e4	e6 ff		inc $ff				inc ColorDest+1
+.c2e6	4c d0 c2	jmp $c2d0			jmp CopyLoop
+.c2e9					CopyEnd
+.c2e9	a9 37		lda #$37			lda #%00110111
+.c2eb	85 01		sta $01				sta CPU_PORT
+.c2ed	60		rts				rts
+
+;******  Return to file: lm.asm
+
+
+;******  Processing file: search.asm
+
+.c2ee					Search
+=$fb					LIST_PTR   	= $FB    	; puntatore (2 byte) alla lista
+=$fd					STR_PTR    	= $FD    	; puntatore (2 byte) alla stringa cercata
+=$ff					WORD_IDX      	= $FF    	; indice parola
+.c2ee					Search_Word
+.c2ee	20 fd ae	jsr $aefd			jsr SearchComma
+.c2f1	20 8a ad	jsr $ad8a			jsr GetFloat
+.c2f4	20 f7 b7	jsr $b7f7			jsr FloatToWord
+.c2f7	a5 14		lda $14				lda WAC_LO
+.c2f9	85 fb		sta $fb				sta LIST_PTR
+.c2fb	a5 15		lda $15				lda WAC_HI
+.c2fd	85 fc		sta $fc				sta LIST_PTR+1
+.c2ff	20 fd ae	jsr $aefd			jsr SearchComma
+.c302	20 9e ad	jsr $ad9e			jsr GetExpression
+.c305	20 5a c0	jsr $c05a			jsr Common.check_type_str
+.c308	a0 00		ldy #$00			ldy #0
+.c30a	b1 64		lda ($64),y			lda (FACMO),y
+.c30c	f0 5d		beq $c36b			beq not_found
+.c30e	85 02		sta $02				sta $02			; save string length
+.c310	c8		iny				iny
+.c311	b1 64		lda ($64),y			lda (FACMO),y
+.c313	85 69		sta $69				sta FAC2
+.c315	c8		iny				iny
+.c316	b1 64		lda ($64),y			lda (FACMO),y
+.c318	85 6a		sta $6a				sta FAC2+1
+.c31a	a5 64		lda $64				lda FACMO		; clean stack
+.c31c	a4 65		ldy $65				ldy FACMO+1
+.c31e	20 db b6	jsr $b6db			jsr StringStackClean
+.c321	a5 02		lda $02				lda $02
+.c323	38		sec				sec
+.c324	69 00		adc #$00			adc #0
+.c326	20 f4 b4	jsr $b4f4			jsr AllocateString	; allocate space
+.c329	86 fd		stx $fd				stx STR_PTR
+.c32b	84 fe		sty $fe				sty STR_PTR+1
+.c32d	a4 02		ldy $02				ldy $02
+.c32f	a9 00		lda #$00			lda #0
+.c331	91 fd		sta ($fd),y			sta (STR_PTR),y
+.c333	88		dey		copy_loop	dey
+.c334	b1 69		lda ($69),y			lda (FAC2),y
+.c336	91 fd		sta ($fd),y			sta (STR_PTR),y
+.c338	c0 00		cpy #$00			cpy #0
+.c33a	d0 f7		bne $c333			bne copy_loop
+.c33c	a9 36		lda #$36			lda #%00110110
+.c33e	85 01		sta $01				sta CPU_PORT	; disattiva ROM Basic
+.c340	a2 00		ldx #$00	FIND_WORD       LDX #$00
+.c342	86 ff		stx $ff				STX WORD_IDX		; indice parola
+.c344	a0 00		ldy #$00	NEXT_WORD       ldy #$0
+.c346	b1 fb		lda ($fb),y			LDA (LIST_PTR),Y
+.c348	f0 21		beq $c36b			BEQ not_found     	; $00 all'inizio = fine lista
+.c34a	20 73 c3	jsr $c373			JSR CMP_WORD
+.c34d	f0 17		beq $c366			BEQ FOUND
+.c34f	b1 fb		lda ($fb),y	SKIP_WORD       LDA (LIST_PTR),Y	; salta parola corrente
+.c351	f0 03		beq $c356			BEQ SKIP_END
+.c353	c8		iny				INY
+.c354	d0 f9		bne $c34f			BNE SKIP_WORD
+.c356	c8		iny		SKIP_END        INY              	; salta lo zero
+.c357	98		tya				TYA
+.c358	18		clc				CLC
+.c359	65 fb		adc $fb				ADC LIST_PTR
+.c35b	85 fb		sta $fb				STA LIST_PTR
+.c35d	90 02		bcc $c361			BCC skip_msb
+.c35f	e6 fc		inc $fc				INC LIST_PTR+1
+.c361	e6 ff		inc $ff		skip_msb	INC WORD_IDX
+.c363	4c 44 c3	jmp $c344			JMP NEXT_WORD
+.c366	a6 ff		ldx $ff		found       	LDX WORD_IDX
+.c368	4c 6d c3	jmp $c36d			JMP exit
+.c36b	a2 ff		ldx #$ff	not_found       LDX #$FF
+.c36d					exit
+.c36d	a9 37		lda #$37			lda #%00110111
+.c36f	85 01		sta $01				sta CPU_PORT
+.c371	8a		txa				txa
+.c372	60		rts				RTS
+.c373	a0 00		ldy #$00	CMP_WORD	LDY #$00
+.c375	b1 fb		lda ($fb),y	CMP_LOOP        LDA (LIST_PTR),Y
+.c377	d1 fd		cmp ($fd),y			CMP (STR_PTR),Y
+.c379	d0 0b		bne $c386			BNE CMP_FAIL
+.c37b	b1 fb		lda ($fb),y	CMP_BOTH_ZERO	LDA (LIST_PTR),Y
+.c37d	f0 03		beq $c382			BEQ CHECK_STR_END   	; fine parola lista?
+.c37f	c8		iny				INY
+.c380	d0 f3		bne $c375			BNE CMP_LOOP
+.c382	b1 fd		lda ($fd),y	CHECK_STR_END   LDA (STR_PTR),Y
+.c384	f0 02		beq $c388			BEQ CMP_OK          	; entrambi zero <U+2192> OK
+.c386	a9 01		lda #$01	CMP_FAIL        LDA #$01
+.c388	60		rts		CMP_OK		RTS
+
+;******  Return to file: lm.asm
+
+
+;******  Processing file: peek.asm
+
+=$0334					ListCounter 	= $0334
+=$0335					ListData	= $0335
+.c389					Peek
+.c389					GetIndexPtr
+.c389	20 fd ae	jsr $aefd			jsr SearchComma
+.c38c	20 8a ad	jsr $ad8a			jsr GetFloat
+.c38f	20 f7 b7	jsr $b7f7			jsr FloatToWord
+.c392	20 42 c0	jsr $c042			jsr Common.GetNumVar	; destination var
+.c395	a9 36		lda #$36			lda #%00110110
+.c397	85 01		sta $01				sta CPU_PORT	; disattiva ROM Basic
+.c399	a0 00		ldy #$00			ldy #0
+.c39b	b1 14		lda ($14),y			lda (WAC_LO),y
+.c39d	85 02		sta $02				sta $02
+.c39f	60		rts				rts
+.c3a0	20 89 c3	jsr $c389	PeekByte	jsr GetIndexPtr		; return byte content
+.c3a3	a9 37		lda #$37			lda #%00110111
+.c3a5	85 01		sta $01				sta CPU_PORT
+.c3a7	a5 02		lda $02				lda $02
+.c3a9	85 62		sta $62		SaveByte	sta FAC1+1
+.c3ab	a9 00		lda #$00			lda #0
+.c3ad	85 63		sta $63				sta FAC1+2
+.c3af	a2 88		ldx #$88			ldx #$88
+.c3b1	38		sec		Save		sec
+.c3b2	20 49 bc	jsr $bc49			jsr $bc49
+.c3b5	a6 47		ldx $47		SaveToVar	ldx CurVarPtr
+.c3b7	a4 48		ldy $48				ldy CurVarPtr+1
+.c3b9	20 d4 bb	jsr $bbd4			jsr CopyFAC1toXY
+.c3bc	4c f8 a8	jmp $a8f8			jmp EndStatement
+.c3bf	20 89 c3	jsr $c389	PeekWord	jsr GetIndexPtr		; return word content
+.c3c2	c8		iny				iny
+.c3c3	b1 14		lda ($14),y			lda (WAC_LO),y
+.c3c5	aa		tax				tax
+.c3c6	a9 37		lda #$37			lda #%00110111
+.c3c8	85 01		sta $01				sta CPU_PORT
+.c3ca	86 62		stx $62				stx FAC1+1
+.c3cc	a5 02		lda $02				lda $02
+.c3ce	85 63		sta $63				sta FAC1+2
+.c3d0	a2 90		ldx #$90			ldx #$90
+.c3d2	4c b1 c3	jmp $c3b1			jmp Save
+.c3d5	20 61 c0	jsr $c061	PokeWord	jsr Common.GetWordToFE	; save word to a couple of bytes
+.c3d8	20 fd ae	jsr $aefd			jsr SearchComma
+.c3db	20 8a ad	jsr $ad8a			jsr GetFloat
+.c3de	20 f7 b7	jsr $b7f7			jsr FloatToWord
+.c3e1	a0 00		ldy #$00			ldy #0
+.c3e3	a5 14		lda $14				lda WAC_LO
+.c3e5	91 fe		sta ($fe),y			sta ($fe),y
+.c3e7	c8		iny				iny
+.c3e8	a5 15		lda $15				lda WAC_HI
+.c3ea	91 fe		sta ($fe),y			sta ($fe),y
+.c3ec	60		rts				rts
+.c3ed	20 89 c3	jsr $c389	GetBit		jsr GetIndexPtr
+.c3f0	a9 37		lda #$37			lda #%00110111
+.c3f2	85 01		sta $01				sta CPU_PORT
+.c3f4	20 fd ae	jsr $aefd			jsr SearchComma
+.c3f7	20 9e b7	jsr $b79e			jsr GetByte
+.c3fa	8a		txa				txa
+.c3fb	25 02		and $02				and $02
+.c3fd	4c a9 c3	jmp $c3a9			jmp SaveByte
+.c400					BitMask
+.c400	20 fd ae	jsr $aefd			jsr SearchComma
+.c403	20 8a ad	jsr $ad8a			jsr GetFloat
+.c406	20 f7 b7	jsr $b7f7			jsr FloatToWord
+.c409	20 fd ae	jsr $aefd			jsr SearchComma
+.c40c	20 9e b7	jsr $b79e			jsr GetByte
+.c40f	8a		txa				txa
+.c410	a0 00		ldy #$00			ldy #0
+.c412	60		rts				rts
+.c413	20 00 c4	jsr $c400	SetBit		jsr BitMask
+.c416	11 14		ora ($14),y			ora (WAC_LO),y
+.c418	91 14		sta ($14),y			sta (WAC_LO),y
+.c41a	60		rts				rts
+.c41b	20 00 c4	jsr $c400	ResetBit	jsr BitMask
+.c41e	49 ff		eor #$ff			eor #$ff
+.c420	31 14		and ($14),y			and (WAC_LO),y
+.c422	91 14		sta ($14),y			sta (WAC_LO),y
+.c424	60		rts				rts
+.c425					Scan
+.c425	20 fd ae	jsr $aefd			jsr SearchComma
+.c428	20 8a ad	jsr $ad8a			jsr GetFloat
+.c42b	20 f7 b7	jsr $b7f7			jsr FloatToWord
+.c42e	20 fd ae	jsr $aefd			jsr SearchComma
+.c431	20 9e b7	jsr $b79e			jsr GetByte
+.c434	86 02		stx $02				stx $02
+.c436	20 fd ae	jsr $aefd			jsr SearchComma
+.c439	20 9e b7	jsr $b79e			jsr GetByte
+.c43c	a9 35		lda #$35			lda #<ListData
+.c43e	85 fe		sta $fe				sta $fe
+.c440	a9 03		lda #$03			lda #>ListData
+.c442	85 ff		sta $ff				sta $ff
+.c444	a9 00		lda #$00			lda #0
+.c446	8d 34 03	sta $0334			sta ListCounter
+.c449	8a		txa				txa
+.c44a	a4 02		ldy $02				ldy $02
+.c44c	88		dey		scan_loop	dey
+.c44d	d1 14		cmp ($14),y			cmp (WAC_LO),y
+.c44f	d0 0e		bne $c45f			bne check_loop
+.c451	48		pha		scan_add	pha
+.c452	98		tya				tya
+.c453	48		pha				pha
+.c454	ac 34 03	ldy $0334			ldy ListCounter
+.c457	91 fe		sta ($fe),y			sta ($fe),y
+.c459	ee 34 03	inc $0334			inc ListCounter
+.c45c	68		pla				pla
+.c45d	a8		tay				tay
+.c45e	68		pla				pla
+.c45f	c0 00		cpy #$00	check_loop	cpy #0
+.c461	d0 e9		bne $c44c			bne scan_loop
+.c463	60		rts				rts
+
+;******  Return to file: lm.asm
+
+
+;******  Processing file: memcopy.asm
+
+.c464					MemCopy
+=$fb					OrigStart	= $fb
+=$fd					OrigEnd		= $fd
+.c464					CopyRAM
+.c464	20 fd ae	jsr $aefd			jsr SearchComma
+.c467	20 8a ad	jsr $ad8a			jsr GetFloat
+.c46a	20 f7 b7	jsr $b7f7			jsr FloatToWord
+.c46d	a5 14		lda $14				lda WAC_LO
+.c46f	85 fb		sta $fb				sta OrigStart
+.c471	a5 15		lda $15				lda WAC_HI
+.c473	85 fc		sta $fc				sta OrigStart+1
+.c475	20 fd ae	jsr $aefd			jsr SearchComma
+.c478	20 8a ad	jsr $ad8a			jsr GetFloat
+.c47b	20 f7 b7	jsr $b7f7			jsr FloatToWord
+.c47e	a5 14		lda $14				lda WAC_LO
+.c480	85 fd		sta $fd				sta OrigEnd
+.c482	a5 15		lda $15				lda WAC_HI
+.c484	85 fe		sta $fe				sta OrigEnd+1
+.c486	20 fd ae	jsr $aefd			jsr SearchComma
+.c489	20 8a ad	jsr $ad8a			jsr GetFloat
+.c48c	20 f7 b7	jsr $b7f7			jsr FloatToWord
+.c48f	a4 fb		ldy $fb				ldy OrigStart
+.c491	a6 fc		ldx $fc				ldx OrigStart+1
+.c493	a9 00		lda #$00			lda #0
+.c495	85 fb		sta $fb				sta OrigStart
+.c497	85 14		sta $14				sta WAC_LO
+.c499	78		sei				sei
+.c49a	a9 35		lda #$35			lda #%00110101
+.c49c	85 01		sta $01				sta CPU_PORT
+.c49e	b1 fb		lda ($fb),y	copy_loop	lda (OrigStart),y
+.c4a0	91 14		sta ($14),y			sta (WAC_LO),y
+.c4a2	c8		iny				iny
+.c4a3	d0 f9		bne $c49e			bne copy_loop
+.c4a5	e8		inx				inx
+.c4a6	e4 fe		cpx $fe				cpx OrigEnd+1
+.c4a8	f0 07		beq $c4b1			beq end_loop
+.c4aa	86 fc		stx $fc				stx OrigStart+1
+.c4ac	e6 15		inc $15				inc WAC_HI
+.c4ae	4c 9e c4	jmp $c49e			jmp copy_loop
+.c4b1					end_loop
+.c4b1	a9 37		lda #$37			lda #%00110111
+.c4b3	85 01		sta $01				sta CPU_PORT
+.c4b5	58		cli				cli
+.c4b6	60		rts				rts
+
+;******  Return to file: lm.asm
+
+.c4b7	a9 62		lda #$62	x_setusr	lda #<Strings.Search_Char
+.c4b9	8d 11 03	sta $0311			sta usr_pointer
+.c4bc	a9 c2		lda #$c2			lda #>Strings.Search_Char
+.c4be	8d 12 03	sta $0312			sta usr_pointer+1
+.c4c1	60		rts				rts
+
+;******  End of listing
