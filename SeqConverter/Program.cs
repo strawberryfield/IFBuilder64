@@ -71,20 +71,21 @@ foreach (var file in FilesList)
     int numVerbs = Convert.ToInt32(seqData[3]);
     int scorebased = Convert.ToInt32(seqData[4]);
     int maxscore = Convert.ToInt32(seqData[5]);
-    int startRoom = Convert.ToInt32(seqData[6]);
+    string startRoom = seqData[6].Trim();
 
-    game.initialroom = (byte)startRoom;
+    game.initialroom = startRoom;
     for (int i = 0; i < numRooms; i++)
     {
         game.rooms.Add(new Room
         {
+            name = (i+1).ToString(),
             description = seqData[7 + i * 7],
-            north = GetByte(seqData[8 + i * 7]),
-            south = GetByte(seqData[9 + i * 7]),
-            east = GetByte(seqData[10 + i * 7]),
-            west = GetByte(seqData[11 + i * 7]),
-            up = GetByte(seqData[12 + i * 7]),
-            down = GetByte(seqData[13 + i * 7])
+            north = seqData[8 + i * 7].Trim(),
+            south = seqData[9 + i * 7].Trim(),
+            east = seqData[10 + i * 7].Trim(),
+            west = seqData[11 + i * 7].Trim(),
+            up = seqData[12 + i * 7].Trim(),
+            down = seqData[13 + i * 7].Trim()
         });
     }
     int baseIndex = 7 + numRooms * 7;
@@ -94,7 +95,7 @@ foreach (var file in FilesList)
         game.items.Add(new Item
         {
             name = seqData[baseIndex + i * 2],
-            location = GetByte(seqData[baseIndex + i * 2 + 1]),
+            location = seqData[baseIndex + i * 2 + 1].Trim(),
             description = ""
         });
     }
@@ -111,14 +112,6 @@ foreach (var file in FilesList)
     Console.WriteLine($"Converted '{file}' to '{outFile}'.");
 }
 
-#endregion
-
-#region functions
-byte GetByte(string data)
-{
-    int x = Convert.ToInt32(data);
-    return x >= 0 ? (byte)x : (byte)255;
-}
 #endregion
 
 #region Help Procedures
