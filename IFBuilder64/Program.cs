@@ -62,7 +62,10 @@ if (!string.IsNullOrEmpty(TemplateType))
     {
         OutputFile = "game.json";
     }
-    CreateTemplate(lang);
+    Game game = new(lang);
+
+    string json = System.Text.Json.JsonSerializer.Serialize(game, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+    File.WriteAllText(OutputFile, json);
     Console.WriteLine($"Template file '{OutputFile}' created.");
     return;
 }
@@ -89,22 +92,12 @@ ShowHelp();
 return;
 #endregion
 
-#region template
-void CreateTemplate(TemplateLanguage lang)
-{
-    var game = new Game(lang);
-
-    var json = System.Text.Json.JsonSerializer.Serialize(game, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
-    File.WriteAllText("game.json", json);
-}
-#endregion
-
 #region build
 void BuildGame(string inputFile, string outputFile)
 {
     Console.WriteLine($"Building '{inputFile}' to '{outputFile}*'...");
-    var jsonText = File.ReadAllText(inputFile);
-    var game = System.Text.Json.JsonSerializer.Deserialize<Game>(jsonText);
+    string jsonText = File.ReadAllText(inputFile);
+    Game? game = System.Text.Json.JsonSerializer.Deserialize<Game>(jsonText);
     if (game is null)
     {
         Console.WriteLine($"Error: Unable to parse game file '{inputFile}'.");

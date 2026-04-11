@@ -34,16 +34,16 @@
     <None Update="templates\directions.it.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="templates\messages.en.txt">
+    <None Update="templates\messages.en.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="templates\messages.it.txt">
+    <None Update="templates\messages.it.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="templates\verbs.en.txt">
+    <None Update="templates\verbs.en.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="templates\verbs.it.txt">
+    <None Update="templates\verbs.it.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

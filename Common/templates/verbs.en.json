@@ -1,0 +1,154 @@
+[
+  {
+    "command": "n",
+    "action": 0
+  },
+  {
+    "command": "north",
+    "action": 0
+  },
+  {
+    "command": "s",
+    "action": 1
+  },
+  {
+    "command": "south",
+    "action": 1
+  },
+  {
+    "command": "e",
+    "action": 2
+  },
+  {
+    "command": "east",
+    "action": 2
+  },
+  {
+    "command": "w",
+    "action": 3
+  },
+  {
+    "command": "west",
+    "action": 3
+  },
+  {
+    "command": "u",
+    "action": 4
+  },
+  {
+    "command": "up",
+    "action": 4
+  },
+  {
+    "command": "down",
+    "action": 5
+  },
+  {
+    "command": "g",
+    "action": 6
+  },
+  {
+    "command": "go",
+    "action": 6
+  },
+  {
+    "command": "l",
+    "action": 7
+  },
+  {
+    "command": "look",
+    "action": 7
+  },
+  {
+    "command": "x",
+    "action": 7
+  },
+  {
+    "command": "examine",
+    "action": 7
+  },
+  {
+    "command": "i",
+    "action": 15
+  },
+  {
+    "command": "inventory",
+    "action": 15
+  },
+  {
+    "command": "exits",
+    "action": 25
+  },
+  {
+    "command": "t",
+    "action": 8
+  },
+  {
+    "command": "take",
+    "action": 8
+  },
+  {
+    "command": "d",
+    "action": 9
+  },
+  {
+    "command": "drop",
+    "action": 9
+  },
+  {
+    "command": "open",
+    "action": 10
+  },
+  {
+    "command": "close",
+    "action": 11
+  },
+  {
+    "command": "power",
+    "action": 12
+  },
+  {
+    "command": "unpower",
+    "action": 13
+  },
+  {
+    "command": "insert",
+    "action": 14
+  },
+  {
+    "command": "xyzzy",
+    "action": 16
+  },
+  {
+    "command": "help",
+    "action": 17
+  },
+  {
+    "command": "about",
+    "action": 23
+  },
+  {
+    "command": "commands",
+    "action": 18
+  },
+  {
+    "command": "save",
+    "action": 19
+  },
+  {
+    "command": "load",
+    "action": 20
+  },
+  {
+    "command": "record",
+    "action": 24
+  },
+  {
+    "command": "undo",
+    "action": 21
+  },
+  {
+    "command": "quit",
+    "action": 22
+  }
+]

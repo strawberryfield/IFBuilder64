@@ -1,0 +1,182 @@
+[
+  {
+    "command": "n",
+    "action": 0
+  },
+  {
+    "command": "nord",
+    "action": 0
+  },
+  {
+    "command": "s",
+    "action": 1
+  },
+  {
+    "command": "sud",
+    "action": 1
+  },
+  {
+    "command": "e",
+    "action": 2
+  },
+  {
+    "command": "est",
+    "action": 2
+  },
+  {
+    "command": "o",
+    "action": 3
+  },
+  {
+    "command": "w",
+    "action": 3
+  },
+  {
+    "command": "ovest",
+    "action": 3
+  },
+  {
+    "command": "a",
+    "action": 4
+  },
+  {
+    "command": "alto",
+    "action": 4
+  },
+  {
+    "command": "b",
+    "action": 5
+  },
+  {
+    "command": "basso",
+    "action": 5
+  },
+  {
+    "command": "v",
+    "action": 6
+  },
+  {
+    "command": "vai",
+    "action": 6
+  },
+  {
+    "command": "g",
+    "action": 7
+  },
+  {
+    "command": "guarda",
+    "action": 7
+  },
+  {
+    "command": "x",
+    "action": 7
+  },
+  {
+    "command": "esamina",
+    "action": 7
+  },
+  {
+    "command": "inventario",
+    "action": 15
+  },
+  {
+    "command": "uscite",
+    "action": 25
+  },
+  {
+    "command": "p",
+    "action": 8
+  },
+  {
+    "command": "t",
+    "action": 8
+  },
+  {
+    "command": "prendi",
+    "action": 8
+  },
+  {
+    "command": "l",
+    "action": 9
+  },
+  {
+    "command": "d",
+    "action": 9
+  },
+  {
+    "command": "lascia",
+    "action": 9
+  },
+  {
+    "command": "apri",
+    "action": 10
+  },
+  {
+    "command": "chiudi",
+    "action": 11
+  },
+  {
+    "command": "accendi",
+    "action": 12
+  },
+  {
+    "command": "spegni",
+    "action": 13
+  },
+  {
+    "command": "inserisci",
+    "action": 14
+  },
+  {
+    "command": "i",
+    "action": 15
+  },
+  {
+    "command": "xyzzy",
+    "action": 16
+  },
+  {
+    "command": "abracadabra",
+    "action": 16
+  },
+  {
+    "command": "aiuto",
+    "action": 17
+  },
+  {
+    "command": "help",
+    "action": 17
+  },
+  {
+    "command": "comandi",
+    "action": 18
+  },
+  {
+    "command": "info",
+    "action": 23
+  },
+  {
+    "command": "salva",
+    "action": 19
+  },
+  {
+    "command": "carica",
+    "action": 20
+  },
+  {
+    "command": "registra",
+    "action": 24
+  },
+  {
+    "command": "undo",
+    "action": 21
+  },
+  {
+    "command": "annulla",
+    "action": 21
+  },
+  {
+    "command": "fine",
+    "action": 22
+  }
+]
