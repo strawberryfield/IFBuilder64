@@ -1,51 +1,89 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <AssemblyName>Casasoft.IFBuilder64.$(MSBuildProjectName)</AssemblyName>
-    <AssemblyTitle>Common classess for IFBuilder64</AssemblyTitle>
-    <RootNamespace>Casasoft.IFBuilder64.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<AssemblyName>Casasoft.IFBuilder64.$(MSBuildProjectName)</AssemblyName>
+		<AssemblyTitle>Common classess for IFBuilder64</AssemblyTitle>
+		<RootNamespace>Casasoft.IFBuilder64.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<Title>Casasoft IFBuilder Common Classes</Title>
+		<Authors>Roberto Ceccarelli</Authors>
+		<Company>Casasoft</Company>
+		<Product>Casasoft IFBuilder</Product>
+		<Description>Common Classes for Casasoft IFBuilder</Description>
+		<Copyright>copyright (c) 2026 Roberto Ceccarelli - Casasoft</Copyright>
+		<PackageTags>Interactive Fiction</PackageTags>
+		<PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
+		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Update="Json\Game.cs">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Compile>
-    <Compile Update="Json\Game.Template.cs">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Compile>
-    <Compile Update="Json\Item.cs">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Compile>
-    <Compile Update="Json\Room.cs">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Compile>
-    <Compile Update="Json\Verb.cs">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Compile>
-  </ItemGroup>
+	<ItemGroup>
+	  <None Remove="templates\directions.en.txt" />
+	  <None Remove="templates\directions.it.txt" />
+	  <None Remove="templates\messages.en.json" />
+	  <None Remove="templates\messages.it.json" />
+	  <None Remove="templates\verbs.en.json" />
+	  <None Remove="templates\verbs.it.json" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Update="templates\directions.en.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="templates\directions.it.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="templates\messages.en.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="templates\messages.it.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="templates\verbs.en.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="templates\verbs.it.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+	  <Content Include="templates\directions.en.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	    <BuildAction>Content</BuildAction>
+	    <IncludeInPackage>true</IncludeInPackage>
+	    <PackageCopyToOutput>true</PackageCopyToOutput>
+	  </Content>
+	  <Content Include="templates\directions.it.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	    <BuildAction>Content</BuildAction>
+	    <IncludeInPackage>true</IncludeInPackage>
+	    <PackageCopyToOutput>true</PackageCopyToOutput>
+	  </Content>
+	  <Content Include="templates\messages.en.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	    <BuildAction>Content</BuildAction>
+	    <IncludeInPackage>true</IncludeInPackage>
+	    <PackageCopyToOutput>true</PackageCopyToOutput>
+	  </Content>
+	  <Content Include="templates\messages.it.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	    <BuildAction>Content</BuildAction>
+	    <IncludeInPackage>true</IncludeInPackage>
+	    <PackageCopyToOutput>true</PackageCopyToOutput>
+	  </Content>
+	  <Content Include="templates\verbs.en.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	    <BuildAction>Content</BuildAction>
+	    <IncludeInPackage>true</IncludeInPackage>
+	    <PackageCopyToOutput>true</PackageCopyToOutput>
+	  </Content>
+	  <Content Include="templates\verbs.it.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	    <BuildAction>Content</BuildAction>
+	    <IncludeInPackage>true</IncludeInPackage>
+	    <PackageCopyToOutput>true</PackageCopyToOutput>
+	  </Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Json\Game.cs">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Compile>
+		<Compile Update="Json\Game.Template.cs">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Compile>
+		<Compile Update="Json\Item.cs">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Compile>
+		<Compile Update="Json\Room.cs">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Compile>
+		<Compile Update="Json\Verb.cs">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Compile>
+	</ItemGroup>
 
 </Project>

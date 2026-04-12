@@ -153,7 +153,7 @@ public partial class Game
     /// The zero-based index of the matching room when found; otherwise <c>255</c> to indicate "not found".
     /// </returns>
     /// <remarks>
-    /// This method performs a linear search using <see cref="List{T}.FindIndex"/>. The sentinel value
+    /// This method performs a linear search using <see cref="System.Collections.Generic.List{T}.FindIndex(System.Predicate{T})"/>. The sentinel value
     /// <c>255</c> is used because room indices are expressed as <see cref="byte"/> elsewhere in the model.
     /// </remarks>
     public byte getRoomIndexByName(string? roomName)
@@ -174,7 +174,7 @@ public partial class Game
     /// The zero-based index of the matching item when found; otherwise <c>255</c> to indicate "not found".
     /// </returns>
     /// <remarks>
-    /// This method performs a linear search using <see cref="List{T}.FindIndex"/>. The sentinel value
+    /// This method performs a linear search using <see cref="System.Collections.Generic.List{T}.FindIndex(System.Predicate{T})"/>. The sentinel value
     /// <c>255</c> is used because item indices are represented as <see cref="byte"/> values.
     /// </remarks>
     public byte getItemIndexByName(string? itemName)
@@ -242,7 +242,7 @@ public partial class Game
     /// direction.
     /// </returns>
     /// <remarks>
-    /// The method performs a separate <see cref="List{T}.FindIndex"/> call per direction, matching the
+    /// The method performs a separate <see cref="System.Collections.Generic.List{T}.FindIndex(System.Predicate{T})"/> call per direction, matching the
     /// door side name against <paramref name="room"/>.name. For performance-sensitive scenarios consider
     /// building a lookup map instead of repeated linear searches.
     /// </remarks>

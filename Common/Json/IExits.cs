@@ -17,8 +17,36 @@
 // but WITHOUT ANY WARRANTY
 //-----------------------------------------------------------------------
 
+using System.Text.Json.Serialization;
+
 namespace Casasoft.IFBuilder64.Json;
 
+/// <summary>
+/// Represents the set of directional exits (links) for a location used in JSON serialization.
+/// </summary>
+/// <remarks>
+/// Each property corresponds to a direction and holds an identifier (for example, a room ID
+/// or name) that consumers can use to resolve the linked location. Properties are optional:
+/// when a property is <c>null</c> it should be omitted from JSON (for example by applying
+/// <see cref="JsonIgnoreAttribute"/> on the concrete implementation or by configuring the
+/// serializer to ignore null values).
+///
+/// Direction semantics:
+/// - <c>north</c>, <c>south</c>, <c>east</c>, <c>west</c> are horizontal directions.
+/// - <c>up</c>, <c>down</c> are vertical directions.
+///
+/// Identifiers are intentionally opaque strings; the meaning (absolute ID, relative name,
+/// path, etc.) is determined by the consuming code.
+/// </remarks>
+/// <example>
+/// Example JSON for a room with two exits:
+/// <code>
+/// {
+///   "north": "library",
+///   "up": "attic"
+/// }
+/// </code>
+/// </example>
 public interface IExits
 {
     /// <summary>
