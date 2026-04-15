@@ -2,7 +2,7 @@
   "profiles": {
     "IFBuilder64": {
       "commandName": "Project",
-      "commandLineArgs": "--template=it --out=C:\\Commodore\\projects\\adventure\\latinorum\\bin\\empty.it.json"
+      "commandLineArgs": "--schema"
     }
   }
 }

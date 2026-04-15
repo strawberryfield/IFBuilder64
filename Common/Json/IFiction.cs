@@ -17,9 +17,8 @@
 // but WITHOUT ANY WARRANTY
 //-----------------------------------------------------------------------
 
-using System.Net;
-using System.Reflection;
 using System.Xml.Linq;
+using System.ComponentModel;
 
 namespace Casasoft.IFBuilder64.Common.Json;
 
@@ -33,23 +32,27 @@ namespace Casasoft.IFBuilder64.Common.Json;
 /// sensible defaults when the value is omitted in incoming JSON (see
 /// <see cref="headline"/> and <see cref="genre"/>).
 /// </remarks>
+[Description("Metadata for an interactive fiction work used for JSON (de)serialization.")]
 public class IFiction
 {
     /// <summary>
     /// The title of the interactive fiction.
     /// This property is required when creating or deserializing an <see cref="IFiction"/>.
     /// </summary>
+    [Description("The title of the interactive fiction.")]
     public required string title { get; set; }
 
     /// <summary>
     /// The primary author of the interactive fiction.
     /// This property is required when creating or deserializing an <see cref="IFiction"/>.
     /// </summary>
+    [Description("The primary author of the interactive fiction.")]
     public required string author { get; set; }
 
     /// <summary>
     /// Optional IFID (Interactive Fiction ID) that uniquely identifies the work.
     /// </summary>
+    [Description("Optional IFID (Interactive Fiction ID) that uniquely identifies the work.")]
     public string? ifid { get; set; }
 
     /// <summary>
@@ -66,6 +69,7 @@ public class IFiction
     /// The property uses a private backing field (<see cref="_headline"/>)
     /// so callers receive a sensible default when the headline is omitted in JSON.
     /// </remarks>
+    [Description("Short subtitle for the work; defaults to 'An interactive fiction' when omitted.")]
     public string headline
     {
         get => _headline ?? "An interactive fiction";
@@ -81,6 +85,7 @@ public class IFiction
     /// The genre of the interactive fiction.
     /// Returns "Fiction" when no explicit genre has been set.
     /// </summary>
+    [Description("The genre of the work; defaults to 'Fiction' when omitted.")]
     public string genre
     {
         get => _genre ?? "Fiction";
@@ -90,31 +95,37 @@ public class IFiction
     /// <summary>
     /// Optional year when the work was first published (calendar year).
     /// </summary>
+    [Description("Optional year when the work was first published (calendar year).")]
     public int? firstpublished { get; set; }
 
     /// <summary>
     /// Optional version number for the work or its metadata.
     /// </summary>
+    [Description("Optional version number for the work or its metadata.")]
     public int? version { get; set; }
 
     /// <summary>
     /// Optional longer description or synopsis of the interactive fiction.
     /// </summary>
+    [Description("Optional longer description or synopsis of the interactive fiction.")]
     public string? description { get; set; }
 
     /// <summary>
     /// Optional language identifier (for example "en" or "en-US").
     /// </summary>
+    [Description("Optional language identifier (e.g., 'en' or 'en-US').")]
     public string? language { get; set; }
 
     /// <summary>
     /// Optional URL related to the work (project page, author page, repository, etc.).
     /// </summary>
+    [Description("Optional URL related to the work (project page, author page, repository, etc.).")]
     public string? url { get; set; }
 
     /// <summary>
     /// Optional contact email for the author or project.
     /// </summary>
+    [Description("Optional contact email for the author or project.")]
     public string? email { get; set; }
 
     /// <summary>
@@ -179,7 +190,7 @@ public class IFiction
 
         string today = DateTime.Now.Date.ToString("yyyy-MM-dd");
         XElement release = new(ns + "releases",
-            new XElement(ns + "attached", 
+            new XElement(ns + "attached",
                 new XElement(ns + "release",
                     new XElement(ns + "releasedate", today),
                     new XElement(ns + "version", version.HasValue ? version.Value.ToString() : "1"),
@@ -197,7 +208,8 @@ public class IFiction
         );
         story.Add(colophon);
 
-        if (!string.IsNullOrWhiteSpace(url) || !string.IsNullOrWhiteSpace(email)) {             
+        if (!string.IsNullOrWhiteSpace(url) || !string.IsNullOrWhiteSpace(email))
+        {
             XElement contact = new(ns + "contacts");
             if (!string.IsNullOrWhiteSpace(url))
                 contact.Add(new XElement(ns + "url", url));

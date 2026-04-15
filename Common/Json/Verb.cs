@@ -17,6 +17,8 @@
 // but WITHOUT ANY WARRANTY
 //-----------------------------------------------------------------------
 
+using System.ComponentModel;
+
 namespace Casasoft.IFBuilder64.Json;
 
 /// <summary>
@@ -26,6 +28,7 @@ namespace Casasoft.IFBuilder64.Json;
 /// A verb consists of a textual command and an associated numeric action code.
 /// This class is a simple DTO intended for JSON serialization/deserialization.
 /// </remarks>
+[Description("Represents a verb entry in the game's JSON model. Contains a command string and an associated action code.")]
 public class Verb
 {
     /// <summary>
@@ -35,6 +38,7 @@ public class Verb
     /// A <see cref="string"/> that contains the command text (for example, "take", "open").
     /// This value is used when matching or displaying verb names.
     /// </value>
+    [Description("Textual command for the verb (e.g., \"take\", \"open\").")]
     public required string command { get; set; }
 
     /// <summary>
@@ -44,5 +48,6 @@ public class Verb
     /// A <see cref="byte"/> value representing the action code. The meaning of specific
     /// codes is determined by the consuming logic within IFBuilder64.
     /// </value>
+    [Description("Numeric action code associated with the verb.")]
     public byte action { get; set; }
 }

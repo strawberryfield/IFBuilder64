@@ -18,6 +18,7 @@
 //-----------------------------------------------------------------------
 
 using System.Text.Json.Serialization;
+using System.ComponentModel;
 
 namespace Casasoft.IFBuilder64.Json;
 
@@ -30,6 +31,7 @@ namespace Casasoft.IFBuilder64.Json;
 /// the builder and runtime to determine how the connection behaves (locked,
 /// open/closed state, directional targets, etc.).
 /// </remarks>
+[Description("Represents a door entry in the game's JSON model. Describes a connection between locations and related metadata.")]
 public class Door : IExits
 {
     /// <summary>
@@ -39,6 +41,7 @@ public class Door : IExits
     /// This value is used as the primary human-readable identifier for the door.
     /// It is expected to be a short, descriptive string.
     /// </remarks>
+    [Description("Primary human-readable identifier for the door.")]
     public required string name { get; set; }
 
     /// <summary>
@@ -48,6 +51,7 @@ public class Door : IExits
     /// A longer, free-form text that describes the door. May contain punctuation
     /// and plain text suitable for display in UI or documentation.
     /// </remarks>
+    [Description("A free-form text description of the door suitable for display in UI or documentation.")]
     public required string description { get; set; }
 
     /// <summary>
@@ -58,6 +62,7 @@ public class Door : IExits
     /// <see cref="JsonIgnoreAttribute"/> applied to this member.
     /// </remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [Description("Optional message displayed when the door cannot be opened.")]
     public string? denyopen { get; set; }
 
     /// <summary>
@@ -69,6 +74,7 @@ public class Door : IExits
     /// Consumers should interpret the format according to the JSON schema used.
     /// </remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [Description("Optional identifier of an item (e.g. a key) that can unlock or interact with this door.")]
     public string? unlockitem { get; set; }
 
     /// <summary>
@@ -79,6 +85,7 @@ public class Door : IExits
     /// it is considered closed. A <c>null</c> value indicates no explicit state.
     /// The <see cref="Options"/> bitmask encodes the effective open state when serialized.
     /// </remarks>
+    [Description("Indicates whether the door is currently open (true), closed (false), or unspecified (null).")]
     public bool? open { get; set; }
 
     /// <summary>
@@ -105,6 +112,7 @@ public class Door : IExits
     /// due to the <see cref="JsonIgnoreAttribute"/> applied.
     /// </remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [Description("Optional identifier of the location reached when going north through this door.")]
     public string? north { get; set; }
 
     /// <summary>
@@ -114,6 +122,7 @@ public class Door : IExits
     /// See <see cref="north"/> for semantics. This property is optional and omitted when <c>null</c>.
     /// </remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [Description("Optional identifier of the location reached when going south through this door.")]
     public string? south { get; set; }
 
     /// <summary>
@@ -123,6 +132,7 @@ public class Door : IExits
     /// See <see cref="north"/> for semantics. This property is optional and omitted when <c>null</c>.
     /// </remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [Description("Optional identifier of the location reached when going east through this door.")]
     public string? east { get; set; }
 
     /// <summary>
@@ -132,6 +142,7 @@ public class Door : IExits
     /// See <see cref="north"/> for semantics. This property is optional and omitted when <c>null</c>.
     /// </remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [Description("Optional identifier of the location reached when going west through this door.")]
     public string? west { get; set; }
 
     /// <summary>
@@ -141,6 +152,7 @@ public class Door : IExits
     /// See <see cref="north"/> for semantics. This property is optional and omitted when <c>null</c>.
     /// </remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [Description("Optional identifier of the location reached when going up through this door.")]
     public string? up { get; set; }
 
     /// <summary>
@@ -150,6 +162,7 @@ public class Door : IExits
     /// See <see cref="north"/> for semantics. This property is optional and omitted when <c>null</c>.
     /// </remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [Description("Optional identifier of the location reached when going down through this door.")]
     public string? down { get; set; }
 
 }

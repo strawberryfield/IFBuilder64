@@ -19,16 +19,23 @@
 
 using Casasoft.Commodore;
 using Casasoft.Helpers;
+using Casasoft.IFBuilder64.Common;
 using Casasoft.IFBuilder64.Json;
 using IFBuilder64;
 using Mono.Options;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.Json.Schema;
 using System.Xml.Linq;
 
 #region main
 bool ShouldShowHelp = false;
 bool ShouldSuppressBanner = false;
+bool ShowSchema = false;
 string OutputFile = string.Empty;
 string TemplateType = string.Empty;
 
@@ -37,7 +44,8 @@ OptionSet p = new()
     { "q|quiet", "Suppress banner print", v => ShouldSuppressBanner = v != null },
     { "h|?|help", "Show this help", v => ShouldShowHelp = v != null },
     { "o|out=", "Output file name", o => OutputFile = o },
-    { "template=", "Create a game.json template file", o => TemplateType = o }
+    { "template=", "Create a game.json template file", o => TemplateType = o },
+    { "schema", "Show JSON schema", v => ShowSchema = v != null }
 };
 
 List<string> FilesList = FileHelpers.ExpandWildcards(p.Parse(args));
@@ -48,6 +56,14 @@ if (!ShouldSuppressBanner)
 if (ShouldShowHelp)
 {
     ShowHelp();
+    return;
+}
+
+if (ShowSchema)
+{    
+    JsonSerializerOptions options = JsonSerializerOptions.Default;
+    JsonNode schema = options.GetJsonSchemaAsNode(typeof(Game), Helpers.GetJsonSchemaDescriptions);
+    Console.WriteLine(schema);
     return;
 }
 
@@ -436,7 +452,7 @@ void BuildGame(string inputFile, string outputFile)
         XNamespace ns = oStory?.Name.Namespace ?? "http://babel.ifarchive.org/protocol/iFiction/";
         oExecutable?.Add(new XElement(ns + "platform", "Commodore64"));
 
-        filename= outputFile + "iFiction.xml";
+        filename = outputFile + "iFiction.xml";
         oXml.Save(filename);
         Console.WriteLine($"Build IFiction XML: '{filename}'.");
     }

@@ -18,6 +18,12 @@
 //-----------------------------------------------------------------------
 
 using Casasoft.IFBuilder64.Json;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.Json.Schema;
 
 namespace Casasoft.IFBuilder64.Common;
 
@@ -68,4 +74,63 @@ public static class Helpers
                 throw new ArgumentException($"Unknown template language '{langStr}'. Supported languages are 'english' and 'italiano'.");
         }
     }
+
+    /// <summary>
+    /// Provides a preconfigured <see cref="JsonSchemaExporterOptions"/> that injects
+    /// <see cref="DescriptionAttribute"/> values into generated JSON Schema nodes.
+    /// </summary>
+    /// <remarks>
+    /// The returned options set <see cref="JsonSchemaExporterOptions.TransformSchemaNode"/>
+    /// to a delegate that:
+    /// - determines the attribute provider from the current context (property or type),
+    /// - searches for a <see cref="DescriptionAttribute"/> (including inherited attributes),
+    /// - if found, ensures the schema node is represented as a <see cref="JsonObject"/>; when the
+    ///   original schema is a boolean schema it is wrapped into an object and a <c>{"not": true}</c>
+    ///   entry is added for a <see cref="JsonValueKind.False"/> boolean schema to preserve semantics,
+    /// - inserts a "description" property containing the attribute's <see cref="DescriptionAttribute.Description"/>
+    ///   as the first property in the resulting object.
+    ///
+    /// This behavior is intended for use with System.Text.Json-based schema generation and preserves
+    /// existing behavior for boolean schemas and description injection.
+    /// </remarks>
+    /// <value>
+    /// A <see cref="JsonSchemaExporterOptions"/> instance with the <see cref="JsonSchemaExporterOptions.TransformSchemaNode"/>
+    /// delegate configured to apply <see cref="DescriptionAttribute"/> values to schema output.
+    /// </value>
+    public static JsonSchemaExporterOptions GetJsonSchemaDescriptions => new()
+    {
+        TransformSchemaNode = (context, schema) =>
+        {
+            // Determine if a type or property and extract the relevant attribute provider.
+            ICustomAttributeProvider? attributeProvider = context.PropertyInfo is not null
+                ? context.PropertyInfo.AttributeProvider
+                : context.TypeInfo.Type;
+
+            // Look up any description attributes.
+            DescriptionAttribute? descriptionAttr = attributeProvider?
+                .GetCustomAttributes(inherit: true)
+                .Select(attr => attr as DescriptionAttribute)
+                .FirstOrDefault(attr => attr is not null);
+
+            // Apply description attribute to the generated schema.
+            if (descriptionAttr != null)
+            {
+                if (schema is not JsonObject jObj)
+                {
+                    // Handle the case where the schema is a Boolean.
+                    JsonValueKind valueKind = schema.GetValueKind();
+                    Debug.Assert(valueKind is JsonValueKind.True or JsonValueKind.False);
+                    schema = jObj = new JsonObject();
+                    if (valueKind is JsonValueKind.False)
+                    {
+                        jObj.Add("not", true);
+                    }
+                }
+
+                jObj.Insert(0, "description", descriptionAttr.Description);
+            }
+
+            return schema;
+        }
+    };
 }

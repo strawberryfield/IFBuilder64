@@ -18,6 +18,7 @@
 //-----------------------------------------------------------------------
 
 using System.Text.Json.Serialization;
+using System.ComponentModel;
 
 namespace Casasoft.IFBuilder64.Json;
 
@@ -40,6 +41,7 @@ namespace Casasoft.IFBuilder64.Json;
 ///   <see cref="description"/>, indicating they must be present when creating
 ///   instances (e.g., during deserialization or initialization).
 /// </remarks>
+[Description("Represents a navigable room in the game's JSON model. Describes room metadata and directional exits.")]
 public class Room : IExits
 {
     /// <summary>
@@ -50,6 +52,7 @@ public class Room : IExits
     /// required for correct model construction and may be used as a lookup key
     /// by consumers.
     /// </value>
+    [Description("Unique identifier or short name for the room.")]
     public required string name { get; set; }
 
     /// <summary>
@@ -59,6 +62,7 @@ public class Room : IExits
     /// A non-null <see cref="string"/> with the description shown to players.
     /// May be empty but should not be <c>null</c> where display text is expected.
     /// </value>
+    [Description("Human-readable description of the room shown to players.")]
     public required string description { get; set; }
 
     /// <summary>
@@ -75,6 +79,7 @@ public class Room : IExits
     /// setting on the property.
     /// </remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [Description("Optional identifier of the location reached when going north.")]
     public string? north { get; set; }
 
     /// <summary>
@@ -85,6 +90,7 @@ public class Room : IExits
     /// or <c>null</c> if no south exit is present.
     /// </value>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [Description("Optional identifier of the location reached when going south.")]
     public string? south { get; set; }
 
     /// <summary>
@@ -95,6 +101,7 @@ public class Room : IExits
     /// or <c>null</c> if no east exit is present.
     /// </value>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [Description("Optional identifier of the location reached when going east.")]
     public string? east { get; set; }
 
     /// <summary>
@@ -105,6 +112,7 @@ public class Room : IExits
     /// or <c>null</c> if no west exit is present.
     /// </value>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [Description("Optional identifier of the location reached when going west.")]
     public string? west { get; set; }
 
     /// <summary>
@@ -115,6 +123,7 @@ public class Room : IExits
     /// or <c>null</c> if no up exit is present.
     /// </value>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [Description("Optional identifier of the location reached when going up.")]
     public string? up { get; set; }
 
     /// <summary>
@@ -125,6 +134,7 @@ public class Room : IExits
     /// or <c>null</c> if no down exit is present.
     /// </value>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [Description("Optional identifier of the location reached when going down.")]
     public string? down { get; set; }
 
 }
