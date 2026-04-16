@@ -23,7 +23,6 @@ using Casasoft.IFBuilder64.Common;
 using Casasoft.IFBuilder64.Json;
 using IFBuilder64;
 using Mono.Options;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
@@ -58,21 +57,52 @@ if (ShouldShowHelp)
     ShowHelp();
     return;
 }
+#endregion
 
+#region schema 
 if (ShowSchema)
-{    
+{
     JsonSerializerOptions options = JsonSerializerOptions.Default;
     JsonNode schema = options.GetJsonSchemaAsNode(typeof(Game), Helpers.GetJsonSchemaDescriptions);
-    Console.WriteLine(schema);
+
+    // Ensure schema contains $schema and title keywords and place them at the beginning
+    if (schema is JsonObject schemaObj)
+    {
+        var ordered = new JsonObject
+        {
+            ["$schema"] = "https://json-schema.org/draft/2020-12/schema",
+            ["$id"] = "https://strawberryfield.altervista.org/ifbuilder/schema",
+            ["title"] = "Casasoft IFBuilder Game Schema"
+        };
+
+        foreach (var kvp in schemaObj)
+        {
+            if (kvp.Key is "$schema" or "title" or "$id") continue;
+            // JsonNode instances have a single parent. Cloning ensures we don't
+            // attempt to reparent a node that already belongs to schemaObj.
+            ordered[kvp.Key] = kvp.Value is null
+                ? null
+                : JsonNode.Parse(kvp.Value.ToJsonString());
+        }
+        schema = ordered;
+    }
+
+    if (string.IsNullOrWhiteSpace(OutputFile))
+    {
+        OutputFile = "schema.json";
+    }
+    File.WriteAllText(OutputFile, schema.ToString());
     return;
 }
+#endregion
 
+#region template
 //
 // template creation
 //
 if (!string.IsNullOrEmpty(TemplateType))
 {
-    TemplateLanguage lang = Casasoft.IFBuilder64.Common.Helpers.GetLanguage(TemplateType);
+    TemplateLanguage lang = Helpers.GetLanguage(TemplateType);
 
     if (string.IsNullOrWhiteSpace(OutputFile))
     {
@@ -80,7 +110,7 @@ if (!string.IsNullOrEmpty(TemplateType))
     }
     Game game = new(lang);
 
-    string json = System.Text.Json.JsonSerializer.Serialize(game, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+    string json = JsonSerializer.Serialize(game, new JsonSerializerOptions { WriteIndented = true });
     File.WriteAllText(OutputFile, json);
     Console.WriteLine($"Template file '{OutputFile}' created.");
     return;
@@ -113,7 +143,7 @@ void BuildGame(string inputFile, string outputFile)
 {
     Console.WriteLine($"Building '{inputFile}' to '{outputFile}*'...");
     string jsonText = File.ReadAllText(inputFile);
-    Game? game = System.Text.Json.JsonSerializer.Deserialize<Game>(jsonText);
+    Game? game = JsonSerializer.Deserialize<Game>(jsonText);
     if (game is null)
     {
         Console.WriteLine($"Error: Unable to parse game file '{inputFile}'.");
@@ -437,7 +467,7 @@ void BuildGame(string inputFile, string outputFile)
 
         // ifiction.xml
         Assembly assembly = Assembly.GetExecutingAssembly();
-        System.Diagnostics.FileVersionInfo fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
+        FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
         string version = fvi.FileVersion ?? "0";
         var buildDateAttribute = assembly.GetCustomAttribute<BuildDateAttribute>();
         string buildDate = buildDateAttribute is not null ? buildDateAttribute.DateTime.ToString("yyyy-MM-dd") : "";
