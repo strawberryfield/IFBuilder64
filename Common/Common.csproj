@@ -75,6 +75,9 @@
 		<Compile Update="Json\Game.Template.cs">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Compile>
+		<Compile Update="Json\Game.Methods.cs">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Compile>
 		<Compile Update="Json\Item.cs">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Compile>

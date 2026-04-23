@@ -72,20 +72,23 @@ public partial class Game
         initialroom = string.Empty;
     }
 
-     /// <summary>
+    /// <summary>
     /// Initializes a new instance of the <see cref="Game"/> class using the specified template language.
     /// </summary>
-    /// <param name="language">The template language to use when loading template resources.</param>
+    /// <param name="language">The template language to use when loading template resources (for example <see cref="TemplateLanguage.English"/>).</param>
     /// <remarks>
-    /// The constructor performs these high-level steps:
-    /// - initializes default collections by calling the parameterless constructor,
-    /// - creates a default player room entry in <c>rooms</c>,
-    /// - loads direction names, localized messages and verbs for the chosen language,
-    /// - adds a localized starter item (the "me" item) located at the "player" room.
-    ///
-    /// The exact template files used depend on <paramref name="language"/> and follow the
-    /// naming convention described in the loader methods (for example,
-    /// "templates/messages.en.json" for English).
+    /// This constructor performs the following steps:
+    /// - Calls the parameterless constructor to initialize default/empty collections and string fields.
+    /// - Creates a default "player" room entry in the <c>rooms</c> collection.
+    /// - Loads language-specific resources from the on-disk "templates" directory:
+    ///   - directions (from <c>templates/directions.{xx}.txt</c>),
+    ///   - messages (from <c>templates/messages.{xx}.json</c>),
+    ///   - verbs (from <c>templates/verbs.{xx}.json</c>).
+    /// - Adds a localized starter item named <c>"me"</c> placed in the <c>"player"</c> room; the item description is chosen
+    ///   according to the requested language.
+    /// 
+    /// Note: IO and JSON exceptions thrown by the loader methods are not caught here and will propagate to the caller.
+    /// Callers creating a game from a template should handle exceptions such as <see cref="System.IO.IOException"/>,    /// <see cref="System.IO.FileNotFoundException"/> and <see cref="System.Text.Json.JsonException"/> as appropriate.
     /// </remarks>
     public Game(TemplateLanguage language) : this()
     {
