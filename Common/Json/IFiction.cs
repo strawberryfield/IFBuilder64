@@ -23,35 +23,53 @@ using System.ComponentModel;
 namespace Casasoft.IFBuilder64.Common.Json;
 
 /// <summary>
-/// Represents the metadata for an interactive fiction work used for JSON
-/// (de)serialization within the application.
+/// Represents metadata for an interactive fiction work used by the application's
+/// JSON (de)serialization and export routines.
 /// </summary>
 /// <remarks>
-/// This class maps common descriptive fields for an interactive fiction
-/// (title, author, identifiers and optional metadata). Some properties provide
-/// sensible defaults when the value is omitted in incoming JSON (see
-/// <see cref="headline"/> and <see cref="genre"/>).
+/// Instances of <see cref="IFiction"/> encapsulate common descriptive fields
+/// (title, author, identifiers and optional metadata) that are serialized to
+/// and from JSON input used by the application. Two properties provide
+/// sensible defaults when omitted in incoming JSON: <see cref="headline"/>
+/// defaults to "An interactive fiction" and <see cref="genre"/> defaults to
+/// "Fiction".
+///
+/// The <see cref="ToIFictionXml(string,string)"/> method converts the stored
+/// metadata into an XML structure that follows the Babel iFiction / iFIndex
+/// conventions (root element <c>ifindex</c> in the namespace
+/// "http://babel.ifarchive.org/protocol/iFiction/"). This XML is used when
+/// producing iFiction-compatible metadata files.
 /// </remarks>
 [Description("Metadata for an interactive fiction work used for JSON (de)serialization.")]
 public class IFiction
 {
     /// <summary>
     /// The title of the interactive fiction.
-    /// This property is required when creating or deserializing an <see cref="IFiction"/>.
     /// </summary>
+    /// <remarks>
+    /// This property is required for valid metadata. The JSON (de)serializer
+    /// and compiler logic expect a non-empty value for <see cref="title"/>
+    /// </remarks>
     [Description("The title of the interactive fiction.")]
     public required string title { get; set; }
 
     /// <summary>
     /// The primary author of the interactive fiction.
-    /// This property is required when creating or deserializing an <see cref="IFiction"/>.
     /// </summary>
+    /// <remarks>
+    /// This property is required for valid metadata. Use the author's full
+    /// name or pseudonym as appropriate for display and bibliographic output.
+    /// </remarks>
     [Description("The primary author of the interactive fiction.")]
     public required string author { get; set; }
 
     /// <summary>
     /// Optional IFID (Interactive Fiction ID) that uniquely identifies the work.
     /// </summary>
+    /// <remarks>
+    /// When present this value is emitted into the iFiction
+    /// <c>&lt;identification&gt;</c> element as <c>&lt;ifid&gt;</c>.
+    /// </remarks>
     [Description("Optional IFID (Interactive Fiction ID) that uniquely identifies the work.")]
     public string? ifid { get; set; }
 
@@ -61,13 +79,12 @@ public class IFiction
     private string? _headline;
 
     /// <summary>
-    /// Gets or sets the headline (short subtitle) for the interactive fiction.
-    /// When getting, if no explicit value has been set this property returns
-    /// the default value "An interactive fiction".
+    /// Short subtitle or tagline for the work.
     /// </summary>
     /// <remarks>
-    /// The property uses a private backing field (<see cref="_headline"/>)
-    /// so callers receive a sensible default when the headline is omitted in JSON.
+    /// If no explicit value is provided, the getter returns the default text
+    /// "An interactive fiction" so downstream consumers always receive a
+    /// non-empty headline when generating bibliographic output.
     /// </remarks>
     [Description("Short subtitle for the work; defaults to 'An interactive fiction' when omitted.")]
     public string headline
@@ -83,8 +100,11 @@ public class IFiction
 
     /// <summary>
     /// The genre of the interactive fiction.
-    /// Returns "Fiction" when no explicit genre has been set.
     /// </summary>
+    /// <remarks>
+    /// Returns "Fiction" when no explicit genre has been set. This value is
+    /// included in the iFiction <c>&lt;genre&gt;</c> bibliographic element.
+    /// </remarks>
     [Description("The genre of the work; defaults to 'Fiction' when omitted.")]
     public string genre
     {
@@ -107,6 +127,11 @@ public class IFiction
     /// <summary>
     /// Optional longer description or synopsis of the interactive fiction.
     /// </summary>
+    /// <remarks>
+    /// When converted to iFiction XML the description is placed inside a
+    /// CDATA section and common HTML line-break variants (&lt;br&gt;, &lt;br/&gt;, &lt;br /&gt;)
+    /// are normalized to newlines so the textual synopsis remains human-readable.
+    /// </remarks>
     [Description("Optional longer description or synopsis of the interactive fiction.")]
     public string? description { get; set; }
 
@@ -129,16 +154,33 @@ public class IFiction
     public string? email { get; set; }
 
     /// <summary>
-    /// Build XML following the Babel iFiction/iFIndex structure like the example:
-    /// <ifindex version="1.0" xmlns="http://babel.ifarchive.org/protocol/iFiction/">
-    ///   <story>
-    ///     <identification>...</identification>
-    ///     <bibliographic>...</bibliographic>
-    ///     ...
-    ///   </story>
-    /// </ifindex>
+    /// Build an XML document following the Babel iFiction / iFIndex structure.
     /// </summary>
-    /// <returns></returns>
+    /// <param name="builderName">
+    /// The name of the builder or generator to include in the output (emitted
+    /// in <c>&lt;compiler&gt;</c> and <c>&lt;generator&gt;</c> fields). If
+    /// empty or whitespace it is still trimmed before inclusion.
+    /// </param>
+    /// <param name="builderVersion">
+    /// The version string for the builder/generator (emitted in
+    /// <c>&lt;compilerversion&gt;</c> and <c>&lt;generatorversion&gt;</c>).
+    /// </param>
+    /// <returns>
+    /// An <see cref="XElement"/> representing the root <c>ifindex</c> element
+    /// (including nested <c>story</c>, <c>identification</c>, <c>bibliographic</c>,
+    /// <c>releases</c>, <c>colophon</c>, and other standard iFiction child elements).
+    /// The returned element uses the namespace "http://babel.ifarchive.org/protocol/iFiction/".
+    /// </returns>
+    /// <remarks>
+    /// - Required fields (<see cref="title"/> and <see cref="author"/>) are always
+    ///   emitted inside the <c>&lt;bibliographic&gt;</c> element.
+    /// - Optional fields are added only when non-empty (for strings) or present
+    ///   (for nullable numeric values).
+    /// - The <c>&lt;description&gt;</c> element, when present, is emitted as
+    ///   CDATA with normalized newlines.
+    /// - The method sets sensible defaults for <c>&lt;version&gt;</c> (defaults to "1")
+    ///   and date fields (uses the current local date).
+    /// </remarks>
     public XElement ToIFictionXml(string builderName = "CASASOFT IFBuilder", string builderVersion = "")
     {
         XNamespace ns = XNamespace.Get("http://babel.ifarchive.org/protocol/iFiction/");
