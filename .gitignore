@@ -16,6 +16,10 @@
 # Mono auto generated files
 mono_crash.*
 
+# Claude
+.claude/
+CLAUDE.md
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
