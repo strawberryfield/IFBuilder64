@@ -25,7 +25,7 @@ Servono il .NET 10 SDK per IFBuilder64 e una toolchain C64 per il motore; il bui
 | --- | --- | --- |
 | .NET 10 SDK | Compilare ed eseguire IFBuilder64 | `TargetFramework` = `net10.0` |
 | Git | Clonare il repository | Facoltativo |
-| Preprocessore BASIC compatibile con la sintassi `{uses:}`, `{def:}`, `{:etichetta}` (es. C64List) | Trasformare `loader.bas` e `parser.bas` in `.prg` | La sintassi dei sorgenti BASIC lo richiede |
+| Preprocessore BASIC per la sintassi `{uses:}`, `{def:}`, `{:etichetta}` (C64List) | Trasformare `loader.bas` e `parser.bas` in `.prg` | La sintassi dei sorgenti BASIC lo richiede |
 | 64tass | Ricompilare `lm.prg` | Solo se modifichi l'assembly; `lm.prg` è già incluso |
 | VICE (o altro emulatore) + c1541 | Creare l'immagine `.d64` e provare il gioco | Anche SD2IEC su hardware reale |
 
