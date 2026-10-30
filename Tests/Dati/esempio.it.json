@@ -1,0 +1,368 @@
+{
+  "intro": "\fIL CASTELLO\r\rUn antico castello abbandonato. Dicono che dalla cima della torre si veda il mare.\r",
+  "initialroom": "ponte",
+  "maxload": 5,
+  "rooms": [
+    {
+      "name": "player",
+      "description": ""
+    },
+    {
+      "name": "ponte",
+      "description": "Sei sul ponte levatoio. A nord si apre il cortile.",
+      "north": "cortile"
+    },
+    {
+      "name": "cortile",
+      "description": "Un cortile invaso dalle erbacce. Al centro c'è un vecchio \u001cpozzo. A est un cancello aperto dà sul giardino.",
+      "south": "ponte",
+      "east": "giardino",
+      "down": "cantina"
+    },
+    {
+      "name": "giardino",
+      "description": "Un giardino abbandonato, già invaso dai rovi. Più in là la città è lontana.",
+      "west": "cortile"
+    },
+    {
+      "name": "torre",
+      "description": "La base della torre. Una scala sale verso l'alto. In un angolo c'è un \u001cbaule.",
+      "up": "sommita"
+    },
+    {
+      "name": "sommita",
+      "description": "La cima della torre. All'orizzonte brilla il mare.",
+      "down": "torre"
+    },
+    {
+      "name": "cantina",
+      "description": "Una cantina umida e buia. Sul pavimento c'è una \u001cborsa di cuoio.",
+      "up": "cortile"
+    }
+  ],
+  "verbs": [
+    {
+      "command": "n",
+      "action": 0
+    },
+    {
+      "command": "nord",
+      "action": 0
+    },
+    {
+      "command": "s",
+      "action": 1
+    },
+    {
+      "command": "sud",
+      "action": 1
+    },
+    {
+      "command": "e",
+      "action": 2
+    },
+    {
+      "command": "est",
+      "action": 2
+    },
+    {
+      "command": "o",
+      "action": 3
+    },
+    {
+      "command": "w",
+      "action": 3
+    },
+    {
+      "command": "ovest",
+      "action": 3
+    },
+    {
+      "command": "a",
+      "action": 4
+    },
+    {
+      "command": "alto",
+      "action": 4
+    },
+    {
+      "command": "b",
+      "action": 5
+    },
+    {
+      "command": "basso",
+      "action": 5
+    },
+    {
+      "command": "v",
+      "action": 6
+    },
+    {
+      "command": "vai",
+      "action": 6
+    },
+    {
+      "command": "g",
+      "action": 7
+    },
+    {
+      "command": "guarda",
+      "action": 7
+    },
+    {
+      "command": "x",
+      "action": 7
+    },
+    {
+      "command": "esamina",
+      "action": 7
+    },
+    {
+      "command": "inventario",
+      "action": 15
+    },
+    {
+      "command": "uscite",
+      "action": 25
+    },
+    {
+      "command": "p",
+      "action": 8
+    },
+    {
+      "command": "t",
+      "action": 8
+    },
+    {
+      "command": "prendi",
+      "action": 8
+    },
+    {
+      "command": "l",
+      "action": 9
+    },
+    {
+      "command": "d",
+      "action": 9
+    },
+    {
+      "command": "lascia",
+      "action": 9
+    },
+    {
+      "command": "apri",
+      "action": 10
+    },
+    {
+      "command": "chiudi",
+      "action": 11
+    },
+    {
+      "command": "accendi",
+      "action": 12
+    },
+    {
+      "command": "spegni",
+      "action": 13
+    },
+    {
+      "command": "inserisci",
+      "action": 14
+    },
+    {
+      "command": "i",
+      "action": 15
+    },
+    {
+      "command": "xyzzy",
+      "action": 16
+    },
+    {
+      "command": "abracadabra",
+      "action": 16
+    },
+    {
+      "command": "aiuto",
+      "action": 17
+    },
+    {
+      "command": "help",
+      "action": 17
+    },
+    {
+      "command": "comandi",
+      "action": 18
+    },
+    {
+      "command": "info",
+      "action": 23
+    },
+    {
+      "command": "salva",
+      "action": 19
+    },
+    {
+      "command": "carica",
+      "action": 20
+    },
+    {
+      "command": "registra",
+      "action": 24
+    },
+    {
+      "command": "undo",
+      "action": 21
+    },
+    {
+      "command": "annulla",
+      "action": 21
+    },
+    {
+      "command": "fine",
+      "action": 22
+    }
+  ],
+  "items": [
+    {
+      "name": "me",
+      "description": "In gran forma, come sempre.",
+      "location": "player"
+    },
+    {
+      "name": "chiave",
+      "description": "Una grossa chiave arrugginita."
+    },
+    {
+      "name": "pergamena",
+      "description": "C'è scritto: la vista migliore è in alto.",
+      "initem": "baule@torre"
+    },
+    {
+      "name": "moneta",
+      "description": "Una moneta d'oro, tutta lucida.",
+      "initem": "borsa"
+    },
+    {
+      "name": "borsa",
+      "description": "Una borsa di cuoio consumato.",
+      "opendescription": "La borsa è aperta.",
+      "location": "cantina",
+      "container": true,
+      "openable": true,
+      "closeable": true
+    },
+    {
+      "name": "pozzo",
+      "description": "Un pozzo profondo e asciutto.",
+      "location": "cortile",
+      "notportable": true
+    },
+    {
+      "name": "baule",
+      "description": "Un baule di legno, chiuso.",
+      "opendescription": "Il baule è aperto.",
+      "location": "torre",
+      "notportable": true,
+      "container": true,
+      "openable": true,
+      "closeable": true
+    }
+  ],
+  "doors": [
+    {
+      "name": "portone",
+      "description": "Un portone di quercia con borchie di ferro.",
+      "denyopen": "Il portone è chiuso a chiave.",
+      "unlockitem": "chiave",
+      "open": false,
+      "north": "cortile",
+      "south": "torre"
+    },
+    {
+      "name": "cancello",
+      "description": "Un cancello di ferro battuto, aperto.",
+      "open": true,
+      "east": "giardino",
+      "west": "cortile"
+    }
+  ],
+  "messages": [
+    "Non ne vedo qui intorno...",
+    "L'hai già.",
+    "Non hai quell'oggetto.",
+    "Se mi dici cosa...",
+    "Non puoi prendere quell'oggetto.",
+    "Dentro trovi:",
+    "Non posso, sono troppo carico.",
+    "Non si può aprire.",
+    "Non si può chiudere.",
+    "Non posso andare in quella direzione.",
+    "L'oggetto è già aperto.",
+    "L'oggetto è già chiuso.",
+    "Non è tra gli oggetti elencati.",
+    "Non so come svolgere questa azione.",
+    "L'oggetto è vuoto.",
+    "Vorrei sapere in quale direzione.",
+    "Se non mi dici dove...",
+    "Nome del file",
+    "Ci speravi vero?\rPurtroppo non ci sono maghi qui.",
+    "Puoi dare comandi al gioco nella forma \u001fcomando \u001coggetto senza inserire articoli, avverbi o altro.\rNon sono ammessi sinonimi, ma solo i termini evidenziati.\r",
+    "I comandi disponibili sono:",
+    "Qui puoi vedere:",
+    "Puoi dirigerti verso:",
+    "e",
+    "Ok.",
+    "Con te stai portando:",
+    "Non hai nulla con te.",
+    "Ti serve qualcosa per sbloccare l'oggetto.",
+    "Gli oggetti disponibili sono indicati in \u001crosso nelle descrizioni.",
+    "Scrivi \u001fcomandi per conoscere le azioni disponibili.",
+    "Non conosco quella direzione.",
+    "Non si può accendere.",
+    "Non si può spegnere.",
+    "Il dispositivo è acceso.",
+    "Il dispositivo è spento.",
+    "Ti serve qualcosa per accendere il dispositivo.",
+    "Il passaggio è già aperto.",
+    "Il passaggio è già chiuso.",
+    "Non c'è nulla dove poter inserire.",
+    "Oggetto inserito in",
+    "Dimmi dove inserire scegliendo tra:",
+    "o",
+    "utilizzando",
+    "Hai vinto!",
+    "Hai perso",
+    "\fIl gioco è terminato.\rPuoi scegliere tra:\r\r[\u001f1] Annullare ultimo comando\r[\u001f2] Iniziare una nuova partita\r[\u001f3] Caricare una partita salvata\r[\u001f4] Terminare",
+    "Non ci sono altre azioni da annullare.",
+    "Hai già troppi oggetti con te.",
+    "di",
+    "Errore del disco.",
+    "Dove",
+    "Che cosa",
+    "Non hai con te lo strumento per riaprire.\rConfermi",
+    "si",
+    "Non puoi andare da nessuna parte."
+  ],
+  "usermessages": [
+    "Senza la pergamena non sai cosa cercare quassù. Torni indietro.",
+    "In fondo al pozzo luccica una \u001cchiave!",
+    "Hai trovato una moneta nella borsa."
+  ],
+  "directions": [
+    "nord",
+    "sud",
+    "est",
+    "ovest",
+    "alto",
+    "basso"
+  ],
+  "ifiction": {
+    "title": "Il castello",
+    "author": "Mario Rossi",
+    "headline": "Un'avventura in un castello abbandonato",
+    "genre": "Fantasy",
+    "language": "it",
+    "ifid": "3F2A9C1E-5B7D-4E8A-9C21-7D4E5F6A8B90",
+    "firstpublished": 2026
+  }
+}

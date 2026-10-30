@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ifindex version="1.0" xmlns="http://babel.ifarchive.org/protocol/iFiction/">
+  <story>
+    <identification>
+      <format>executable</format>
+      <ifid>3F2A9C1E-5B7D-4E8A-9C21-7D4E5F6A8B90</ifid>
+    </identification>
+    <bibliographic>
+      <title>Il castello</title>
+      <author>Mario Rossi</author>
+      <headline>Un'avventura in un castello abbandonato</headline>
+      <genre>Fantasy</genre>
+      <firstpublished>2026</firstpublished>
+      <language>it</language>
+    </bibliographic>
+    <releases>
+      <attached>
+        <release>
+          <releasedate>2026-10-30</releasedate>
+          <version>1</version>
+          <compiler>Casasoft IFBuilder64</compiler>
+          <compilerversion>1.0.0.0 2026-10-30</compilerversion>
+        </release>
+      </attached>
+    </releases>
+    <colophon>
+      <generator>Casasoft IFBuilder64</generator>
+      <generatorversion>1.0.0.0 2026-10-30</generatorversion>
+      <originated>2026-10-30</originated>
+    </colophon>
+    <executable>
+      <compiler>Casasoft IFBuilder64</compiler>
+      <compilerversion>1.0.0.0 2026-10-30</compilerversion>
+      <serial>20261030</serial>
+      <platform>Commodore64</platform>
+    </executable>
+  </story>
+</ifindex>
