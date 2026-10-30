@@ -61,7 +61,9 @@ public partial class PannelloPortaViewModel : ObservableObject, IDisposable
         get => Porta.OggettoSblocco ?? Nessuno;
         set
         {
-            var nuovo = value is null || value == Nessuno ? null : value;
+            // Il ComboBox propone null quando cambia l'elenco: va ignorato, solo la voce "Nessuno" cancella lo sblocco.
+            if (value is null) return;
+            var nuovo = value == Nessuno ? null : value;
             if (nuovo == Porta.OggettoSblocco) return;
             Porta.OggettoSblocco = nuovo;
             OnPropertyChanged();

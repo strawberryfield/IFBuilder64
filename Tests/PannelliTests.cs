@@ -183,6 +183,18 @@ public class PannelliTests
     }
 
     [Fact]
+    public void Porta_SbloccoSelezionatoNull_VieneIgnorato()
+    {
+        var d = Esempio();
+        var porta = d.Porte.First(x => x.Nome == "portone");
+        var p = new PannelloPortaViewModel(d, porta);
+
+        p.SbloccoSelezionato = null!;
+
+        Assert.Equal("chiave", porta.OggettoSblocco);
+    }
+
+    [Fact]
     public void Porta_MessaggioVuoto_DiventaNull()
     {
         var d = Esempio();
@@ -212,6 +224,50 @@ public class PannelliTests
 
         vm.ElementoSelezionato = d.TrovaStanza("torre");
         vm.ElementoSelezionato = null;
+        Assert.Null(vm.Pannello);
+    }
+
+    [AvaloniaFact]
+    public void Finestra_CambioElencoOggetti_NonCancellaOggettoSblocco()
+    {
+        var vm = new MainWindowViewModel(_dialoghi, new ImpostazioniUtente(), Path.Combine(Path.GetTempPath(), "x-editor.json"));
+        var finestra = new MainWindow { DataContext = vm };
+        finestra.Show();
+        vm.Documento = Esempio();
+        Dispatcher.UIThread.RunJobs();
+        var porta = vm.Documento.Porte.First(p => p.Nome == "portone");
+        vm.ElementoSelezionato = porta;
+        Dispatcher.UIThread.RunJobs();
+        Assert.Equal("chiave", porta.OggettoSblocco);
+
+        vm.Documento.Oggetti.Add(new OggettoViewModel { Nome = "zaino" });
+        Dispatcher.UIThread.RunJobs();
+        vm.Documento.RinominaOggetto(vm.Documento.Oggetti.First(o => o.Nome == "moneta"), "denaro");
+        Dispatcher.UIThread.RunJobs();
+
+        Assert.Equal("chiave", porta.OggettoSblocco);
+        var combo = finestra.GetVisualDescendants().OfType<ComboBox>().Single(c => c.Name == "OggettoSblocco");
+        Assert.Equal("chiave", combo.SelectedItem);
+        finestra.Close();
+    }
+
+    [Fact]
+    public void MainWindowViewModel_ElementoEliminato_SvuotaSelezioneEPannello()
+    {
+        var vm = new MainWindowViewModel(_dialoghi, new ImpostazioniUtente(), Path.Combine(Path.GetTempPath(), "x-editor.json"));
+        var d = Esempio();
+        vm.Documento = d;
+
+        var stanza = d.TrovaStanza("sommita")!;
+        vm.ElementoSelezionato = stanza;
+        d.Elimina(stanza);
+        Assert.Null(vm.ElementoSelezionato);
+        Assert.Null(vm.Pannello);
+
+        var porta = d.Porte[0];
+        vm.ElementoSelezionato = porta;
+        d.Elimina(porta);
+        Assert.Null(vm.ElementoSelezionato);
         Assert.Null(vm.Pannello);
     }
 
