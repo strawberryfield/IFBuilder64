@@ -1,4 +1,4 @@
-﻿﻿//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="BuilderTests.cs" company="Casasoft">
 //     Author: Roberto Ceccarelli (http://strawberryfield.altervista.org)
 //     Copyright (c) 2026 All rights reserved.
@@ -123,8 +123,13 @@ public class BuilderTests
         if (nome.EndsWith("iFiction.xml", StringComparison.Ordinal))
         {
             var testo = Encoding.UTF8.GetString(byteFile);
-            testo = Regex.Replace(testo, "(<releasedate>)[^<]*(</releasedate>)", "$1$2");
-            testo = Regex.Replace(testo, "(<compilerversion>)[^<]*(</compilerversion>)", "$1$2");
+            // Elementi esclusi perché dipendono dalla data o dalla build:
+            // releasedate, originated e serial usano DateTime.Now al momento della compilazione;
+            // compilerversion e generatorversion contengono versione e data di build dell'assembly Builder.
+            foreach (var elemento in new[] { "releasedate", "originated", "serial", "compilerversion", "generatorversion" })
+            {
+                testo = Regex.Replace(testo, $"(<{elemento}>)[^<]*(</{elemento}>)", "$1$2");
+            }
             return testo;
         }
         return Convert.ToHexString(byteFile);

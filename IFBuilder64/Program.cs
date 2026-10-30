@@ -150,6 +150,10 @@ void BuildGame(string inputFile, string outputFile)
     {
         Console.WriteLine(line);
     }
+    if (!result.Successo)
+    {
+        Environment.ExitCode = 1;
+    }
 }
 #endregion
 
