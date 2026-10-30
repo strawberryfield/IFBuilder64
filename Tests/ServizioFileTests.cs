@@ -100,7 +100,7 @@ public class ServizioFileTests
         Assert.Null(ServizioFile.RilevaLingua(new Game { directions = ["a", "b"] }));
     }
 
-    [Fact(Skip = "Task 8")]
+    [Fact]
     public void Apri_FileSenzaMappa_DisponeLeStanze()
     {
         var doc = ServizioFile.Apri(Esempio);

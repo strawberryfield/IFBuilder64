@@ -72,7 +72,7 @@ public static class ServizioFile
         var doc = DocumentoViewModel.DaGame(game);
         doc.Percorso = percorso;
         if (RilevaLingua(game) is { } lingua) RiempiTestoTemplate(doc, lingua);
-        // Dal Task 8: DisposizioneAutomatica.Disponi(doc, tutte: false).
+        DisposizioneAutomatica.Disponi(doc, tutte: false);
         doc.Modificato = false;
         return doc;
     }
