@@ -71,11 +71,16 @@ public partial class DocumentoViewModel
 
         var vecchio = o.Nome;
         var idVecchio = o.Id;
+        // Il motore risolve unlockitem sul primo oggetto con quel nome: se ne resta un altro, i riferimenti restano validi.
+        var nomeResta = Oggetti.Any(x => x != o && x.Nome == vecchio);
         o.Nome = nuovo;
-        foreach (var x in Oggetti)
-            if (x.OggettoSblocco == vecchio) x.OggettoSblocco = nuovo;
-        foreach (var p in Porte)
-            if (p.OggettoSblocco == vecchio) p.OggettoSblocco = nuovo;
+        if (!nomeResta)
+        {
+            foreach (var x in Oggetti)
+                if (x.OggettoSblocco == vecchio) x.OggettoSblocco = nuovo;
+            foreach (var p in Porte)
+                if (p.OggettoSblocco == vecchio) p.OggettoSblocco = nuovo;
+        }
         AggiornaDentroA(idVecchio, o.Id, o);
         return null;
     }
@@ -128,13 +133,16 @@ public partial class DocumentoViewModel
                 if (StanzaIniziale == s.Nome) r.Add(new Riferimento(this, nameof(StanzaIniziale)));
                 break;
             case OggettoViewModel g:
+                // Gli sblocchi sono per nome: contano solo se g è l'unico oggetto con quel nome.
+                var nomeUnico = !Oggetti.Any(x => x != g && x.Nome == g.Nome);
                 foreach (var o in Oggetti)
                 {
-                    if (o.OggettoSblocco == g.Nome) r.Add(new Riferimento(o, nameof(OggettoViewModel.OggettoSblocco)));
+                    if (nomeUnico && o.OggettoSblocco == g.Nome) r.Add(new Riferimento(o, nameof(OggettoViewModel.OggettoSblocco)));
                     if (o.DentroA == g.Id) r.Add(new Riferimento(o, nameof(OggettoViewModel.DentroA)));
                 }
-                foreach (var p in Porte)
-                    if (p.OggettoSblocco == g.Nome) r.Add(new Riferimento(p, nameof(PortaViewModel.OggettoSblocco)));
+                if (nomeUnico)
+                    foreach (var p in Porte)
+                        if (p.OggettoSblocco == g.Nome) r.Add(new Riferimento(p, nameof(PortaViewModel.OggettoSblocco)));
                 break;
         }
         return r;
