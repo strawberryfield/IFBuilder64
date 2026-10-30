@@ -92,16 +92,25 @@ public class DialoghiAvalonia(Window proprietaria) : IDialoghi
         new OpzioniCompilazioneWindow(corrente).ShowDialog<string?>(proprietaria);
 
     /// <inheritdoc />
-    public async Task<StanzaViewModel?> ScegliStanzaAsync(string titolo, IReadOnlyList<StanzaViewModel> stanze)
+    public Task<StanzaViewModel?> ScegliStanzaAsync(string titolo, IReadOnlyList<StanzaViewModel> stanze) =>
+        ScegliDaElencoAsync(titolo, stanze, s => s.Nome);
+
+    /// <inheritdoc />
+    public Task<OggettoViewModel?> ScegliOggettoAsync(string titolo, IReadOnlyList<OggettoViewModel> oggetti) =>
+        ScegliDaElencoAsync(titolo, oggetti, o => string.IsNullOrEmpty(o.Posizione) ? o.Nome : $"{o.Nome} ({o.Posizione})");
+
+    /// <summary>Mostra un elenco in una finestra modale e restituisce l'elemento scelto, o null se annullato.</summary>
+    private async Task<T?> ScegliDaElencoAsync<T>(string titolo, IReadOnlyList<T> elementi, Func<T, string> testo)
+        where T : class
     {
-        StanzaViewModel? risultato = null;
+        T? risultato = null;
         var elenco = new ListBox
         {
-            ItemsSource = stanze.Select(s => s.Nome).ToList(),
+            ItemsSource = elementi.Select(testo).ToList(),
             Height = 240,
-            SelectedIndex = stanze.Count > 0 ? 0 : -1
+            SelectedIndex = elementi.Count > 0 ? 0 : -1
         };
-        var ok = new Button { Content = Testi.Pulsante_Ok, IsDefault = true, IsEnabled = stanze.Count > 0 };
+        var ok = new Button { Content = Testi.Pulsante_Ok, IsDefault = true, IsEnabled = elementi.Count > 0 };
         var annulla = new Button { Content = Testi.Pulsante_Annulla, IsCancel = true };
         var finestra = new Window
         {
@@ -130,7 +139,7 @@ public class DialoghiAvalonia(Window proprietaria) : IDialoghi
         void Conferma()
         {
             if (elenco.SelectedIndex < 0) return;
-            risultato = stanze[elenco.SelectedIndex];
+            risultato = elementi[elenco.SelectedIndex];
             finestra.Close();
         }
         ok.Click += (_, _) => Conferma();

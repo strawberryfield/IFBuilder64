@@ -37,6 +37,8 @@ public class DialoghiFinti : IDialoghi
     public string? RispostaOpzioni { get; set; }
     public StanzaViewModel? RispostaScegliStanza { get; set; }
     public IReadOnlyList<StanzaViewModel> StanzeOfferte { get; private set; } = [];
+    public OggettoViewModel? RispostaScegliOggetto { get; set; }
+    public IReadOnlyList<OggettoViewModel> OggettiOfferti { get; private set; } = [];
 
     public Task<bool> ConfermaAsync(string titolo, string messaggio)
     {
@@ -86,6 +88,13 @@ public class DialoghiFinti : IDialoghi
         Chiamate.Add(nameof(ScegliStanzaAsync));
         StanzeOfferte = stanze;
         return Task.FromResult(RispostaScegliStanza);
+    }
+
+    public Task<OggettoViewModel?> ScegliOggettoAsync(string titolo, IReadOnlyList<OggettoViewModel> oggetti)
+    {
+        Chiamate.Add(nameof(ScegliOggettoAsync));
+        OggettiOfferti = oggetti;
+        return Task.FromResult(RispostaScegliOggetto);
     }
 }
 

@@ -73,6 +73,9 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>Elemento selezionato (stanza, porta, oggetto, verbo, messaggio o documento).</summary>
     [ObservableProperty] private object? _elementoSelezionato;
 
+    /// <summary>Pannello proprietà dell'elemento selezionato (stanza o porta), oppure null.</summary>
+    [ObservableProperty] private object? _pannello;
+
     /// <summary>Mappa del documento corrente; ricreata a ogni cambio di documento.</summary>
     [ObservableProperty] private MappaViewModel _mappa;
 
@@ -312,6 +315,7 @@ public partial class MainWindowViewModel : ObservableObject
         }
         Iscrivi(newValue);
         Mappa = CreaMappa(newValue);
+        ImpostaPannello(null);
         OnPropertyChanged(nameof(Titolo));
     }
 
@@ -327,8 +331,24 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     /// <summary>Le stanze e le porte selezionate altrove sono selezionate anche sulla mappa.</summary>
-    partial void OnElementoSelezionatoChanged(object? value) =>
+    partial void OnElementoSelezionatoChanged(object? value)
+    {
         Sincronizza(() => Mappa.Selezione = value is StanzaViewModel or PortaViewModel ? value : null);
+        ImpostaPannello(value);
+    }
+
+    /// <summary>Crea il pannello proprietà dell'elemento; la stanza "player" non ha pannello.</summary>
+    private void ImpostaPannello(object? elemento)
+    {
+        (Pannello as IDisposable)?.Dispose();
+        Pannello = elemento switch
+        {
+            StanzaViewModel { EGiocatore: false } s =>
+                new PannelloStanzaViewModel(Documento, s, Mappa, _dialoghi, e => ElementoSelezionato = e),
+            PortaViewModel p => new PannelloPortaViewModel(Documento, p),
+            _ => null
+        };
+    }
 
     /// <summary>Esegue l'aggiornamento di una selezione senza rimbalzi tra mappa e pannello.</summary>
     private void Sincronizza(Action azione)

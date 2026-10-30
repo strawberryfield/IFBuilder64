@@ -112,4 +112,19 @@
 {1}
 The references will be cleared. Delete it?</value></data>
   <data name="Mappa_SuggerimentoTastiera" xml:space="preserve"><value>Click an empty cell to create a room; drag a room to move it, drag from its edge to link it (Ctrl = one way); Ctrl+wheel = zoom, middle button = pan.</value></data>
+  <data name="PrefissoOggetto" xml:space="preserve"><value>item</value></data>
+  <data name="Campo_Nome" xml:space="preserve"><value>Name</value></data>
+  <data name="Campo_Descrizione" xml:space="preserve"><value>Description</value></data>
+  <data name="Campo_MessaggioNegato" xml:space="preserve"><value>Message when opening is denied</value></data>
+  <data name="Campo_OggettoSblocco" xml:space="preserve"><value>Unlock item</value></data>
+  <data name="Campo_Aperta" xml:space="preserve"><value>Open</value></data>
+  <data name="Nessuno" xml:space="preserve"><value>— none —</value></data>
+  <data name="Stanza_Iniziale" xml:space="preserve"><value>Set as initial room</value></data>
+  <data name="Stanza_Uscite" xml:space="preserve"><value>Exits</value></data>
+  <data name="Stanza_NessunaUscita" xml:space="preserve"><value>—</value></data>
+  <data name="Stanza_Statici" xml:space="preserve"><value>Static items</value></data>
+  <data name="Stanza_Mobili" xml:space="preserve"><value>Portable items</value></data>
+  <data name="Stanza_NuovoOggetto" xml:space="preserve"><value>New item here</value></data>
+  <data name="Stanza_SpostaQui" xml:space="preserve"><value>Move here…</value></data>
+  <data name="Stanza_ScegliOggetto" xml:space="preserve"><value>Choose the item to move here</value></data>
 </root>

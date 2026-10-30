@@ -79,7 +79,12 @@
 				<DockPanel>
 					<TextBlock DockPanel.Dock="Top" FontWeight="Bold" Margin="0,0,0,8"
 					           Text="{x:Static r:Testi.Pannello_Proprieta}" />
-					<ContentControl x:Name="ContenutoProprieta" />
+					<ContentControl x:Name="ContenutoProprieta" Content="{Binding Pannello}">
+						<ContentControl.DataTemplates>
+							<DataTemplate DataType="vm:PannelloStanzaViewModel"><v:PannelloStanza /></DataTemplate>
+							<DataTemplate DataType="vm:PannelloPortaViewModel"><v:PannelloPorta /></DataTemplate>
+						</ContentControl.DataTemplates>
+					</ContentControl>
 				</DockPanel>
 			</Border>
 		</Grid>

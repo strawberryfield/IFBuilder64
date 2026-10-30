@@ -112,4 +112,19 @@
 {1}
 I riferimenti verranno svuotati. Eliminarla?</value></data>
   <data name="Mappa_SuggerimentoTastiera" xml:space="preserve"><value>Clic su una cella vuota per creare una stanza; trascina una stanza per spostarla, dal bordo per collegarla (Ctrl = senso unico); Ctrl+rotella = zoom, tasto centrale = sposta la vista.</value></data>
+  <data name="PrefissoOggetto" xml:space="preserve"><value>oggetto</value></data>
+  <data name="Campo_Nome" xml:space="preserve"><value>Nome</value></data>
+  <data name="Campo_Descrizione" xml:space="preserve"><value>Descrizione</value></data>
+  <data name="Campo_MessaggioNegato" xml:space="preserve"><value>Messaggio se l'apertura è negata</value></data>
+  <data name="Campo_OggettoSblocco" xml:space="preserve"><value>Oggetto che sblocca</value></data>
+  <data name="Campo_Aperta" xml:space="preserve"><value>Aperta</value></data>
+  <data name="Nessuno" xml:space="preserve"><value>— nessuno —</value></data>
+  <data name="Stanza_Iniziale" xml:space="preserve"><value>Imposta come stanza iniziale</value></data>
+  <data name="Stanza_Uscite" xml:space="preserve"><value>Uscite</value></data>
+  <data name="Stanza_NessunaUscita" xml:space="preserve"><value>—</value></data>
+  <data name="Stanza_Statici" xml:space="preserve"><value>Oggetti statici</value></data>
+  <data name="Stanza_Mobili" xml:space="preserve"><value>Oggetti mobili</value></data>
+  <data name="Stanza_NuovoOggetto" xml:space="preserve"><value>Nuovo oggetto qui</value></data>
+  <data name="Stanza_SpostaQui" xml:space="preserve"><value>Sposta qui…</value></data>
+  <data name="Stanza_ScegliOggetto" xml:space="preserve"><value>Scegli l'oggetto da spostare qui</value></data>
 </root>

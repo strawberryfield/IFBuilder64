@@ -50,4 +50,7 @@ public interface IDialoghi
 
     /// <summary>Sceglie una stanza dall'elenco; null se annullato.</summary>
     Task<StanzaViewModel?> ScegliStanzaAsync(string titolo, IReadOnlyList<StanzaViewModel> stanze);
+
+    /// <summary>Sceglie un oggetto dall'elenco; null se annullato.</summary>
+    Task<OggettoViewModel?> ScegliOggettoAsync(string titolo, IReadOnlyList<OggettoViewModel> oggetti);
 }
