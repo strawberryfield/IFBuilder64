@@ -34,7 +34,7 @@ public enum Bordo { Nessuno, Nord, Sud, Est, Ovest }
 /// </summary>
 public class GeometriaMappa
 {
-    /// <summary>Larghezza della fascia di bordo, in frazione del lato della cella.</summary>
+    /// <summary>Larghezza della fascia di bordo (dentro il rettangolo della stanza), in frazione del lato della cella.</summary>
     public const double FasciaBordo = 0.2;
 
     /// <summary>Margine tra il bordo della cella e il rettangolo della stanza, in frazione del lato.</summary>
@@ -67,12 +67,13 @@ public class GeometriaMappa
         new((int)Math.Floor((p.X - Origine.X) / Lato), (int)Math.Floor((p.Y - Origine.Y) / Lato));
 
     /// <summary>
-    /// Bordo della cella vicino al punto: fascia del 20% del lato lungo ciascun bordo; in un angolo
-    /// vince il bordo più vicino. <see cref="Bordo.Nessuno"/> al centro o fuori dalla cella.
+    /// Bordo della stanza nella cella vicino al punto: fascia larga il 20% del lato della cella lungo
+    /// ciascun lato del rettangolo della stanza, all'interno; in un angolo vince il bordo più vicino.
+    /// <see cref="Bordo.Nessuno"/> al centro, nel margine tra stanza e cella o fuori dalla cella.
     /// </summary>
     public Bordo BordoDa(Point p, Cella c)
     {
-        var r = RettangoloCella(c);
+        var r = RettangoloStanza(c);
         if (!r.Contains(p)) return Bordo.Nessuno;
         var fascia = Lato * FasciaBordo;
         var (bordo, distanza) = new[]

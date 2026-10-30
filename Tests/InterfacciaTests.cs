@@ -26,6 +26,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Casasoft.IFBuilder64.Editor.Controlli;
+using Casasoft.IFBuilder64.Editor.Risorse;
 using Casasoft.IFBuilder64.Editor.Servizi;
 using Casasoft.IFBuilder64.Editor.ViewModels;
 using Casasoft.IFBuilder64.Editor.Views;
@@ -152,6 +153,107 @@ public sealed class InterfacciaTests : IDisposable
         var nuova = vm.Documento.Stanze[^1];
         Assert.Equal((0, 0), (nuova.X, nuova.Y));
         Assert.Same(nuova, vm.ElementoSelezionato);
+        finestra.Close();
+    }
+
+    /// <summary>Finestra con l'esempio aperto e la mappa al livello 0.</summary>
+    private async Task<(MainWindow Finestra, MainWindowViewModel Vm, MappaControl Mappa)> ApriMappaEsempio()
+    {
+        var (finestra, vm) = ApriFinestra();
+        _dialoghi.RispostaApriFile = CopiaEsempio();
+        await vm.ApriCommand.ExecuteAsync(null);
+        finestra.Height = 1000;
+        Dispatcher.UIThread.RunJobs();
+        var mappa = Assert.Single(finestra.GetVisualDescendants().OfType<MappaControl>());
+        // Tutte le stanze del livello 0 devono stare nell'area visibile della mappa
+        var stanze = vm.Mappa.StanzeDelLivello.Select(s => mappa.Geometria.RettangoloCella(new Cella(s.X, s.Y))).ToList();
+        Assert.All(stanze, r => Assert.True(new Rect(mappa.Bounds.Size).Contains(r)));
+        return (finestra, vm, mappa);
+    }
+
+    private static Point PuntoFinestra(MappaControl mappa, MainWindow finestra, Point p) =>
+        mappa.TranslatePoint(p, finestra)!.Value;
+
+    private static Point CentroCella(MappaControl mappa, StanzaViewModel s) =>
+        mappa.Geometria.RettangoloCella(new Cella(s.X, s.Y)).Center;
+
+    /// <summary>Punto medio del collegamento tra due stanze adiacenti, sul confine tra le due celle.</summary>
+    private static Point MetaCollegamento(MappaControl mappa, StanzaViewModel da, Direzione dir, StanzaViewModel a) =>
+        GeometriaMappa.PuntoMedio(mappa.Geometria.Tracciato(new Cella(da.X, da.Y), dir, new Cella(a.X, a.Y)));
+
+    private static List<string> Voci(MappaControl mappa) =>
+        Assert.IsAssignableFrom<IEnumerable<Control>>(mappa.UltimoMenu?.ItemsSource)
+            .OfType<MenuItem>().Select(m => (string)m.Header!).ToList();
+
+    [AvaloniaFact]
+    public async Task Mappa_ClicSullaPortaTraStanzeAdiacenti_SelezionaLaPorta()
+    {
+        var (finestra, vm, mappa) = await ApriMappaEsempio();
+        var cortile = vm.Documento.TrovaStanza("cortile")!;
+        var torre = vm.Documento.TrovaStanza("torre")!;
+        var portone = vm.Documento.Porte.Single(p => p.Nome == "portone");
+        var punto = PuntoFinestra(mappa, finestra, MetaCollegamento(mappa, cortile, Direzione.Nord, torre));
+
+        finestra.MouseDown(punto, MouseButton.Left);
+        finestra.MouseUp(punto, MouseButton.Left);
+        Dispatcher.UIThread.RunJobs();
+
+        Assert.Same(portone, vm.Mappa.Selezione);
+        Assert.Same(portone, vm.ElementoSelezionato);
+        Assert.Null(cortile.Nord);
+        Assert.Null(torre.Sud);
+        finestra.Close();
+    }
+
+    [AvaloniaFact]
+    public async Task Mappa_TastoDestroSulCollegamentoTraStanzeAdiacenti_MenuDelCollegamento()
+    {
+        var (finestra, vm, mappa) = await ApriMappaEsempio();
+        var ponte = vm.Documento.TrovaStanza("ponte")!;
+        var cortile = vm.Documento.TrovaStanza("cortile")!;
+        var punto = PuntoFinestra(mappa, finestra, MetaCollegamento(mappa, ponte, Direzione.Nord, cortile));
+
+        finestra.MouseDown(punto, MouseButton.Right);
+        finestra.MouseUp(punto, MouseButton.Right);
+        Dispatcher.UIThread.RunJobs();
+
+        Assert.Equal([Testi.Mappa_TrasformaInPorta, Testi.Mappa_Elimina], Voci(mappa));
+        Assert.Null(vm.Mappa.Selezione);
+        finestra.Close();
+    }
+
+    [AvaloniaFact]
+    public async Task Mappa_TastoDestroSullaStanza_MenuDellaStanza()
+    {
+        var (finestra, vm, mappa) = await ApriMappaEsempio();
+        var ponte = vm.Documento.TrovaStanza("ponte")!;
+        var centro = PuntoFinestra(mappa, finestra, CentroCella(mappa, ponte));
+        finestra.MouseDown(centro, MouseButton.Right);
+        finestra.MouseUp(centro, MouseButton.Right);
+        Dispatcher.UIThread.RunJobs();
+        Assert.Contains(Testi.Mappa_ImpostaIniziale, Voci(mappa));
+        Assert.Same(ponte, vm.Mappa.Selezione);
+        finestra.Close();
+    }
+
+    [AvaloniaFact]
+    public async Task Mappa_TrascinamentoDalBordoDellaStanza_Collega()
+    {
+        var (finestra, vm, mappa) = await ApriMappaEsempio();
+        var giardino = vm.Documento.TrovaStanza("giardino")!;
+        var nuova = vm.Mappa.CreaStanza(giardino.X + 2, giardino.Y);
+        Dispatcher.UIThread.RunJobs();
+        var r = mappa.Geometria.RettangoloStanza(new Cella(giardino.X, giardino.Y));
+        var inizio = PuntoFinestra(mappa, finestra, new Point(r.Right - 3, r.Center.Y));
+        var fine = PuntoFinestra(mappa, finestra, CentroCella(mappa, nuova));
+
+        finestra.MouseDown(inizio, MouseButton.Left);
+        finestra.MouseMove(fine);
+        finestra.MouseUp(fine, MouseButton.Left);
+        Dispatcher.UIThread.RunJobs();
+
+        Assert.Equal(nuova.Nome, giardino.Est);
+        Assert.Equal("giardino", nuova.Ovest);
         finestra.Close();
     }
 }

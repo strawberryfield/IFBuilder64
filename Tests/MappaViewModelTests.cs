@@ -369,4 +369,15 @@ public class MappaViewModelTests
         m.Selezione = m.Documento.TrovaStanza("cantina");
         Assert.Equal(-1, m.LivelloCorrente);
     }
+
+    [Fact]
+    public async Task EseguiAsync_Eccezione_MostraErrore()
+    {
+        var m = Crea(Piccolo());
+
+        await m.EseguiAsync(() => throw new InvalidOperationException("guasto"));
+        await m.EseguiAsync(() => Task.FromException(new InvalidOperationException("asincrono")));
+
+        Assert.Equal(["guasto", "asincrono"], _dialoghi.Errori);
+    }
 }

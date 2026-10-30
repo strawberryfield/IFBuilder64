@@ -181,6 +181,22 @@ public partial class MappaViewModel : ObservableObject
             CollegaVerticale(da, suOGiu, a);
     }
 
+    /// <summary>
+    /// Esegue un'azione richiesta dall'interfaccia (menu contestuali); un'eccezione viene mostrata
+    /// con <see cref="IDialoghi.MostraErroreAsync"/> invece di far cadere l'applicazione.
+    /// </summary>
+    public async Task EseguiAsync(Func<Task> azione)
+    {
+        try
+        {
+            await azione();
+        }
+        catch (Exception ex)
+        {
+            await _dialoghi.MostraErroreAsync(ex.Message);
+        }
+    }
+
     /// <summary>Ridispone tutte le stanze, dopo conferma.</summary>
     [RelayCommand]
     private async Task DisponiTutto()

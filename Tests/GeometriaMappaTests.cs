@@ -48,19 +48,22 @@ public class GeometriaMappaTests
     public void BordoDa_RiconosceIQuattroBordiEIlCentro()
     {
         var c = new Cella(1, -2);
-        var r = _g.RettangoloCella(c);
-        var lato = r.Width;
+        // La fascia di bordo sta dentro il rettangolo disegnato della stanza
+        var r = _g.RettangoloStanza(c);
+        var fascia = _g.Lato * GeometriaMappa.FasciaBordo;
 
-        Assert.Equal(Bordo.Nord, _g.BordoDa(new Point(r.Center.X, r.Top + lato * 0.1), c));
-        Assert.Equal(Bordo.Sud, _g.BordoDa(new Point(r.Center.X, r.Bottom - lato * 0.1), c));
-        Assert.Equal(Bordo.Ovest, _g.BordoDa(new Point(r.Left + lato * 0.1, r.Center.Y), c));
-        Assert.Equal(Bordo.Est, _g.BordoDa(new Point(r.Right - lato * 0.1, r.Center.Y), c));
+        Assert.Equal(Bordo.Nord, _g.BordoDa(new Point(r.Center.X, r.Top + fascia / 2), c));
+        Assert.Equal(Bordo.Sud, _g.BordoDa(new Point(r.Center.X, r.Bottom - fascia / 2), c));
+        Assert.Equal(Bordo.Ovest, _g.BordoDa(new Point(r.Left + fascia / 2, r.Center.Y), c));
+        Assert.Equal(Bordo.Est, _g.BordoDa(new Point(r.Right - fascia / 2, r.Center.Y), c));
         Assert.Equal(Bordo.Nessuno, _g.BordoDa(r.Center, c));
-        Assert.Equal(Bordo.Nessuno, _g.BordoDa(new Point(r.Left + lato * 0.25, r.Top + lato * 0.25), c));
-        // Fuori dalla cella non c'è bordo
-        Assert.Equal(Bordo.Nessuno, _g.BordoDa(new Point(r.Right + 5, r.Center.Y), c));
+        Assert.Equal(Bordo.Nessuno, _g.BordoDa(new Point(r.Left + fascia * 1.2, r.Top + fascia * 1.2), c));
+        // Nel margine tra stanza e cella, o fuori dalla cella, non c'è bordo
+        var cella = _g.RettangoloCella(c);
+        Assert.Equal(Bordo.Nessuno, _g.BordoDa(new Point(cella.Center.X, cella.Top + 1), c));
+        Assert.Equal(Bordo.Nessuno, _g.BordoDa(new Point(cella.Right + 5, cella.Center.Y), c));
         // In un angolo vince il bordo più vicino
-        Assert.Equal(Bordo.Nord, _g.BordoDa(new Point(r.Left + lato * 0.15, r.Top + lato * 0.05), c));
+        Assert.Equal(Bordo.Nord, _g.BordoDa(new Point(r.Left + fascia * 0.8, r.Top + fascia * 0.2), c));
     }
 
     [Fact]

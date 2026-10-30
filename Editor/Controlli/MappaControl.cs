@@ -80,6 +80,9 @@ public class MappaControl : Control
         set => SetValue(MappaProperty, value);
     }
 
+    /// <summary>Ultimo menu contestuale aperto (stanza o collegamento), o null.</summary>
+    public ContextMenu? UltimoMenu { get; private set; }
+
     /// <summary>Geometria corrente (zoom e pan compresi).</summary>
     public GeometriaMappa Geometria
     {
@@ -326,7 +329,10 @@ public class MappaControl : Control
         var proprieta = e.GetCurrentPoint(this).Properties;
         var g = Geometria;
         var cella = g.CellaDa(p);
-        var stanza = mappa.StanzaIn(cella.X, cella.Y);
+        // Una stanza è colpita solo dentro il rettangolo disegnato: il margine della cella
+        // appartiene ai collegamenti (anche quelli tra stanze adiacenti e le loro porte).
+        var stanza = g.RettangoloStanza(cella).Contains(p) ? mappa.StanzaIn(cella.X, cella.Y) : null;
+        var collegamento = stanza is null ? CollegamentoIn(p) : null;
         _puntoIniziale = _puntoCorrente = p;
         Focus();
 
@@ -337,7 +343,7 @@ public class MappaControl : Control
         }
         else if (proprieta.IsRightButtonPressed)
         {
-            MostraMenu(stanza, stanza is null ? CollegamentoIn(p) : null);
+            MostraMenu(stanza, collegamento);
             e.Handled = true;
             return;
         }
@@ -357,14 +363,15 @@ public class MappaControl : Control
                     _stato = Stato.Sposta;
                 }
             }
-            else if (CollegamentoIn(p) is { } c)
+            else if (collegamento is not null)
             {
-                mappa.Selezione = c.Porta;
+                mappa.Selezione = collegamento.Porta;
                 _stato = Stato.Nessuno;
             }
             else
             {
-                _stato = Stato.CellaVuota;
+                // Il margine di una cella occupata non crea stanze
+                _stato = mappa.StanzaIn(cella.X, cella.Y) is null ? Stato.CellaVuota : Stato.Nessuno;
             }
         }
         else
@@ -482,38 +489,40 @@ public class MappaControl : Control
         if (stanza is not null)
         {
             mappa.Selezione = stanza;
-            voci.Add(Voce(Testi.Mappa_CollegaSu, async () => await mappa.CollegaVerticaleAsync(stanza, Direzione.Su),
+            voci.Add(Voce(mappa, Testi.Mappa_CollegaSu, () => mappa.CollegaVerticaleAsync(stanza, Direzione.Su),
                 mappa.StanzeCollegabili(stanza, Direzione.Su).Count > 0));
-            voci.Add(Voce(Testi.Mappa_CollegaGiu, async () => await mappa.CollegaVerticaleAsync(stanza, Direzione.Giu),
+            voci.Add(Voce(mappa, Testi.Mappa_CollegaGiu, () => mappa.CollegaVerticaleAsync(stanza, Direzione.Giu),
                 mappa.StanzeCollegabili(stanza, Direzione.Giu).Count > 0));
-            voci.Add(Voce(Testi.Mappa_ImpostaIniziale, () => mappa.ImpostaIniziale(stanza),
+            voci.Add(Voce(mappa, Testi.Mappa_ImpostaIniziale, () => mappa.ImpostaIniziale(stanza),
                 mappa.Documento.StanzaIniziale != stanza.Nome));
             voci.Add(new Separator());
-            voci.Add(Voce(Testi.Mappa_Elimina, async () => await mappa.EliminaStanzaAsync(stanza)));
+            voci.Add(Voce(mappa, Testi.Mappa_Elimina, () => mappa.EliminaStanzaAsync(stanza)));
         }
         else if (collegamento is not null)
         {
             mappa.Selezione = collegamento.Porta;
             voci.Add(collegamento.Porta is { } porta
-                ? Voce(Testi.Mappa_TrasformaInPassaggio, () => mappa.TrasformaInPassaggio(porta))
-                : Voce(Testi.Mappa_TrasformaInPorta, () => mappa.TrasformaInPorta(collegamento)));
-            voci.Add(Voce(Testi.Mappa_Elimina, () => mappa.EliminaCollegamento(collegamento)));
+                ? Voce(mappa, Testi.Mappa_TrasformaInPassaggio, () => mappa.TrasformaInPassaggio(porta))
+                : Voce(mappa, Testi.Mappa_TrasformaInPorta, () => mappa.TrasformaInPorta(collegamento)));
+            voci.Add(Voce(mappa, Testi.Mappa_Elimina, () => mappa.EliminaCollegamento(collegamento)));
         }
         if (voci.Count == 0) return;
-        new ContextMenu { ItemsSource = voci }.Open(this);
+        UltimoMenu = new ContextMenu { ItemsSource = voci };
+        UltimoMenu.Open(this);
     }
 
-    private static MenuItem Voce(string testo, Action azione, bool attiva = true)
-    {
-        var voce = new MenuItem { Header = testo, IsEnabled = attiva };
-        voce.Click += (_, _) => azione();
-        return voce;
-    }
+    private static MenuItem Voce(MappaViewModel mappa, string testo, Action azione, bool attiva = true) =>
+        Voce(mappa, testo, () =>
+        {
+            azione();
+            return Task.CompletedTask;
+        }, attiva);
 
-    private static MenuItem Voce(string testo, Func<Task> azione, bool attiva = true)
+    /// <summary>Voce di menu; gli errori dell'azione sono mostrati dal ViewModel, non fanno cadere l'applicazione.</summary>
+    private static MenuItem Voce(MappaViewModel mappa, string testo, Func<Task> azione, bool attiva = true)
     {
         var voce = new MenuItem { Header = testo, IsEnabled = attiva };
-        voce.Click += async (_, _) => await azione();
+        voce.Click += async (_, _) => await mappa.EseguiAsync(azione);
         return voce;
     }
 
