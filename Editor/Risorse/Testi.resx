@@ -34,4 +34,5 @@
   <data name="Errore_NomeVuoto" xml:space="preserve"><value>Name must not be empty.</value></data>
   <data name="Errore_NomeDuplicato" xml:space="preserve"><value>The name {0} is already in use.</value></data>
   <data name="Errore_StanzaGiocatore" xml:space="preserve"><value>The player room cannot be renamed or deleted.</value></data>
+  <data name="PrefissoPorta" xml:space="preserve"><value>door</value></data>
 </root>

@@ -34,4 +34,5 @@
   <data name="Errore_NomeVuoto" xml:space="preserve"><value>Il nome non può essere vuoto.</value></data>
   <data name="Errore_NomeDuplicato" xml:space="preserve"><value>Il nome {0} è già in uso.</value></data>
   <data name="Errore_StanzaGiocatore" xml:space="preserve"><value>La stanza player non può essere rinominata né eliminata.</value></data>
+  <data name="PrefissoPorta" xml:space="preserve"><value>porta</value></data>
 </root>
