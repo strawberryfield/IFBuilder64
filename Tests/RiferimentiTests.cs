@@ -1,4 +1,4 @@
-﻿﻿//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="Tests/RiferimentiTests.cs" company="Casasoft">
 //     Author: Roberto Ceccarelli (http://strawberryfield.altervista.org)
 //     Copyright (c) 2026 All rights reserved.
@@ -181,5 +181,36 @@ public class RiferimentiTests
     {
         var d = Esempio();
         Assert.Empty(d.TrovaRiferimenti(Po(d, "portone")));
+    }
+
+    private static (DocumentoViewModel d, OggettoViewModel a, OggettoViewModel b) DueTavoli()
+    {
+        var d = Esempio();
+        var a = new OggettoViewModel { Nome = "tavolo", Posizione = "cortile", Statico = true };
+        var b = new OggettoViewModel { Nome = "tavolo", Posizione = "torre", Statico = true };
+        d.Oggetti.Add(a);
+        d.Oggetti.Add(b);
+        Po(d, "portone").OggettoSblocco = "tavolo";
+        return (d, a, b);
+    }
+
+    [Fact]
+    public void RinominaUnoDeiDueOmonimi_NonToccaGliSblocchi()
+    {
+        var (d, a, _) = DueTavoli();
+        Assert.Null(d.RinominaOggetto(a, "scrivania"));
+        Assert.Equal("tavolo", Po(d, "portone").OggettoSblocco);
+    }
+
+    [Fact]
+    public void EliminaUnoDeiDueOmonimi_NonSvuotaGliSblocchi()
+    {
+        var (d, a, b) = DueTavoli();
+        Assert.DoesNotContain(d.TrovaRiferimenti(a), r => r.Campo == "OggettoSblocco");
+        d.Elimina(a);
+        Assert.Equal("tavolo", Po(d, "portone").OggettoSblocco);
+        Assert.Single(d.TrovaRiferimenti(b));
+        d.Elimina(b);
+        Assert.Null(Po(d, "portone").OggettoSblocco);
     }
 }
