@@ -53,6 +53,7 @@ public partial class MainWindowViewModel : ObservableObject
     private bool _sincronizzaMappa;
     private bool _sincronizzaOggetti;
     private bool _sincronizzaVerbi;
+    private bool _sincronizzaMessaggi;
 
     /// <summary>Documento aperto.</summary>
     [ObservableProperty] private DocumentoViewModel _documento;
@@ -87,6 +88,9 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>Scheda Verbi del documento corrente; ricreata a ogni cambio di documento.</summary>
     [ObservableProperty] private VerbiViewModel _verbi;
 
+    /// <summary>Scheda Messaggi del documento corrente; ricreata a ogni cambio di documento.</summary>
+    [ObservableProperty] private MessaggiViewModel _messaggi;
+
     /// <summary>Crea il ViewModel con un documento nuovo nella lingua dell'interfaccia.</summary>
     /// <param name="dialoghi">Dialoghi dell'interfaccia.</param>
     /// <param name="impostazioni">Impostazioni utente (recenti, ultima cartella di output).</param>
@@ -111,6 +115,7 @@ public partial class MainWindowViewModel : ObservableObject
         _mappa = CreaMappa(_documento);
         _oggetti = CreaOggetti(_documento);
         _verbi = CreaVerbi(_documento);
+        _messaggi = CreaMessaggi(_documento);
         Iscrivi(_documento);
         ValidaOra();
     }
@@ -329,6 +334,8 @@ public partial class MainWindowViewModel : ObservableObject
         Oggetti = CreaOggetti(newValue);
         Verbi.Dispose();
         Verbi = CreaVerbi(newValue);
+        Messaggi.Dispose();
+        Messaggi = CreaMessaggi(newValue);
         ImpostaPannello(null);
         OnPropertyChanged(nameof(Titolo));
     }
@@ -370,6 +377,21 @@ public partial class MainWindowViewModel : ObservableObject
         return verbi;
     }
 
+    private MessaggiViewModel CreaMessaggi(DocumentoViewModel doc)
+    {
+        var messaggi = new MessaggiViewModel(doc, _dialoghi);
+        messaggi.PropertyChanged += (sender, e) =>
+        {
+            if (sender != Messaggi) return;
+            if (e.PropertyName is not (nameof(MessaggiViewModel.SelezionatoStandard) or nameof(MessaggiViewModel.SelezionatoUtente))) return;
+            var scelto = Messaggi.SelezionatoUtente ?? Messaggi.SelezionatoStandard;
+            // Deselezionare la riga non deve cancellare la selezione di un altro tipo di elemento.
+            if (scelto is not null || ElementoSelezionato is MessaggioViewModel)
+                Sincronizza(ref _sincronizzaMessaggi, () => ElementoSelezionato = scelto);
+        };
+        return messaggi;
+    }
+
     /// <summary>Le stanze, le porte e gli oggetti selezionati altrove sono selezionati anche sulla mappa e nell'elenco oggetti.</summary>
     partial void OnElementoSelezionatoChanged(object? value)
     {
@@ -379,6 +401,15 @@ public partial class MainWindowViewModel : ObservableObject
         {
             if (value is VerboViewModel v) Verbi.Seleziona(v);
             else Verbi.Selezionato = null;
+        });
+        Sincronizza(ref _sincronizzaMessaggi, () =>
+        {
+            if (value is MessaggioViewModel m) Messaggi.Seleziona(m);
+            else
+            {
+                Messaggi.SelezionatoStandard = null;
+                Messaggi.SelezionatoUtente = null;
+            }
         });
         ImpostaPannello(value);
     }

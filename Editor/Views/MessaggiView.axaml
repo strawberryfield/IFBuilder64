@@ -1,0 +1,59 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Casasoft.IFBuilder64.Editor.ViewModels"
+             xmlns:r="using:Casasoft.IFBuilder64.Editor.Risorse"
+             x:Class="Casasoft.IFBuilder64.Editor.Views.MessaggiView"
+             x:DataType="vm:MessaggiViewModel">
+	<Grid ColumnDefinitions="*,*" Margin="4">
+		<!-- Messaggi standard: solo testo e ripristino -->
+		<DockPanel Grid.Column="0" Margin="0,0,4,0">
+			<TextBlock DockPanel.Dock="Top" Text="{x:Static r:Testi.Messaggi_Standard}" FontWeight="Bold" Margin="0,0,0,4" />
+			<ListBox x:Name="ElencoStandard" ItemsSource="{Binding Documento.MessaggiStandard}"
+			         SelectedItem="{Binding SelezionatoStandard, Mode=TwoWay}"
+			         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+				<ListBox.ItemTemplate>
+					<DataTemplate x:DataType="vm:MessaggioViewModel">
+						<Grid ColumnDefinitions="40,*,Auto" RowDefinitions="Auto,Auto">
+							<TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Indice}" VerticalAlignment="Top" Margin="0,6,0,0" />
+							<TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Testo, Mode=TwoWay}" AcceptsReturn="True" TextWrapping="Wrap" />
+							<Button Grid.Row="0" Grid.Column="2" VerticalAlignment="Top" Margin="4,0,0,0"
+							        Content="{x:Static r:Testi.Messaggi_Ripristina}"
+							        Command="{Binding $parent[UserControl].((vm:MessaggiViewModel)DataContext).RipristinaCommand}"
+							        CommandParameter="{Binding}" />
+							<!-- Testo del template, in sola lettura -->
+							<TextBlock Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" Opacity="0.6" FontStyle="Italic"
+							           IsVisible="{Binding TestoTemplate, Converter={x:Static ObjectConverters.IsNotNull}}">
+								<Run Text="{x:Static r:Testi.Messaggi_Template}" /><Run Text="{Binding TestoTemplate}" />
+							</TextBlock>
+						</Grid>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+		</DockPanel>
+		<!-- Messaggi personalizzati: l'indice è quello usato dagli hook BASIC -->
+		<DockPanel Grid.Column="1" Margin="4,0,0,0">
+			<TextBlock DockPanel.Dock="Top" Text="{x:Static r:Testi.Messaggi_Personalizzati}" FontWeight="Bold" Margin="0,0,0,4" />
+			<StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,4">
+				<Button x:Name="PulsanteAggiungi" Content="{x:Static r:Testi.Messaggi_Aggiungi}" Command="{Binding AggiungiCommand}" />
+				<Button x:Name="PulsanteElimina" Content="{x:Static r:Testi.Messaggi_Elimina}"
+				        Command="{Binding EliminaCommand}" CommandParameter="{Binding SelezionatoUtente}" />
+				<Button x:Name="PulsanteSu" Content="{x:Static r:Testi.Messaggi_Su}"
+				        Command="{Binding SuCommand}" CommandParameter="{Binding SelezionatoUtente}" />
+				<Button x:Name="PulsanteGiu" Content="{x:Static r:Testi.Messaggi_Giu}"
+				        Command="{Binding GiuCommand}" CommandParameter="{Binding SelezionatoUtente}" />
+			</StackPanel>
+			<ListBox x:Name="ElencoUtente" ItemsSource="{Binding Documento.MessaggiUtente}"
+			         SelectedItem="{Binding SelezionatoUtente, Mode=TwoWay}"
+			         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+				<ListBox.ItemTemplate>
+					<DataTemplate x:DataType="vm:MessaggioViewModel">
+						<Grid ColumnDefinitions="40,*">
+							<TextBlock Grid.Column="0" Text="{Binding Indice}" FontWeight="Bold" VerticalAlignment="Top" Margin="0,6,0,0" />
+							<TextBox Grid.Column="1" Text="{Binding Testo, Mode=TwoWay}" AcceptsReturn="True" TextWrapping="Wrap" />
+						</Grid>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+		</DockPanel>
+	</Grid>
+</UserControl>

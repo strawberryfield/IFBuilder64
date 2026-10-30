@@ -74,7 +74,9 @@
 				<TabItem x:Name="SchedaVerbi" Header="{x:Static r:Testi.Scheda_Verbi}">
 					<v:VerbiView DataContext="{Binding Verbi}" />
 				</TabItem>
-				<TabItem x:Name="SchedaMessaggi" Header="{x:Static r:Testi.Scheda_Messaggi}" />
+				<TabItem x:Name="SchedaMessaggi" Header="{x:Static r:Testi.Scheda_Messaggi}">
+					<v:MessaggiView DataContext="{Binding Messaggi}" />
+				</TabItem>
 				<TabItem x:Name="SchedaGioco" Header="{x:Static r:Testi.Scheda_Gioco}" />
 			</TabControl>
 			<GridSplitter Grid.Column="1" ResizeDirection="Columns" />

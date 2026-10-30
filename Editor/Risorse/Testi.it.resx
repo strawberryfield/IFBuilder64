@@ -161,4 +161,17 @@ I riferimenti verranno svuotati. Eliminarlo?</value></data>
   <data name="Verbi_Col_Azione" xml:space="preserve"><value>Azione</value></data>
   <data name="Verbi_Filtro" xml:space="preserve"><value>Azione</value></data>
   <data name="Verbi_Filtro_Tutte" xml:space="preserve"><value>— tutte —</value></data>
+  <data name="Messaggi_Standard" xml:space="preserve"><value>Messaggi standard</value></data>
+  <data name="Messaggi_Personalizzati" xml:space="preserve"><value>Messaggi personalizzati</value></data>
+  <data name="Messaggi_Indice" xml:space="preserve"><value>Indice</value></data>
+  <data name="Messaggi_Template" xml:space="preserve"><value>Template: </value></data>
+  <data name="Messaggi_Ripristina" xml:space="preserve"><value>Ripristina</value></data>
+  <data name="Messaggi_Aggiungi" xml:space="preserve"><value>Aggiungi</value></data>
+  <data name="Messaggi_Elimina" xml:space="preserve"><value>Elimina</value></data>
+  <data name="Messaggi_Su" xml:space="preserve"><value>Su</value></data>
+  <data name="Messaggi_Giu" xml:space="preserve"><value>Giù</value></data>
+  <data name="Messaggi_Elimina_Titolo" xml:space="preserve"><value>Elimina messaggio</value></data>
+  <data name="Messaggi_Elimina_Messaggio" xml:space="preserve"><value>Eliminare il messaggio personalizzato {0}? I messaggi successivi verranno rinumerati: gli hook BASIC che usano {{var:Message}}={0} non lo troveranno più e quelli con N maggiore vanno aggiornati.</value></data>
+  <data name="Messaggi_Sposta_Titolo" xml:space="preserve"><value>Sposta messaggio</value></data>
+  <data name="Messaggi_Sposta_Messaggio" xml:space="preserve"><value>Spostare il messaggio personalizzato {0} in posizione {1}? Gli hook BASIC che usano {{var:Message}}={0} o {{var:Message}}={1} vanno aggiornati.</value></data>
 </root>

@@ -161,4 +161,17 @@ The references will be cleared. Delete it?</value></data>
   <data name="Verbi_Col_Azione" xml:space="preserve"><value>Action</value></data>
   <data name="Verbi_Filtro" xml:space="preserve"><value>Action</value></data>
   <data name="Verbi_Filtro_Tutte" xml:space="preserve"><value>— all —</value></data>
+  <data name="Messaggi_Standard" xml:space="preserve"><value>Standard messages</value></data>
+  <data name="Messaggi_Personalizzati" xml:space="preserve"><value>Custom messages</value></data>
+  <data name="Messaggi_Indice" xml:space="preserve"><value>Index</value></data>
+  <data name="Messaggi_Template" xml:space="preserve"><value>Template: </value></data>
+  <data name="Messaggi_Ripristina" xml:space="preserve"><value>Restore</value></data>
+  <data name="Messaggi_Aggiungi" xml:space="preserve"><value>Add</value></data>
+  <data name="Messaggi_Elimina" xml:space="preserve"><value>Delete</value></data>
+  <data name="Messaggi_Su" xml:space="preserve"><value>Up</value></data>
+  <data name="Messaggi_Giu" xml:space="preserve"><value>Down</value></data>
+  <data name="Messaggi_Elimina_Titolo" xml:space="preserve"><value>Delete message</value></data>
+  <data name="Messaggi_Elimina_Messaggio" xml:space="preserve"><value>Delete custom message {0}? The messages after it will be renumbered: BASIC hooks that use {{var:Message}}={0} will no longer find it, and those with a higher N must be updated.</value></data>
+  <data name="Messaggi_Sposta_Titolo" xml:space="preserve"><value>Move message</value></data>
+  <data name="Messaggi_Sposta_Messaggio" xml:space="preserve"><value>Move custom message {0} to position {1}? BASIC hooks that use {{var:Message}}={0} or {{var:Message}}={1} must be updated.</value></data>
 </root>
