@@ -1,0 +1,71 @@
+﻿//-----------------------------------------------------------------------
+// <copyright file="Editor/ViewModels/IFictionViewModel.cs" company="Casasoft">
+//     Author: Roberto Ceccarelli (http://strawberryfield.altervista.org)
+//     Copyright (c) 2026 All rights reserved.
+// </copyright>
+//
+// This file is part of Casasoft IFBuilder64
+// https://github.com/strawberryfield/IFBuilder64
+//
+// Casasoft IFBuilder64 is free software:
+// you can redistribute it and/or modify it
+// under the terms of the GNU Affero General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Casasoft IFBuilder64 is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY
+//-----------------------------------------------------------------------
+
+using Casasoft.IFBuilder64.Common.Json;
+using CommunityToolkit.Mvvm.ComponentModel;
+
+namespace Casasoft.IFBuilder64.Editor.ViewModels;
+
+/// <summary>Metadati iFiction (Babel) del gioco.</summary>
+public partial class IFictionViewModel : ObservableObject
+{
+    [ObservableProperty] private string _titolo = string.Empty;
+    [ObservableProperty] private string _autore = string.Empty;
+    [ObservableProperty] private string? _ifid;
+    [ObservableProperty] private string _sottotitolo = string.Empty;
+    [ObservableProperty] private string _genere = string.Empty;
+    [ObservableProperty] private int? _primaPubblicazione;
+    [ObservableProperty] private int? _versione;
+    [ObservableProperty] private string? _descrizione;
+    [ObservableProperty] private string? _lingua;
+    [ObservableProperty] private string? _url;
+    [ObservableProperty] private string? _email;
+
+    /// <summary>Crea il ViewModel a partire dal modello JSON.</summary>
+    public static IFictionViewModel Da(IFiction f) => new()
+    {
+        Titolo = f.title,
+        Autore = f.author,
+        Ifid = f.ifid,
+        Sottotitolo = f.headline,
+        Genere = f.genre,
+        PrimaPubblicazione = f.firstpublished,
+        Versione = f.version,
+        Descrizione = f.description,
+        Lingua = f.language,
+        Url = f.url,
+        Email = f.email
+    };
+
+    /// <summary>Converte nel modello JSON.</summary>
+    public IFiction ToIFiction() => new()
+    {
+        title = Titolo,
+        author = Autore,
+        ifid = Ifid,
+        headline = Sottotitolo,
+        genre = Genere,
+        firstpublished = PrimaPubblicazione,
+        version = Versione,
+        description = Descrizione,
+        language = Lingua,
+        url = Url,
+        email = Email
+    };
+}
