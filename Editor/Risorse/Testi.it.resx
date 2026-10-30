@@ -35,4 +35,22 @@
   <data name="Errore_NomeDuplicato" xml:space="preserve"><value>Il nome {0} è già in uso.</value></data>
   <data name="Errore_StanzaGiocatore" xml:space="preserve"><value>La stanza player non può essere rinominata né eliminata.</value></data>
   <data name="PrefissoPorta" xml:space="preserve"><value>porta</value></data>
+  <data name="Val_NessunaStanza" xml:space="preserve"><value>Il gioco non ha stanze.</value></data>
+  <data name="Val_StanzaInizialeNonValida" xml:space="preserve"><value>La stanza iniziale è vuota o inesistente.</value></data>
+  <data name="Val_NomeStanzaDuplicato" xml:space="preserve"><value>Nome di stanza duplicato: {0}.</value></data>
+  <data name="Val_NomePortaDuplicato" xml:space="preserve"><value>Nome di porta duplicato: {0}.</value></data>
+  <data name="Val_IdOggettoDuplicato" xml:space="preserve"><value>Identificatore di oggetto duplicato: {0}.</value></data>
+  <data name="Val_TroppeStanze" xml:space="preserve"><value>Più di 255 stanze.</value></data>
+  <data name="Val_TroppiOggetti" xml:space="preserve"><value>Più di 255 oggetti.</value></data>
+  <data name="Val_TroppePorte" xml:space="preserve"><value>Più di 255 porte.</value></data>
+  <data name="Val_StaticoSenzaStanza" xml:space="preserve"><value>L'oggetto statico {0} non ha una stanza.</value></data>
+  <data name="Val_UscitaInesistente" xml:space="preserve"><value>{0}: l'uscita verso {1} punta a una stanza inesistente.</value></data>
+  <data name="Val_PosizioneOrfana" xml:space="preserve"><value>{0}: la posizione {1} non esiste.</value></data>
+  <data name="Val_ContenitoreOrfano" xml:space="preserve"><value>{0}: il contenitore {1} non esiste.</value></data>
+  <data name="Val_SbloccoOrfano" xml:space="preserve"><value>{0}: l'oggetto di sblocco {1} non esiste.</value></data>
+  <data name="Val_StanzaNonRaggiungibile" xml:space="preserve"><value>La stanza {0} non è raggiungibile dalla stanza iniziale.</value></data>
+  <data name="Val_UscitaDoppia" xml:space="preserve"><value>{0}: l'uscita {1} è dichiarata sia nella stanza sia in una porta.</value></data>
+  <data name="Val_PortaApertaSenzaUscite" xml:space="preserve"><value>La porta {0} è aperta all'inizio ma mancano le uscite nelle stanze.</value></data>
+  <data name="Val_VerboFuoriCatalogo" xml:space="preserve"><value>Il verbo {0} usa il codice azione {1}, che non è nel catalogo.</value></data>
+  <data name="Val_NumeroMessaggi" xml:space="preserve"><value>I messaggi standard sono {0}, il template ne ha {1}.</value></data>
 </root>

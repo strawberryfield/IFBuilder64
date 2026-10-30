@@ -35,4 +35,22 @@
   <data name="Errore_NomeDuplicato" xml:space="preserve"><value>The name {0} is already in use.</value></data>
   <data name="Errore_StanzaGiocatore" xml:space="preserve"><value>The player room cannot be renamed or deleted.</value></data>
   <data name="PrefissoPorta" xml:space="preserve"><value>door</value></data>
+  <data name="Val_NessunaStanza" xml:space="preserve"><value>The game has no rooms.</value></data>
+  <data name="Val_StanzaInizialeNonValida" xml:space="preserve"><value>The initial room is empty or does not exist.</value></data>
+  <data name="Val_NomeStanzaDuplicato" xml:space="preserve"><value>Duplicate room name: {0}.</value></data>
+  <data name="Val_NomePortaDuplicato" xml:space="preserve"><value>Duplicate door name: {0}.</value></data>
+  <data name="Val_IdOggettoDuplicato" xml:space="preserve"><value>Duplicate item id: {0}.</value></data>
+  <data name="Val_TroppeStanze" xml:space="preserve"><value>More than 255 rooms.</value></data>
+  <data name="Val_TroppiOggetti" xml:space="preserve"><value>More than 255 items.</value></data>
+  <data name="Val_TroppePorte" xml:space="preserve"><value>More than 255 doors.</value></data>
+  <data name="Val_StaticoSenzaStanza" xml:space="preserve"><value>The static item {0} has no room.</value></data>
+  <data name="Val_UscitaInesistente" xml:space="preserve"><value>{0}: the exit towards {1} points to a missing room.</value></data>
+  <data name="Val_PosizioneOrfana" xml:space="preserve"><value>{0}: the location {1} does not exist.</value></data>
+  <data name="Val_ContenitoreOrfano" xml:space="preserve"><value>{0}: the container {1} does not exist.</value></data>
+  <data name="Val_SbloccoOrfano" xml:space="preserve"><value>{0}: the unlock item {1} does not exist.</value></data>
+  <data name="Val_StanzaNonRaggiungibile" xml:space="preserve"><value>The room {0} cannot be reached from the initial room.</value></data>
+  <data name="Val_UscitaDoppia" xml:space="preserve"><value>{0}: the exit {1} is declared both in the room and in a door.</value></data>
+  <data name="Val_PortaApertaSenzaUscite" xml:space="preserve"><value>The door {0} is open at start but the room exits are missing.</value></data>
+  <data name="Val_VerboFuoriCatalogo" xml:space="preserve"><value>The verb {0} uses action code {1}, which is not in the catalog.</value></data>
+  <data name="Val_NumeroMessaggi" xml:space="preserve"><value>The standard messages are {0}, the template has {1}.</value></data>
 </root>
