@@ -53,4 +53,42 @@
   <data name="Val_PortaApertaSenzaUscite" xml:space="preserve"><value>La porta {0} è aperta all'inizio ma mancano le uscite nelle stanze.</value></data>
   <data name="Val_VerboFuoriCatalogo" xml:space="preserve"><value>Il verbo {0} usa il codice azione {1}, che non è nel catalogo.</value></data>
   <data name="Val_NumeroMessaggi" xml:space="preserve"><value>I messaggi standard sono {0}, il template ne ha {1}.</value></data>
+  <data name="SenzaTitolo" xml:space="preserve"><value>Senza titolo</value></data>
+  <data name="Menu_File" xml:space="preserve"><value>_File</value></data>
+  <data name="Menu_Nuovo" xml:space="preserve"><value>_Nuovo...</value></data>
+  <data name="Menu_Apri" xml:space="preserve"><value>_Apri...</value></data>
+  <data name="Menu_Salva" xml:space="preserve"><value>_Salva</value></data>
+  <data name="Menu_SalvaConNome" xml:space="preserve"><value>Salva _con nome...</value></data>
+  <data name="Menu_Recenti" xml:space="preserve"><value>File _recenti</value></data>
+  <data name="Menu_Esci" xml:space="preserve"><value>_Esci</value></data>
+  <data name="Menu_Compila" xml:space="preserve"><value>_Compila</value></data>
+  <data name="Menu_CompilaOra" xml:space="preserve"><value>_Compila</value></data>
+  <data name="Menu_OpzioniCompilazione" xml:space="preserve"><value>_Opzioni...</value></data>
+  <data name="Scheda_Mappa" xml:space="preserve"><value>Mappa</value></data>
+  <data name="Scheda_Oggetti" xml:space="preserve"><value>Oggetti</value></data>
+  <data name="Scheda_Verbi" xml:space="preserve"><value>Verbi</value></data>
+  <data name="Scheda_Messaggi" xml:space="preserve"><value>Messaggi</value></data>
+  <data name="Scheda_Gioco" xml:space="preserve"><value>Gioco</value></data>
+  <data name="Pannello_Proprieta" xml:space="preserve"><value>Proprietà</value></data>
+  <data name="Pannello_Inferiore" xml:space="preserve"><value>Avvisi / output compilazione</value></data>
+  <data name="Pannello_Avvisi" xml:space="preserve"><value>Avvisi</value></data>
+  <data name="Pannello_Output" xml:space="preserve"><value>Output compilazione</value></data>
+  <data name="Gravita_Errore" xml:space="preserve"><value>Errore</value></data>
+  <data name="Gravita_Avviso" xml:space="preserve"><value>Avviso</value></data>
+  <data name="Correggi" xml:space="preserve"><value>Correggi</value></data>
+  <data name="Pulsante_Si" xml:space="preserve"><value>Sì</value></data>
+  <data name="Pulsante_No" xml:space="preserve"><value>No</value></data>
+  <data name="Pulsante_Annulla" xml:space="preserve"><value>Annulla</value></data>
+  <data name="Pulsante_Ok" xml:space="preserve"><value>OK</value></data>
+  <data name="Pulsante_Sfoglia" xml:space="preserve"><value>Sfoglia...</value></data>
+  <data name="Dialogo_Errore" xml:space="preserve"><value>Errore</value></data>
+  <data name="ConfermaSalvataggio_Titolo" xml:space="preserve"><value>Modifiche non salvate</value></data>
+  <data name="ConfermaSalvataggio_Messaggio" xml:space="preserve"><value>Il documento contiene modifiche non salvate. Salvarle?</value></data>
+  <data name="Template_Titolo" xml:space="preserve"><value>Nuovo gioco</value></data>
+  <data name="Template_Messaggio" xml:space="preserve"><value>Scegli la lingua del template:</value></data>
+  <data name="Template_Italiano" xml:space="preserve"><value>Italiano</value></data>
+  <data name="Template_Inglese" xml:space="preserve"><value>Inglese</value></data>
+  <data name="Filtro_Json" xml:space="preserve"><value>File di gioco (JSON)</value></data>
+  <data name="Opzioni_Titolo" xml:space="preserve"><value>Opzioni di compilazione</value></data>
+  <data name="Opzioni_OutputBase" xml:space="preserve"><value>Nome base dei file generati (percorso senza suffisso; vuoto = accanto al file JSON):</value></data>
 </root>

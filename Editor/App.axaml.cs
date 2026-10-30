@@ -20,6 +20,8 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Casasoft.IFBuilder64.Editor.Servizi;
+using Casasoft.IFBuilder64.Editor.ViewModels;
 using Casasoft.IFBuilder64.Editor.Views;
 
 namespace Casasoft.IFBuilder64.Editor;
@@ -36,7 +38,11 @@ public partial class App : Application
     public override void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            desktop.MainWindow = new MainWindow();
+        {
+            var finestra = new MainWindow();
+            finestra.DataContext = new MainWindowViewModel(new DialoghiAvalonia(finestra), ImpostazioniUtente.Carica());
+            desktop.MainWindow = finestra;
+        }
         base.OnFrameworkInitializationCompleted();
     }
 }

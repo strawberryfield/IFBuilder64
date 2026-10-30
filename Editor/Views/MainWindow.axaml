@@ -1,6 +1,85 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Casasoft.IFBuilder64.Editor.ViewModels"
+        xmlns:srv="using:Casasoft.IFBuilder64.Editor.Servizi"
+        xmlns:v="using:Casasoft.IFBuilder64.Editor.Views"
+        xmlns:r="using:Casasoft.IFBuilder64.Editor.Risorse"
         x:Class="Casasoft.IFBuilder64.Editor.Views.MainWindow"
-        Title="IFBuilder64 Editor"
+        x:DataType="vm:MainWindowViewModel"
+        Title="{Binding Titolo}"
         Width="1100" Height="700">
+	<Window.KeyBindings>
+		<KeyBinding Gesture="Ctrl+N" Command="{Binding NuovoCommand}" />
+		<KeyBinding Gesture="Ctrl+O" Command="{Binding ApriCommand}" />
+		<KeyBinding Gesture="Ctrl+S" Command="{Binding SalvaCommand}" />
+		<KeyBinding Gesture="F5" Command="{Binding CompilaCommand}" />
+	</Window.KeyBindings>
+
+	<DockPanel>
+		<Menu DockPanel.Dock="Top">
+			<MenuItem Header="{x:Static r:Testi.Menu_File}">
+				<MenuItem Header="{x:Static r:Testi.Menu_Nuovo}" Command="{Binding NuovoCommand}" InputGesture="Ctrl+N" />
+				<MenuItem Header="{x:Static r:Testi.Menu_Apri}" Command="{Binding ApriCommand}" InputGesture="Ctrl+O" />
+				<MenuItem Header="{x:Static r:Testi.Menu_Salva}" Command="{Binding SalvaCommand}" InputGesture="Ctrl+S" />
+				<MenuItem Header="{x:Static r:Testi.Menu_SalvaConNome}" Command="{Binding SalvaConNomeCommand}" />
+				<Separator />
+				<MenuItem x:Name="MenuRecenti" Header="{x:Static r:Testi.Menu_Recenti}" />
+				<Separator />
+				<MenuItem Header="{x:Static r:Testi.Menu_Esci}" Click="Esci_Click" />
+			</MenuItem>
+			<MenuItem Header="{x:Static r:Testi.Menu_Compila}">
+				<MenuItem Header="{x:Static r:Testi.Menu_CompilaOra}" Command="{Binding CompilaCommand}" InputGesture="F5" />
+				<MenuItem Header="{x:Static r:Testi.Menu_OpzioniCompilazione}" Command="{Binding OpzioniCompilazioneCommand}" />
+			</MenuItem>
+		</Menu>
+
+		<!-- Pannello inferiore comprimibile: avvisi del validatore e output della compilazione -->
+		<Expander DockPanel.Dock="Bottom" HorizontalAlignment="Stretch"
+		          Header="{x:Static r:Testi.Pannello_Inferiore}"
+		          IsExpanded="{Binding PannelloInferioreAperto, Mode=TwoWay}">
+			<TabControl x:Name="SchedeInferiori" Height="180" SelectedIndex="{Binding SchedaInferiore, Mode=TwoWay}">
+				<TabItem Header="{x:Static r:Testi.Pannello_Avvisi}">
+					<ListBox x:Name="ListaAvvisi" ItemsSource="{Binding Avvisi}" DoubleTapped="ListaAvvisi_DoubleTapped">
+						<ListBox.ItemTemplate>
+							<DataTemplate x:DataType="srv:Avviso">
+								<DockPanel>
+									<Button DockPanel.Dock="Right" Content="{x:Static r:Testi.Correggi}"
+									        IsVisible="{Binding Correzione, Converter={x:Static ObjectConverters.IsNotNull}}"
+									        Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).CorreggiCommand}"
+									        CommandParameter="{Binding}" />
+									<TextBlock DockPanel.Dock="Left" Width="80" FontWeight="Bold" VerticalAlignment="Center"
+									           Text="{Binding Gravita, Converter={x:Static v:ConvertitoreGravita.Testo}}"
+									           Foreground="{Binding Gravita, Converter={x:Static v:ConvertitoreGravita.Colore}}" />
+									<TextBlock Text="{Binding Messaggio}" TextWrapping="Wrap" VerticalAlignment="Center" />
+								</DockPanel>
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+					</ListBox>
+				</TabItem>
+				<TabItem Header="{x:Static r:Testi.Pannello_Output}">
+					<ListBox x:Name="ListaOutput" ItemsSource="{Binding LogCompilazione}" />
+				</TabItem>
+			</TabControl>
+		</Expander>
+
+		<Grid ColumnDefinitions="*,4,300">
+			<!-- Le schede vengono riempite dalle viste dei task successivi -->
+			<TabControl x:Name="Schede" Grid.Column="0" SelectedIndex="{Binding SchedaAttiva, Mode=TwoWay}">
+				<TabItem x:Name="SchedaMappa" Header="{x:Static r:Testi.Scheda_Mappa}" />
+				<TabItem x:Name="SchedaOggetti" Header="{x:Static r:Testi.Scheda_Oggetti}" />
+				<TabItem x:Name="SchedaVerbi" Header="{x:Static r:Testi.Scheda_Verbi}" />
+				<TabItem x:Name="SchedaMessaggi" Header="{x:Static r:Testi.Scheda_Messaggi}" />
+				<TabItem x:Name="SchedaGioco" Header="{x:Static r:Testi.Scheda_Gioco}" />
+			</TabControl>
+			<GridSplitter Grid.Column="1" ResizeDirection="Columns" />
+			<!-- Pannello proprietà dell'elemento selezionato: contenuto dai task successivi -->
+			<Border x:Name="PannelloProprieta" Grid.Column="2" Padding="8">
+				<DockPanel>
+					<TextBlock DockPanel.Dock="Top" FontWeight="Bold" Margin="0,0,0,8"
+					           Text="{x:Static r:Testi.Pannello_Proprieta}" />
+					<ContentControl x:Name="ContenutoProprieta" />
+				</DockPanel>
+			</Border>
+		</Grid>
+	</DockPanel>
 </Window>

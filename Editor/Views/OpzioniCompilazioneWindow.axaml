@@ -1,0 +1,19 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:r="using:Casasoft.IFBuilder64.Editor.Risorse"
+        x:Class="Casasoft.IFBuilder64.Editor.Views.OpzioniCompilazioneWindow"
+        Title="{x:Static r:Testi.Opzioni_Titolo}"
+        Width="560" SizeToContent="Height" CanResize="False"
+        WindowStartupLocation="CenterOwner">
+	<StackPanel Margin="16" Spacing="8">
+		<TextBlock Text="{x:Static r:Testi.Opzioni_OutputBase}" TextWrapping="Wrap" />
+		<DockPanel>
+			<Button DockPanel.Dock="Right" Margin="8,0,0,0" Content="{x:Static r:Testi.Pulsante_Sfoglia}" Click="Sfoglia_Click" />
+			<TextBox x:Name="TestoOutput" />
+		</DockPanel>
+		<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+			<Button Content="{x:Static r:Testi.Pulsante_Ok}" IsDefault="True" Click="Ok_Click" />
+			<Button Content="{x:Static r:Testi.Pulsante_Annulla}" IsCancel="True" Click="Annulla_Click" />
+		</StackPanel>
+	</StackPanel>
+</Window>
