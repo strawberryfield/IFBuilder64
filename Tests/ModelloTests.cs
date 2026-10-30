@@ -38,7 +38,18 @@ public class ModelloTests
         var r2 = JsonSerializer.Deserialize<Room>(JsonSerializer.Serialize(r))!;
         Assert.Equal((2, -1, 1), (r2.map!.x, r2.map.y, r2.map.z));
     }
+}
 
+/// <summary>
+/// Definizione della collezione che cambia la cartella corrente del processo:
+/// va eseguita senza parallelismo con gli altri test.
+/// </summary>
+[CollectionDefinition("CartellaCorrente", DisableParallelization = true)]
+public class CartellaCorrenteCollezione;
+
+[Collection("CartellaCorrente")]
+public class CartellaCorrenteTests
+{
     [Fact]
     public void Template_SiCaricaDaAltraCartellaCorrente()
     {

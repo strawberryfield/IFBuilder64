@@ -22,6 +22,12 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Common\Common.csproj" />
+		<ProjectReference Include="..\Builder\Builder.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="Dati\**\*" CopyToOutputDirectory="PreserveNewest" />
+		<Content Include="Riferimenti\**\*" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
 </Project>

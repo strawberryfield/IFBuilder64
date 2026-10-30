@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="IFBuilder64/ConfigPrg.cs" company="Casasoft">
+// <copyright file="Builder/ConfigPrg.cs" company="Casasoft">
 //     Author: Roberto Ceccarelli (http://strawberryfield.altervista.org)
 //     Copyright (c) 2026 All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@
 using Casasoft.Commodore;
 using Casasoft.IFBuilder64.Json;
 
-namespace IFBuilder64;
+namespace Casasoft.IFBuilder64.Builder;
 
 /// <summary>
 /// Represents the program configuration block used by the IFBuilder64 runtime.

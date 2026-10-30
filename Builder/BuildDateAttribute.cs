@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="IFBuilder64/BuildDateAttribute.cs" company="Casasoft">
+// <copyright file="Builder/BuildDateAttribute.cs" company="Casasoft">
 //     Author: Roberto Ceccarelli (http://strawberryfield.altervista.org)
 //     Copyright (c) 2026 All rights reserved.
 // </copyright>
