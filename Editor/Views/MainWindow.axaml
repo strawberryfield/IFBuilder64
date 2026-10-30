@@ -31,6 +31,12 @@
 				<MenuItem Header="{x:Static r:Testi.Menu_CompilaOra}" Command="{Binding CompilaCommand}" InputGesture="F5" />
 				<MenuItem Header="{x:Static r:Testi.Menu_OpzioniCompilazione}" Command="{Binding OpzioniCompilazioneCommand}" />
 			</MenuItem>
+			<MenuItem Header="{x:Static r:Testi.Menu_Strumenti}">
+				<MenuItem x:Name="MenuLingue" Header="{x:Static r:Testi.Menu_LinguaInterfaccia}" />
+			</MenuItem>
+			<MenuItem Header="{x:Static r:Testi.Menu_Aiuto}">
+				<MenuItem Header="{x:Static r:Testi.Menu_Informazioni}" Command="{Binding MostraInformazioniCommand}" />
+			</MenuItem>
 		</Menu>
 
 		<!-- Pannello inferiore comprimibile: avvisi del validatore e output della compilazione -->
@@ -77,7 +83,9 @@
 				<TabItem x:Name="SchedaMessaggi" Header="{x:Static r:Testi.Scheda_Messaggi}">
 					<v:MessaggiView DataContext="{Binding Messaggi}" />
 				</TabItem>
-				<TabItem x:Name="SchedaGioco" Header="{x:Static r:Testi.Scheda_Gioco}" />
+				<TabItem x:Name="SchedaGioco" Header="{x:Static r:Testi.Scheda_Gioco}">
+					<v:GiocoView DataContext="{Binding Documento}" />
+				</TabItem>
 			</TabControl>
 			<GridSplitter Grid.Column="1" ResizeDirection="Columns" />
 			<!-- Pannello proprietà dell'elemento selezionato: contenuto dai task successivi -->

@@ -48,7 +48,24 @@ public partial class MainWindow : Window
         if (_vm is not null) _vm.Recenti.CollectionChanged -= Recenti_CollectionChanged;
         _vm = DataContext as MainWindowViewModel;
         if (_vm is not null) _vm.Recenti.CollectionChanged += Recenti_CollectionChanged;
-        AggiornaRecenti();
+        AggiornaLingue();
+    }
+
+    /// <summary>Costruisce il sottomenu delle lingue dell'interfaccia, con quella corrente spuntata.</summary>
+    private void AggiornaLingue()
+    {
+        MenuLingue.Items.Clear();
+        if (_vm is null) return;
+        foreach (var lingua in _vm.LingueDisponibili)
+            MenuLingue.Items.Add(new MenuItem
+            {
+                Header = lingua.Nome,
+                ToggleType = MenuItemToggleType.Radio,
+                GroupName = "LinguaInterfaccia",
+                IsChecked = string.Equals(lingua.Codice, _vm.LinguaCorrente, StringComparison.OrdinalIgnoreCase),
+                Command = _vm.CambiaLinguaCommand,
+                CommandParameter = lingua.Codice
+            });
     }
 
     private void Recenti_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) => AggiornaRecenti();

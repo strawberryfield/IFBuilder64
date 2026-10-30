@@ -82,6 +82,7 @@
   <data name="Pulsante_Ok" xml:space="preserve"><value>OK</value></data>
   <data name="Pulsante_Sfoglia" xml:space="preserve"><value>Browse...</value></data>
   <data name="Dialogo_Errore" xml:space="preserve"><value>Error</value></data>
+  <data name="Dialogo_Informazione" xml:space="preserve"><value>Information</value></data>
   <data name="ConfermaSalvataggio_Titolo" xml:space="preserve"><value>Unsaved changes</value></data>
   <data name="ConfermaSalvataggio_Messaggio" xml:space="preserve"><value>The document has unsaved changes. Save them?</value></data>
   <data name="Template_Titolo" xml:space="preserve"><value>New game</value></data>
@@ -174,4 +175,39 @@ The references will be cleared. Delete it?</value></data>
   <data name="Messaggi_Elimina_Messaggio" xml:space="preserve"><value>Delete custom message {0}? The messages after it will be renumbered: BASIC hooks that use {{var:Message}}={0} will no longer find it, and those with a higher N must be updated.</value></data>
   <data name="Messaggi_Sposta_Titolo" xml:space="preserve"><value>Move message</value></data>
   <data name="Messaggi_Sposta_Messaggio" xml:space="preserve"><value>Move custom message {0} to position {1}? BASIC hooks that use {{var:Message}}={0} or {{var:Message}}={1} must be updated.</value></data>
+  <data name="Menu_Strumenti" xml:space="preserve"><value>_Tools</value></data>
+  <data name="Menu_LinguaInterfaccia" xml:space="preserve"><value>Interface _language</value></data>
+  <data name="Menu_Aiuto" xml:space="preserve"><value>_?</value></data>
+  <data name="Menu_Informazioni" xml:space="preserve"><value>_About</value></data>
+  <data name="Lingua_Riavvio" xml:space="preserve"><value>The interface language will change at the next start.</value></data>
+  <data name="Informazioni_Titolo" xml:space="preserve"><value>About IFBuilder64 Editor</value></data>
+  <data name="Informazioni_Prodotto" xml:space="preserve"><value>IFBuilder64 Editor</value></data>
+  <data name="Informazioni_Versione" xml:space="preserve"><value>Version {0}</value></data>
+  <data name="Informazioni_Licenza" xml:space="preserve"><value>License: AGPL-3.0-or-later</value></data>
+  <data name="Informazioni_Terze" xml:space="preserve"><value>Third-party notices</value></data>
+  <data name="Gioco_Intro" xml:space="preserve"><value>Introduction</value></data>
+  <data name="Gioco_CaricoMassimo" xml:space="preserve"><value>Maximum load (0-255)</value></data>
+  <data name="Gioco_Direzioni" xml:space="preserve"><value>Directions</value></data>
+  <data name="Gioco_IFiction" xml:space="preserve"><value>iFiction metadata</value></data>
+  <data name="Gioco_CreaIFiction" xml:space="preserve"><value>Create iFiction metadata</value></data>
+  <data name="Gioco_Titolo" xml:space="preserve"><value>Title</value></data>
+  <data name="Gioco_Autore" xml:space="preserve"><value>Author</value></data>
+  <data name="Gioco_Ifid" xml:space="preserve"><value>IFID</value></data>
+  <data name="Gioco_GeneraIfid" xml:space="preserve"><value>Generate IFID</value></data>
+  <data name="Gioco_Sottotitolo" xml:space="preserve"><value>Headline</value></data>
+  <data name="Gioco_Genere" xml:space="preserve"><value>Genre</value></data>
+  <data name="Gioco_PrimaPubblicazione" xml:space="preserve"><value>First published (year)</value></data>
+  <data name="Gioco_Versione" xml:space="preserve"><value>Version</value></data>
+  <data name="Gioco_Descrizione" xml:space="preserve"><value>Description</value></data>
+  <data name="Gioco_Lingua" xml:space="preserve"><value>Language</value></data>
+  <data name="Gioco_Url" xml:space="preserve"><value>URL</value></data>
+  <data name="Gioco_Email" xml:space="preserve"><value>Email</value></data>
+  <data name="Gioco_SovrascriviIfid_Titolo" xml:space="preserve"><value>Generate IFID</value></data>
+  <data name="Gioco_SovrascriviIfid_Messaggio" xml:space="preserve"><value>The game already has an IFID. Replace it with a new one?</value></data>
+  <data name="Direzione_0" xml:space="preserve"><value>North</value></data>
+  <data name="Direzione_1" xml:space="preserve"><value>South</value></data>
+  <data name="Direzione_2" xml:space="preserve"><value>East</value></data>
+  <data name="Direzione_3" xml:space="preserve"><value>West</value></data>
+  <data name="Direzione_4" xml:space="preserve"><value>Up</value></data>
+  <data name="Direzione_5" xml:space="preserve"><value>Down</value></data>
 </root>

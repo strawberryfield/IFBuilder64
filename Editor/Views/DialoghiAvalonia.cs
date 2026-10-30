@@ -99,6 +99,13 @@ public class DialoghiAvalonia(Window proprietaria) : IDialoghi
     public Task<OggettoViewModel?> ScegliOggettoAsync(string titolo, IReadOnlyList<OggettoViewModel> oggetti) =>
         ScegliDaElencoAsync(titolo, oggetti, o => string.IsNullOrEmpty(o.Posizione) ? o.Nome : $"{o.Nome} ({o.Posizione})");
 
+    /// <inheritdoc />
+    public Task InformaAsync(string messaggio) =>
+        Scelta(Testi.Dialogo_Informazione, messaggio, (Testi.Pulsante_Ok, null));
+
+    /// <inheritdoc />
+    public Task MostraInformazioniAsync() => new InformazioniWindow().ShowDialog(proprietaria);
+
     /// <summary>Mostra un elenco in una finestra modale e restituisce l'elemento scelto, o null se annullato.</summary>
     private async Task<T?> ScegliDaElencoAsync<T>(string titolo, IReadOnlyList<T> elementi, Func<T, string> testo)
         where T : class

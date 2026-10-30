@@ -135,6 +135,13 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>File aperti di recente, dal più recente.</summary>
     public ObservableCollection<string> Recenti { get; } = [];
 
+    /// <summary>Lingua dell'interfaccia in uso (codice di due lettere).</summary>
+    public string LinguaCorrente =>
+        string.IsNullOrEmpty(_impostazioni.Lingua) ? CultureInfo.CurrentUICulture.TwoLetterISOLanguageName : _impostazioni.Lingua;
+
+    /// <summary>Lingue dell'interfaccia disponibili: inglese (neutro) e ogni cultura con un file di risorse.</summary>
+    public IReadOnlyList<LinguaInterfaccia> LingueDisponibili { get; } = CalcolaLingueDisponibili();
+
     /// <summary>Esegue subito la validazione, annullando quella pianificata.</summary>
     public void ValidaOra()
     {
@@ -148,6 +155,25 @@ public partial class MainWindowViewModel : ObservableObject
 
     /// <summary>Chiede se salvare le modifiche prima di chiudere; false se l'utente annulla.</summary>
     public Task<bool> PuoChiudereAsync() => ConfermaSostituzioneAsync();
+
+    [RelayCommand]
+    private async Task CambiaLingua(string? codice)
+    {
+        if (string.IsNullOrEmpty(codice)) return;
+        _impostazioni.Lingua = codice;
+        await SalvaImpostazioniAsync();
+        await _dialoghi.InformaAsync(Testi.Lingua_Riavvio);
+    }
+
+    [RelayCommand]
+    private void CreaIFiction()
+    {
+        if (Documento.IFiction is not null) return;
+        Documento.IFiction = new IFictionViewModel { Titolo = string.Empty, Autore = string.Empty, Dialoghi = _dialoghi };
+    }
+
+    [RelayCommand]
+    private Task MostraInformazioni() => _dialoghi.MostraInformazioniAsync();
 
     [RelayCommand]
     private async Task Nuovo()
@@ -445,6 +471,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     private void Iscrivi(DocumentoViewModel doc)
     {
+        if (doc.IFiction is { } iFiction) iFiction.Dialoghi = _dialoghi;
         doc.ContenutoCambiato += DocumentoCambiato;
         doc.PropertyChanged += DocumentoProprietaCambiata;
     }
@@ -460,6 +487,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     private void DocumentoProprietaCambiata(object? sender, PropertyChangedEventArgs e)
     {
+        if (e.PropertyName == nameof(DocumentoViewModel.IFiction) && Documento.IFiction is { } iFiction) iFiction.Dialoghi = _dialoghi;
         if (e.PropertyName is nameof(DocumentoViewModel.Modificato) or nameof(DocumentoViewModel.Percorso))
             OnPropertyChanged(nameof(Titolo));
     }
@@ -478,6 +506,20 @@ public partial class MainWindowViewModel : ObservableObject
         await SalvaImpostazioniAsync();
     }
 
+    private static IReadOnlyList<LinguaInterfaccia> CalcolaLingueDisponibili()
+    {
+        var lingue = new List<LinguaInterfaccia> { Descrivi("en") };
+        foreach (var cultura in CultureInfo.GetCultures(CultureTypes.NeutralCultures))
+        {
+            if (cultura.Name.Length == 0 || cultura.Name == "en") continue;
+            if (Testi.ResourceManager.GetResourceSet(cultura, createIfNotExists: true, tryParents: false) is not null)
+                lingue.Add(Descrivi(cultura.Name));
+        }
+        return lingue;
+    }
+
+    private static LinguaInterfaccia Descrivi(string codice) => new(codice, CultureInfo.GetCultureInfo(codice).NativeName);
+
     private async Task SalvaImpostazioniAsync()
     {
         try
@@ -490,3 +532,6 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 }
+
+/// <summary>Lingua selezionabile per l'interfaccia: codice di cultura e nome nella lingua stessa.</summary>
+public record LinguaInterfaccia(string Codice, string Nome);

@@ -53,4 +53,10 @@ public interface IDialoghi
 
     /// <summary>Sceglie un oggetto dall'elenco; null se annullato.</summary>
     Task<OggettoViewModel?> ScegliOggettoAsync(string titolo, IReadOnlyList<OggettoViewModel> oggetti);
+
+    /// <summary>Mostra un messaggio informativo.</summary>
+    Task InformaAsync(string messaggio);
+
+    /// <summary>Mostra la finestra Informazioni.</summary>
+    Task MostraInformazioniAsync();
 }

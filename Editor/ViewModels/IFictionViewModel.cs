@@ -18,7 +18,10 @@
 //-----------------------------------------------------------------------
 
 using Casasoft.IFBuilder64.Common.Json;
+using Casasoft.IFBuilder64.Editor.Risorse;
+using Casasoft.IFBuilder64.Editor.Servizi;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Casasoft.IFBuilder64.Editor.ViewModels;
 
@@ -36,6 +39,19 @@ public partial class IFictionViewModel : ObservableObject
     [ObservableProperty] private string? _lingua;
     [ObservableProperty] private string? _url;
     [ObservableProperty] private string? _email;
+
+    /// <summary>Dialoghi per chiedere conferma prima di sovrascrivere l'IFID; null per sovrascrivere senza chiedere.</summary>
+    public IDialoghi? Dialoghi { get; set; }
+
+    /// <summary>Genera un nuovo IFID (GUID maiuscolo), chiedendo conferma se ne esiste già uno.</summary>
+    [RelayCommand]
+    private async Task GeneraIfid()
+    {
+        if (!string.IsNullOrEmpty(Ifid) && Dialoghi is not null
+            && !await Dialoghi.ConfermaAsync(Testi.Gioco_SovrascriviIfid_Titolo, Testi.Gioco_SovrascriviIfid_Messaggio))
+            return;
+        Ifid = Guid.NewGuid().ToString().ToUpperInvariant();
+    }
 
     /// <summary>Crea il ViewModel a partire dal modello JSON.</summary>
     public static IFictionViewModel Da(IFiction f) => new()

@@ -98,6 +98,21 @@ public class DialoghiFinti : IDialoghi
         OggettiOfferti = oggetti;
         return Task.FromResult(RispostaScegliOggetto);
     }
+
+    public List<string> Informazioni { get; } = [];
+
+    public Task InformaAsync(string messaggio)
+    {
+        Chiamate.Add(nameof(InformaAsync));
+        Informazioni.Add(messaggio);
+        return Task.CompletedTask;
+    }
+
+    public Task MostraInformazioniAsync()
+    {
+        Chiamate.Add(nameof(MostraInformazioniAsync));
+        return Task.CompletedTask;
+    }
 }
 
 /// <summary>Pianificatore finto: ricorda l'ultima azione pianificata e se è stata annullata.</summary>
