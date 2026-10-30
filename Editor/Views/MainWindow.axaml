@@ -65,7 +65,9 @@
 		<Grid ColumnDefinitions="*,4,300">
 			<!-- Le schede vengono riempite dalle viste dei task successivi -->
 			<TabControl x:Name="Schede" Grid.Column="0" SelectedIndex="{Binding SchedaAttiva, Mode=TwoWay}">
-				<TabItem x:Name="SchedaMappa" Header="{x:Static r:Testi.Scheda_Mappa}" />
+				<TabItem x:Name="SchedaMappa" Header="{x:Static r:Testi.Scheda_Mappa}">
+					<v:MappaView DataContext="{Binding Mappa}" />
+				</TabItem>
 				<TabItem x:Name="SchedaOggetti" Header="{x:Static r:Testi.Scheda_Oggetti}" />
 				<TabItem x:Name="SchedaVerbi" Header="{x:Static r:Testi.Scheda_Verbi}" />
 				<TabItem x:Name="SchedaMessaggi" Header="{x:Static r:Testi.Scheda_Messaggi}" />

@@ -91,4 +91,25 @@
   <data name="Filtro_Json" xml:space="preserve"><value>File di gioco (JSON)</value></data>
   <data name="Opzioni_Titolo" xml:space="preserve"><value>Opzioni di compilazione</value></data>
   <data name="Opzioni_OutputBase" xml:space="preserve"><value>Nome base dei file generati (percorso senza suffisso; vuoto = accanto al file JSON):</value></data>
+  <data name="PrefissoStanza" xml:space="preserve"><value>stanza</value></data>
+  <data name="Mappa_Livello" xml:space="preserve"><value>Livello:</value></data>
+  <data name="Mappa_LivelloSopra" xml:space="preserve"><value>+ Sopra</value></data>
+  <data name="Mappa_LivelloSopra_Tip" xml:space="preserve"><value>Aggiunge un livello sopra il più alto</value></data>
+  <data name="Mappa_LivelloSotto" xml:space="preserve"><value>+ Sotto</value></data>
+  <data name="Mappa_LivelloSotto_Tip" xml:space="preserve"><value>Aggiunge un livello sotto il più basso</value></data>
+  <data name="Mappa_Zoom" xml:space="preserve"><value>Zoom:</value></data>
+  <data name="Mappa_DisponiTutto" xml:space="preserve"><value>Disponi automaticamente</value></data>
+  <data name="Mappa_DisponiTutto_Titolo" xml:space="preserve"><value>Disponi automaticamente</value></data>
+  <data name="Mappa_DisponiTutto_Messaggio" xml:space="preserve"><value>Tutte le stanze verranno ridisposte sulla mappa, comprese quelle già posizionate. Continuare?</value></data>
+  <data name="Mappa_CollegaSu" xml:space="preserve"><value>Collega in alto a...</value></data>
+  <data name="Mappa_CollegaGiu" xml:space="preserve"><value>Collega in basso a...</value></data>
+  <data name="Mappa_ImpostaIniziale" xml:space="preserve"><value>Imposta come iniziale</value></data>
+  <data name="Mappa_Elimina" xml:space="preserve"><value>Elimina</value></data>
+  <data name="Mappa_TrasformaInPorta" xml:space="preserve"><value>Trasforma in porta</value></data>
+  <data name="Mappa_TrasformaInPassaggio" xml:space="preserve"><value>Trasforma in passaggio</value></data>
+  <data name="Mappa_EliminaStanza_Titolo" xml:space="preserve"><value>Elimina stanza</value></data>
+  <data name="Mappa_EliminaStanza_Messaggio" xml:space="preserve"><value>La stanza {0} è riferita da:
+{1}
+I riferimenti verranno svuotati. Eliminarla?</value></data>
+  <data name="Mappa_SuggerimentoTastiera" xml:space="preserve"><value>Clic su una cella vuota per creare una stanza; trascina una stanza per spostarla, dal bordo per collegarla (Ctrl = senso unico); Ctrl+rotella = zoom, tasto centrale = sposta la vista.</value></data>
 </root>

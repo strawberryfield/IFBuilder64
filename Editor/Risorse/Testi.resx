@@ -91,4 +91,25 @@
   <data name="Filtro_Json" xml:space="preserve"><value>Game files (JSON)</value></data>
   <data name="Opzioni_Titolo" xml:space="preserve"><value>Build options</value></data>
   <data name="Opzioni_OutputBase" xml:space="preserve"><value>Output base name (path without suffix; empty = next to the JSON file):</value></data>
+  <data name="PrefissoStanza" xml:space="preserve"><value>room</value></data>
+  <data name="Mappa_Livello" xml:space="preserve"><value>Level:</value></data>
+  <data name="Mappa_LivelloSopra" xml:space="preserve"><value>+ Above</value></data>
+  <data name="Mappa_LivelloSopra_Tip" xml:space="preserve"><value>Add a level above the highest one</value></data>
+  <data name="Mappa_LivelloSotto" xml:space="preserve"><value>+ Below</value></data>
+  <data name="Mappa_LivelloSotto_Tip" xml:space="preserve"><value>Add a level below the lowest one</value></data>
+  <data name="Mappa_Zoom" xml:space="preserve"><value>Zoom:</value></data>
+  <data name="Mappa_DisponiTutto" xml:space="preserve"><value>Auto layout</value></data>
+  <data name="Mappa_DisponiTutto_Titolo" xml:space="preserve"><value>Auto layout</value></data>
+  <data name="Mappa_DisponiTutto_Messaggio" xml:space="preserve"><value>All rooms will be placed again on the map, including those already positioned. Continue?</value></data>
+  <data name="Mappa_CollegaSu" xml:space="preserve"><value>Link up to...</value></data>
+  <data name="Mappa_CollegaGiu" xml:space="preserve"><value>Link down to...</value></data>
+  <data name="Mappa_ImpostaIniziale" xml:space="preserve"><value>Set as initial room</value></data>
+  <data name="Mappa_Elimina" xml:space="preserve"><value>Delete</value></data>
+  <data name="Mappa_TrasformaInPorta" xml:space="preserve"><value>Turn into door</value></data>
+  <data name="Mappa_TrasformaInPassaggio" xml:space="preserve"><value>Turn into passage</value></data>
+  <data name="Mappa_EliminaStanza_Titolo" xml:space="preserve"><value>Delete room</value></data>
+  <data name="Mappa_EliminaStanza_Messaggio" xml:space="preserve"><value>Room {0} is referenced by:
+{1}
+The references will be cleared. Delete it?</value></data>
+  <data name="Mappa_SuggerimentoTastiera" xml:space="preserve"><value>Click an empty cell to create a room; drag a room to move it, drag from its edge to link it (Ctrl = one way); Ctrl+wheel = zoom, middle button = pan.</value></data>
 </root>

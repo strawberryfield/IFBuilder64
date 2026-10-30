@@ -1,0 +1,31 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Casasoft.IFBuilder64.Editor.ViewModels"
+             xmlns:c="using:Casasoft.IFBuilder64.Editor.Controlli"
+             xmlns:r="using:Casasoft.IFBuilder64.Editor.Risorse"
+             x:Class="Casasoft.IFBuilder64.Editor.Views.MappaView"
+             x:DataType="vm:MappaViewModel">
+	<DockPanel>
+		<!-- Barra degli strumenti: livello, zoom, disposizione automatica -->
+		<StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="4">
+			<TextBlock Text="{x:Static r:Testi.Mappa_Livello}" VerticalAlignment="Center" />
+			<ComboBox x:Name="SelettoreLivello" MinWidth="70"
+			          ItemsSource="{Binding Livelli}"
+			          SelectedItem="{Binding LivelloCorrente, Mode=TwoWay}" />
+			<Button Content="{x:Static r:Testi.Mappa_LivelloSopra}" Click="LivelloSopra_Click"
+			        ToolTip.Tip="{x:Static r:Testi.Mappa_LivelloSopra_Tip}" />
+			<Button Content="{x:Static r:Testi.Mappa_LivelloSotto}" Click="LivelloSotto_Click"
+			        ToolTip.Tip="{x:Static r:Testi.Mappa_LivelloSotto_Tip}" />
+			<TextBlock Text="{x:Static r:Testi.Mappa_Zoom}" VerticalAlignment="Center" Margin="16,0,0,0" />
+			<Slider Width="140" VerticalAlignment="Center"
+			        Minimum="{x:Static vm:MappaViewModel.ZoomMinimo}"
+			        Maximum="{x:Static vm:MappaViewModel.ZoomMassimo}"
+			        Value="{Binding Zoom, Mode=TwoWay}" />
+			<Button Content="{x:Static r:Testi.Mappa_DisponiTutto}" Command="{Binding DisponiTuttoCommand}"
+			        Margin="16,0,0,0" />
+		</StackPanel>
+		<TextBlock DockPanel.Dock="Bottom" Margin="4" FontSize="11" Opacity="0.7" TextWrapping="Wrap"
+		           Text="{x:Static r:Testi.Mappa_SuggerimentoTastiera}" />
+		<c:MappaControl x:Name="Controllo" Mappa="{Binding}" />
+	</DockPanel>
+</UserControl>

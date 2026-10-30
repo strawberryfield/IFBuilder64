@@ -24,6 +24,7 @@ using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using Casasoft.IFBuilder64.Editor.Risorse;
 using Casasoft.IFBuilder64.Editor.Servizi;
+using Casasoft.IFBuilder64.Editor.ViewModels;
 using Casasoft.IFBuilder64.Json;
 
 namespace Casasoft.IFBuilder64.Editor.Views;
@@ -89,6 +90,55 @@ public class DialoghiAvalonia(Window proprietaria) : IDialoghi
     /// <inheritdoc />
     public Task<string?> OpzioniCompilazioneAsync(string corrente) =>
         new OpzioniCompilazioneWindow(corrente).ShowDialog<string?>(proprietaria);
+
+    /// <inheritdoc />
+    public async Task<StanzaViewModel?> ScegliStanzaAsync(string titolo, IReadOnlyList<StanzaViewModel> stanze)
+    {
+        StanzaViewModel? risultato = null;
+        var elenco = new ListBox
+        {
+            ItemsSource = stanze.Select(s => s.Nome).ToList(),
+            Height = 240,
+            SelectedIndex = stanze.Count > 0 ? 0 : -1
+        };
+        var ok = new Button { Content = Testi.Pulsante_Ok, IsDefault = true, IsEnabled = stanze.Count > 0 };
+        var annulla = new Button { Content = Testi.Pulsante_Annulla, IsCancel = true };
+        var finestra = new Window
+        {
+            Title = titolo,
+            Width = 320,
+            SizeToContent = SizeToContent.Height,
+            CanResize = false,
+            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            Content = new StackPanel
+            {
+                Margin = new Thickness(16),
+                Spacing = 16,
+                Children =
+                {
+                    elenco,
+                    new StackPanel
+                    {
+                        Orientation = Orientation.Horizontal,
+                        HorizontalAlignment = HorizontalAlignment.Right,
+                        Spacing = 8,
+                        Children = { ok, annulla }
+                    }
+                }
+            }
+        };
+        void Conferma()
+        {
+            if (elenco.SelectedIndex < 0) return;
+            risultato = stanze[elenco.SelectedIndex];
+            finestra.Close();
+        }
+        ok.Click += (_, _) => Conferma();
+        elenco.DoubleTapped += (_, _) => Conferma();
+        annulla.Click += (_, _) => finestra.Close();
+        await finestra.ShowDialog(proprietaria);
+        return risultato;
+    }
 
     /// <summary>
     /// Mostra un messaggio con un pulsante per ogni scelta e restituisce il valore di quella premuta;

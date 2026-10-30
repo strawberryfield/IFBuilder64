@@ -35,6 +35,8 @@ public class DialoghiFinti : IDialoghi
     public string? RispostaSalvaFile { get; set; }
     public TemplateLanguage? RispostaTemplate { get; set; }
     public string? RispostaOpzioni { get; set; }
+    public StanzaViewModel? RispostaScegliStanza { get; set; }
+    public IReadOnlyList<StanzaViewModel> StanzeOfferte { get; private set; } = [];
 
     public Task<bool> ConfermaAsync(string titolo, string messaggio)
     {
@@ -77,6 +79,13 @@ public class DialoghiFinti : IDialoghi
     {
         Chiamate.Add(nameof(OpzioniCompilazioneAsync));
         return Task.FromResult(RispostaOpzioni);
+    }
+
+    public Task<StanzaViewModel?> ScegliStanzaAsync(string titolo, IReadOnlyList<StanzaViewModel> stanze)
+    {
+        Chiamate.Add(nameof(ScegliStanzaAsync));
+        StanzeOfferte = stanze;
+        return Task.FromResult(RispostaScegliStanza);
     }
 }
 
@@ -376,5 +385,53 @@ public sealed class MainWindowViewModelTests : IDisposable
         _dialoghi.RispostaConfermaSalvataggio = true;
         Assert.True(await vm.PuoChiudereAsync());
         Assert.False(vm.Documento.Modificato);
+    }
+
+    [Fact]
+    public async Task Mappa_NuovaPerOgniDocumento()
+    {
+        var vm = CreaVm();
+        var prima = vm.Mappa;
+        Assert.Same(vm.Documento, prima.Documento);
+
+        _dialoghi.RispostaApriFile = CopiaEsempio();
+        await vm.ApriCommand.ExecuteAsync(null);
+
+        Assert.NotSame(prima, vm.Mappa);
+        Assert.Same(vm.Documento, vm.Mappa.Documento);
+    }
+
+    [Fact]
+    public async Task Selezione_MappaEPannelloSincronizzati()
+    {
+        var vm = await VmConEsempioAperto();
+        var ponte = vm.Documento.TrovaStanza("ponte")!;
+
+        vm.Mappa.Selezione = ponte;
+        Assert.Same(ponte, vm.ElementoSelezionato);
+
+        var portone = vm.Documento.Porte.Single(p => p.Nome == "portone");
+        vm.ElementoSelezionato = portone;
+        Assert.Same(portone, vm.Mappa.Selezione);
+
+        // Un oggetto selezionato altrove toglie la selezione dalla mappa senza perdere l'oggetto
+        var oggetto = vm.Documento.Oggetti[0];
+        vm.ElementoSelezionato = oggetto;
+        Assert.Null(vm.Mappa.Selezione);
+        Assert.Same(oggetto, vm.ElementoSelezionato);
+    }
+
+    [Fact]
+    public async Task VaiAdAvviso_Stanza_CambiaLivelloDellaMappa()
+    {
+        var vm = await VmConEsempioAperto();
+        var sommita = vm.Documento.TrovaStanza("sommita")!;
+        vm.SchedaAttiva = MainWindowViewModel.SchedaGioco;
+
+        vm.VaiAdAvvisoCommand.Execute(new Avviso(Gravita.Avviso, "m", sommita));
+
+        Assert.Equal(MainWindowViewModel.SchedaMappa, vm.SchedaAttiva);
+        Assert.Equal(1, vm.Mappa.LivelloCorrente);
+        Assert.Same(sommita, vm.Mappa.Selezione);
     }
 }

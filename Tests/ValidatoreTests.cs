@@ -244,6 +244,25 @@ public class ValidatoreTests
     }
 
     [Fact]
+    public void StanzeRaggiungibili_SeguonoUsciteEPorte()
+    {
+        var d = Minimo();
+        var torre = Stanza(d, "torre");
+        var isolata = Stanza(d, "isolata");
+        d.Porte.Add(new PortaViewModel { Nome = "p", Nord = "sala", Sud = "torre", Aperta = false });
+
+        var r = Validatore.StanzeRaggiungibili(d);
+
+        Assert.Contains(d.TrovaStanza("sala")!, r);
+        Assert.Contains(torre, r);
+        Assert.DoesNotContain(isolata, r);
+        Assert.DoesNotContain(d.Stanze[0], r);
+
+        d.StanzaIniziale = "inesistente";
+        Assert.Empty(Validatore.StanzeRaggiungibili(d));
+    }
+
+    [Fact]
     public void PlayerNonSegnalatoNonRaggiungibile()
     {
         var d = Minimo();

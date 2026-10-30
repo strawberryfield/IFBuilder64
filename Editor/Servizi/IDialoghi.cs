@@ -17,6 +17,7 @@
 // but WITHOUT ANY WARRANTY
 //-----------------------------------------------------------------------
 
+using Casasoft.IFBuilder64.Editor.ViewModels;
 using Casasoft.IFBuilder64.Json;
 
 namespace Casasoft.IFBuilder64.Editor.Servizi;
@@ -46,4 +47,7 @@ public interface IDialoghi
 
     /// <summary>Modifica il nome base dei file generati; null se annullato, vuoto per tornare al predefinito.</summary>
     Task<string?> OpzioniCompilazioneAsync(string corrente);
+
+    /// <summary>Sceglie una stanza dall'elenco; null se annullato.</summary>
+    Task<StanzaViewModel?> ScegliStanzaAsync(string titolo, IReadOnlyList<StanzaViewModel> stanze);
 }

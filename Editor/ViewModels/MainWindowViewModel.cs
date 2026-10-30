@@ -50,6 +50,7 @@ public partial class MainWindowViewModel : ObservableObject
     private readonly Func<TimeSpan, Action, IDisposable> _pianificatore;
     private readonly ServizioCompilazione _compilazione = new();
     private IDisposable? _validazionePendente;
+    private bool _sincronizzaSelezione;
 
     /// <summary>Documento aperto.</summary>
     [ObservableProperty] private DocumentoViewModel _documento;
@@ -72,6 +73,9 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>Elemento selezionato (stanza, porta, oggetto, verbo, messaggio o documento).</summary>
     [ObservableProperty] private object? _elementoSelezionato;
 
+    /// <summary>Mappa del documento corrente; ricreata a ogni cambio di documento.</summary>
+    [ObservableProperty] private MappaViewModel _mappa;
+
     /// <summary>Crea il ViewModel con un documento nuovo nella lingua dell'interfaccia.</summary>
     /// <param name="dialoghi">Dialoghi dell'interfaccia.</param>
     /// <param name="impostazioni">Impostazioni utente (recenti, ultima cartella di output).</param>
@@ -93,6 +97,7 @@ public partial class MainWindowViewModel : ObservableObject
             ? TemplateLanguage.Italiano
             : TemplateLanguage.English;
         _documento = ServizioFile.Nuovo(lingua);
+        _mappa = CreaMappa(_documento);
         Iscrivi(_documento);
         ValidaOra();
     }
@@ -306,7 +311,38 @@ public partial class MainWindowViewModel : ObservableObject
             oldValue.PropertyChanged -= DocumentoProprietaCambiata;
         }
         Iscrivi(newValue);
+        Mappa = CreaMappa(newValue);
         OnPropertyChanged(nameof(Titolo));
+    }
+
+    private MappaViewModel CreaMappa(DocumentoViewModel doc)
+    {
+        var mappa = new MappaViewModel(doc, _dialoghi);
+        mappa.PropertyChanged += (sender, e) =>
+        {
+            if (e.PropertyName == nameof(MappaViewModel.Selezione) && sender == Mappa)
+                Sincronizza(() => ElementoSelezionato = Mappa.Selezione);
+        };
+        return mappa;
+    }
+
+    /// <summary>Le stanze e le porte selezionate altrove sono selezionate anche sulla mappa.</summary>
+    partial void OnElementoSelezionatoChanged(object? value) =>
+        Sincronizza(() => Mappa.Selezione = value is StanzaViewModel or PortaViewModel ? value : null);
+
+    /// <summary>Esegue l'aggiornamento di una selezione senza rimbalzi tra mappa e pannello.</summary>
+    private void Sincronizza(Action azione)
+    {
+        if (_sincronizzaSelezione) return;
+        _sincronizzaSelezione = true;
+        try
+        {
+            azione();
+        }
+        finally
+        {
+            _sincronizzaSelezione = false;
+        }
     }
 
     private void Iscrivi(DocumentoViewModel doc)

@@ -139,20 +139,32 @@ public static class Validatore
         }
     }
 
-    /// <summary>Visita i collegamenti dalla stanza iniziale; "player" non è una stanza raggiungibile.</summary>
-    private static void ControllaRaggiungibilita(DocumentoViewModel doc, List<Avviso> r)
+    /// <summary>
+    /// Stanze raggiungibili dalla stanza iniziale (compresa) seguendo uscite e porte;
+    /// insieme vuoto se la stanza iniziale manca o non esiste.
+    /// </summary>
+    public static IReadOnlySet<StanzaViewModel> StanzeRaggiungibili(DocumentoViewModel doc)
     {
-        if (string.IsNullOrEmpty(doc.StanzaIniziale) || doc.TrovaStanza(doc.StanzaIniziale) is not { } iniziale) return;
+        var visitate = new HashSet<StanzaViewModel>();
+        if (doc.TrovaStanza(doc.StanzaIniziale) is not { } iniziale) return visitate;
 
         var collegamenti = Collegamenti.Tutti(doc).ToLookup(c => c.Da);
-        var visitate = new HashSet<StanzaViewModel> { iniziale };
+        visitate.Add(iniziale);
         var coda = new Queue<StanzaViewModel>([iniziale]);
         while (coda.Count > 0)
             foreach (var c in collegamenti[coda.Dequeue()])
                 if (visitate.Add(c.A)) coda.Enqueue(c.A);
+        return visitate;
+    }
 
+    /// <summary>Avvisa per le stanze non raggiungibili dalla stanza iniziale; "player" non conta.</summary>
+    private static void ControllaRaggiungibilita(DocumentoViewModel doc, List<Avviso> r)
+    {
+        if (string.IsNullOrEmpty(doc.StanzaIniziale) || doc.TrovaStanza(doc.StanzaIniziale) is null) return;
+
+        var raggiungibili = StanzeRaggiungibili(doc);
         foreach (var s in doc.Stanze)
-            if (!s.EGiocatore && !visitate.Contains(s)) Avvisa(r, s, "Val_StanzaNonRaggiungibile", s.Nome);
+            if (!s.EGiocatore && !raggiungibili.Contains(s)) Avvisa(r, s, "Val_StanzaNonRaggiungibile", s.Nome);
     }
 
     private static void ControllaVerbiEMessaggi(DocumentoViewModel doc, int numeroMessaggiTemplate, List<Avviso> r)
