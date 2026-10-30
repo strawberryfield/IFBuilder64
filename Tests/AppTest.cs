@@ -28,5 +28,5 @@ public class AppTest
 {
     /// <summary>Usato da <c>Avalonia.Headless.XUnit</c> per avviare l'applicazione.</summary>
     public static AppBuilder BuildAvaloniaApp() =>
-        AppBuilder.Configure<App>().UseHeadless(new AvaloniaHeadlessPlatformOptions());
+        AppBuilder.Configure<App>().UseHeadless(new AvaloniaHeadlessPlatformOptions()).WithInterFont();
 }

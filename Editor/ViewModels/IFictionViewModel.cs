@@ -74,14 +74,17 @@ public partial class IFictionViewModel : ObservableObject
     {
         title = Titolo,
         author = Autore,
-        ifid = Ifid,
+        ifid = Nullo(Ifid),
         headline = Sottotitolo,
         genre = Genere,
         firstpublished = PrimaPubblicazione,
         version = Versione,
-        description = Descrizione,
-        language = Lingua,
-        url = Url,
-        email = Email
+        description = Nullo(Descrizione),
+        language = Nullo(Lingua),
+        url = Nullo(Url),
+        email = Nullo(Email)
     };
+
+    /// <summary>Testo vuoto o di soli spazi come null, così il JSON omette il campo.</summary>
+    private static string? Nullo(string? testo) => string.IsNullOrWhiteSpace(testo) ? null : testo;
 }

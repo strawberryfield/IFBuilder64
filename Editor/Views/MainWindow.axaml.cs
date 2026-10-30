@@ -48,6 +48,7 @@ public partial class MainWindow : Window
         if (_vm is not null) _vm.Recenti.CollectionChanged -= Recenti_CollectionChanged;
         _vm = DataContext as MainWindowViewModel;
         if (_vm is not null) _vm.Recenti.CollectionChanged += Recenti_CollectionChanged;
+        AggiornaRecenti();
         AggiornaLingue();
     }
 

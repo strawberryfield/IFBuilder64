@@ -32,8 +32,8 @@ public static class ConvertitoriGioco
     public static readonly IValueConverter IntFacoltativo = new ConvertitoreFacoltativo();
 
     /// <summary>
-    /// Testo con a capo C64: nel TextBox il ritorno carrello (CR) è mostrato come a capo (LF), perché
-    /// due CR consecutivi mandano in ciclo infinito il layout del testo di Avalonia.
+    /// Testo con a capo C64: nel TextBox il ritorno carrello (CR) è mostrato come a capo (LF) e un LF
+    /// viene riscritto come CR (a capo del C64).
     /// </summary>
     public static readonly IValueConverter ACapo = new ConvertitoreACapo();
 

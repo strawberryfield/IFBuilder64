@@ -104,6 +104,8 @@ public sealed class GiocoTests : IDisposable
         Assert.NotNull(g.ifiction);
         Assert.Equal(string.Empty, g.ifiction.title);
         Assert.Equal(string.Empty, g.ifiction.author);
+        Assert.Equal(new Casasoft.IFBuilder64.Common.Json.IFiction { title = "", author = "" }.headline, g.ifiction.headline);
+        Assert.Equal(new Casasoft.IFBuilder64.Common.Json.IFiction { title = "", author = "" }.genre, g.ifiction.genre);
     }
 
     [Fact]
@@ -127,8 +129,6 @@ public sealed class GiocoTests : IDisposable
         File.Copy(Path.Combine(AppContext.BaseDirectory, "Dati", "esempio.it.json"), percorso, true);
         _dialoghi.RispostaApriFile = percorso;
         await vm.ApriCommand.ExecuteAsync(null);
-        // il motore di testo headless va in stallo su righe vuote e codici di controllo: intro semplice
-        vm.Documento.Intro = "Titolo\rTesto";
         vm.SchedaAttiva = MainWindowViewModel.SchedaGioco;
         Dispatcher.UIThread.RunJobs();
 
@@ -152,5 +152,51 @@ public sealed class GiocoTests : IDisposable
         Assert.Equal(1984, ConvertitoriGioco.IntFacoltativo.ConvertBack(1984m, typeof(int?), null, cultura));
         Assert.Equal("a\nb", ConvertitoriGioco.ACapo.Convert("a\rb", typeof(string), null, cultura));
         Assert.Equal("a\rb", ConvertitoriGioco.ACapo.ConvertBack("a\r\nb", typeof(string), null, cultura));
+    }
+
+    [Fact]
+    public void IFictionVuota_CampiOpzionaliVuotiDiventanoNull()
+    {
+        var f = new IFictionViewModel { Titolo = "t", Autore = "a", Ifid = "X", Descrizione = "d", Lingua = "it", Url = "u", Email = "e" };
+
+        f.Ifid = "";
+        f.Descrizione = "   ";
+        f.Lingua = "";
+        f.Url = "";
+        f.Email = "";
+        var m = f.ToIFiction();
+
+        Assert.Null(m.ifid);
+        Assert.Null(m.description);
+        Assert.Null(m.language);
+        Assert.Null(m.url);
+        Assert.Null(m.email);
+    }
+
+    [Fact]
+    public void LinguaCorrente_NonDisponibile_RipiegaSuInglese()
+    {
+        _impostazioni.Lingua = "de";
+        Assert.Equal("en", CreaVm().LinguaCorrente);
+
+        _impostazioni.Lingua = "it";
+        Assert.Equal("it", CreaVm().LinguaCorrente);
+    }
+
+    [AvaloniaFact]
+    public void MenuRecenti_ConFileRecenti_SiPopolaAllAvvio()
+    {
+        _impostazioni.FileRecenti.Add(@"C:\giochi\uno.json");
+        _impostazioni.FileRecenti.Add(@"C:\giochi\due.json");
+        var vm = CreaVm();
+        var finestra = new MainWindow { DataContext = vm };
+        finestra.Show();
+        Dispatcher.UIThread.RunJobs();
+
+        var menu = finestra.FindControl<MenuItem>("MenuRecenti");
+        Assert.NotNull(menu);
+        Assert.Equal(2, menu.Items.Count);
+        Assert.True(menu.IsEnabled);
+        finestra.Close();
     }
 }

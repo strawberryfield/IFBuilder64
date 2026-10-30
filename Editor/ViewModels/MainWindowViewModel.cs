@@ -136,11 +136,21 @@ public partial class MainWindowViewModel : ObservableObject
     public ObservableCollection<string> Recenti { get; } = [];
 
     /// <summary>Lingua dell'interfaccia in uso (codice di due lettere).</summary>
-    public string LinguaCorrente =>
-        string.IsNullOrEmpty(_impostazioni.Lingua) ? CultureInfo.CurrentUICulture.TwoLetterISOLanguageName : _impostazioni.Lingua;
+    public string LinguaCorrente
+    {
+        get
+        {
+            var codice = string.IsNullOrEmpty(_impostazioni.Lingua)
+                ? CultureInfo.CurrentUICulture.TwoLetterISOLanguageName
+                : _impostazioni.Lingua;
+            return Lingue.Any(l => string.Equals(l.Codice, codice, StringComparison.OrdinalIgnoreCase)) ? codice : "en";
+        }
+    }
 
     /// <summary>Lingue dell'interfaccia disponibili: inglese (neutro) e ogni cultura con un file di risorse.</summary>
-    public IReadOnlyList<LinguaInterfaccia> LingueDisponibili { get; } = CalcolaLingueDisponibili();
+    public IReadOnlyList<LinguaInterfaccia> LingueDisponibili => Lingue;
+
+    private static readonly IReadOnlyList<LinguaInterfaccia> Lingue = CalcolaLingueDisponibili();
 
     /// <summary>Esegue subito la validazione, annullando quella pianificata.</summary>
     public void ValidaOra()
@@ -169,7 +179,9 @@ public partial class MainWindowViewModel : ObservableObject
     private void CreaIFiction()
     {
         if (Documento.IFiction is not null) return;
-        Documento.IFiction = new IFictionViewModel { Titolo = string.Empty, Autore = string.Empty, Dialoghi = _dialoghi };
+        var iFiction = IFictionViewModel.Da(new Casasoft.IFBuilder64.Common.Json.IFiction { title = string.Empty, author = string.Empty });
+        iFiction.Dialoghi = _dialoghi;
+        Documento.IFiction = iFiction;
     }
 
     [RelayCommand]
