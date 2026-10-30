@@ -50,7 +50,8 @@ public partial class MainWindowViewModel : ObservableObject
     private readonly Func<TimeSpan, Action, IDisposable> _pianificatore;
     private readonly ServizioCompilazione _compilazione = new();
     private IDisposable? _validazionePendente;
-    private bool _sincronizzaSelezione;
+    private bool _sincronizzaMappa;
+    private bool _sincronizzaOggetti;
 
     /// <summary>Documento aperto.</summary>
     [ObservableProperty] private DocumentoViewModel _documento;
@@ -73,11 +74,14 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>Elemento selezionato (stanza, porta, oggetto, verbo, messaggio o documento).</summary>
     [ObservableProperty] private object? _elementoSelezionato;
 
-    /// <summary>Pannello proprietà dell'elemento selezionato (stanza o porta), oppure null.</summary>
+    /// <summary>Pannello proprietà dell'elemento selezionato (stanza, porta o oggetto), oppure null.</summary>
     [ObservableProperty] private object? _pannello;
 
     /// <summary>Mappa del documento corrente; ricreata a ogni cambio di documento.</summary>
     [ObservableProperty] private MappaViewModel _mappa;
+
+    /// <summary>Scheda Oggetti del documento corrente; ricreata a ogni cambio di documento.</summary>
+    [ObservableProperty] private OggettiViewModel _oggetti;
 
     /// <summary>Crea il ViewModel con un documento nuovo nella lingua dell'interfaccia.</summary>
     /// <param name="dialoghi">Dialoghi dell'interfaccia.</param>
@@ -101,6 +105,7 @@ public partial class MainWindowViewModel : ObservableObject
             : TemplateLanguage.English;
         _documento = ServizioFile.Nuovo(lingua);
         _mappa = CreaMappa(_documento);
+        _oggetti = CreaOggetti(_documento);
         Iscrivi(_documento);
         ValidaOra();
     }
@@ -315,6 +320,8 @@ public partial class MainWindowViewModel : ObservableObject
         }
         Iscrivi(newValue);
         Mappa = CreaMappa(newValue);
+        Oggetti.Dispose();
+        Oggetti = CreaOggetti(newValue);
         ImpostaPannello(null);
         OnPropertyChanged(nameof(Titolo));
     }
@@ -325,15 +332,29 @@ public partial class MainWindowViewModel : ObservableObject
         mappa.PropertyChanged += (sender, e) =>
         {
             if (e.PropertyName == nameof(MappaViewModel.Selezione) && sender == Mappa)
-                Sincronizza(() => ElementoSelezionato = Mappa.Selezione);
+                Sincronizza(ref _sincronizzaMappa, () => ElementoSelezionato = Mappa.Selezione);
         };
         return mappa;
     }
 
-    /// <summary>Le stanze e le porte selezionate altrove sono selezionate anche sulla mappa.</summary>
+    private OggettiViewModel CreaOggetti(DocumentoViewModel doc)
+    {
+        var oggetti = new OggettiViewModel(doc, _dialoghi);
+        oggetti.PropertyChanged += (sender, e) =>
+        {
+            if (e.PropertyName != nameof(OggettiViewModel.Selezionato) || sender != Oggetti) return;
+            // Deselezionare la riga non deve cancellare la selezione di una stanza o di una porta.
+            if (Oggetti.Selezionato is not null || ElementoSelezionato is OggettoViewModel)
+                Sincronizza(ref _sincronizzaOggetti, () => ElementoSelezionato = Oggetti.Selezionato);
+        };
+        return oggetti;
+    }
+
+    /// <summary>Le stanze, le porte e gli oggetti selezionati altrove sono selezionati anche sulla mappa e nell'elenco oggetti.</summary>
     partial void OnElementoSelezionatoChanged(object? value)
     {
-        Sincronizza(() => Mappa.Selezione = value is StanzaViewModel or PortaViewModel ? value : null);
+        Sincronizza(ref _sincronizzaMappa, () => Mappa.Selezione = value is StanzaViewModel or PortaViewModel ? value : null);
+        Sincronizza(ref _sincronizzaOggetti, () => Oggetti.Selezionato = value as OggettoViewModel);
         ImpostaPannello(value);
     }
 
@@ -346,22 +367,23 @@ public partial class MainWindowViewModel : ObservableObject
             StanzaViewModel { EGiocatore: false } s =>
                 new PannelloStanzaViewModel(Documento, s, Mappa, _dialoghi, e => ElementoSelezionato = e),
             PortaViewModel p => new PannelloPortaViewModel(Documento, p),
+            OggettoViewModel o => new PannelloOggettoViewModel(Documento, o),
             _ => null
         };
     }
 
     /// <summary>Esegue l'aggiornamento di una selezione senza rimbalzi tra mappa e pannello.</summary>
-    private void Sincronizza(Action azione)
+    private static void Sincronizza(ref bool inCorso, Action azione)
     {
-        if (_sincronizzaSelezione) return;
-        _sincronizzaSelezione = true;
+        if (inCorso) return;
+        inCorso = true;
         try
         {
             azione();
         }
         finally
         {
-            _sincronizzaSelezione = false;
+            inCorso = false;
         }
     }
 
@@ -373,6 +395,8 @@ public partial class MainWindowViewModel : ObservableObject
 
     private void DocumentoCambiato(object? sender, EventArgs e)
     {
+        // Un oggetto eliminato (da qualsiasi punto) non resta selezionato né nel pannello.
+        if (ElementoSelezionato is OggettoViewModel o && !Documento.Oggetti.Contains(o)) ElementoSelezionato = null;
         _validazionePendente?.Dispose();
         _validazionePendente = _pianificatore(RitardoValidazione, ValidaOra);
     }

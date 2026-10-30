@@ -30,6 +30,7 @@ public class DialoghiFinti : IDialoghi
     public List<string> Chiamate { get; } = [];
     public List<string> Errori { get; } = [];
     public bool RispostaConferma { get; set; } = true;
+    public string? UltimoMessaggioConferma { get; private set; }
     public bool? RispostaConfermaSalvataggio { get; set; }
     public string? RispostaApriFile { get; set; }
     public string? RispostaSalvaFile { get; set; }
@@ -43,6 +44,7 @@ public class DialoghiFinti : IDialoghi
     public Task<bool> ConfermaAsync(string titolo, string messaggio)
     {
         Chiamate.Add(nameof(ConfermaAsync));
+        UltimoMessaggioConferma = messaggio;
         return Task.FromResult(RispostaConferma);
     }
 

@@ -127,4 +127,30 @@ The references will be cleared. Delete it?</value></data>
   <data name="Stanza_NuovoOggetto" xml:space="preserve"><value>New item here</value></data>
   <data name="Stanza_SpostaQui" xml:space="preserve"><value>Move here…</value></data>
   <data name="Stanza_ScegliOggetto" xml:space="preserve"><value>Choose the item to move here</value></data>
+  <data name="Oggetti_Nuovo" xml:space="preserve"><value>New</value></data>
+  <data name="Oggetti_Duplica" xml:space="preserve"><value>Duplicate</value></data>
+  <data name="Oggetti_Elimina" xml:space="preserve"><value>Delete</value></data>
+  <data name="Oggetti_Col_Nome" xml:space="preserve"><value>Name</value></data>
+  <data name="Oggetti_Col_Tipo" xml:space="preserve"><value>Type</value></data>
+  <data name="Oggetti_Col_Posizione" xml:space="preserve"><value>Location</value></data>
+  <data name="Oggetti_Col_Apribile" xml:space="preserve"><value>Openable</value></data>
+  <data name="Oggetti_Col_Chiudibile" xml:space="preserve"><value>Closeable</value></data>
+  <data name="Oggetti_Col_Aperto" xml:space="preserve"><value>Open</value></data>
+  <data name="Oggetti_Col_Accendibile" xml:space="preserve"><value>Switchable</value></data>
+  <data name="Oggetti_Col_Acceso" xml:space="preserve"><value>Switched on</value></data>
+  <data name="Oggetti_Col_Contenitore" xml:space="preserve"><value>Container</value></data>
+  <data name="Oggetti_Tipo_Statico" xml:space="preserve"><value>Static</value></data>
+  <data name="Oggetti_Tipo_Mobile" xml:space="preserve"><value>Portable</value></data>
+  <data name="Oggetti_FiltroStanza" xml:space="preserve"><value>Room</value></data>
+  <data name="Oggetti_FiltroTipo" xml:space="preserve"><value>Type</value></data>
+  <data name="Oggetti_FiltroStanza_Tutte" xml:space="preserve"><value>— all —</value></data>
+  <data name="Oggetti_FiltroTipo_Tutti" xml:space="preserve"><value>All</value></data>
+  <data name="Posizione_Nessuna" xml:space="preserve"><value>— none —</value></data>
+  <data name="Posizione_Giocatore" xml:space="preserve"><value>Player</value></data>
+  <data name="Posizione_Dentro" xml:space="preserve"><value>Inside: {0}</value></data>
+  <data name="Campo_DescrizioneAperto" xml:space="preserve"><value>Description when open</value></data>
+  <data name="Oggetti_Elimina_Titolo" xml:space="preserve"><value>Delete item</value></data>
+  <data name="Oggetti_Elimina_Messaggio" xml:space="preserve"><value>Item {0} is referenced by:
+{1}
+The references will be cleared. Delete it?</value></data>
 </root>

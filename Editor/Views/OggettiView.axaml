@@ -1,0 +1,49 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Casasoft.IFBuilder64.Editor.ViewModels"
+             xmlns:r="using:Casasoft.IFBuilder64.Editor.Risorse"
+             x:Class="Casasoft.IFBuilder64.Editor.Views.OggettiView"
+             x:DataType="vm:OggettiViewModel">
+	<DockPanel>
+		<!-- Barra degli strumenti: azioni e filtri -->
+		<StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="4">
+			<Button x:Name="PulsanteNuovo" Content="{x:Static r:Testi.Oggetti_Nuovo}" Command="{Binding NuovoCommand}" />
+			<Button x:Name="PulsanteDuplica" Content="{x:Static r:Testi.Oggetti_Duplica}" Command="{Binding DuplicaCommand}" />
+			<Button x:Name="PulsanteElimina" Content="{x:Static r:Testi.Oggetti_Elimina}" Command="{Binding EliminaCommand}" />
+			<TextBlock Text="{x:Static r:Testi.Oggetti_FiltroStanza}" VerticalAlignment="Center" Margin="16,0,0,0" />
+			<ComboBox x:Name="FiltroStanza" MinWidth="130"
+			          ItemsSource="{Binding StanzeFiltro}"
+			          SelectedItem="{Binding FiltroStanzaScelta, Mode=TwoWay}" />
+			<TextBlock Text="{x:Static r:Testi.Oggetti_FiltroTipo}" VerticalAlignment="Center" />
+			<ComboBox x:Name="FiltroTipo" MinWidth="110" SelectedIndex="{Binding FiltroTipoIndice, Mode=TwoWay}">
+				<ComboBoxItem Content="{x:Static r:Testi.Oggetti_FiltroTipo_Tutti}" />
+				<ComboBoxItem Content="{x:Static r:Testi.Oggetti_Tipo_Statico}" />
+				<ComboBoxItem Content="{x:Static r:Testi.Oggetti_Tipo_Mobile}" />
+			</ComboBox>
+		</StackPanel>
+		<DataGrid x:Name="Griglia" AutoGenerateColumns="False" CanUserSortColumns="False"
+		          CanUserReorderColumns="False" SelectionMode="Single" GridLinesVisibility="All"
+		          ItemsSource="{Binding OggettiFiltrati}"
+		          SelectedItem="{Binding Selezionato, Mode=TwoWay}">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="{x:Static r:Testi.Oggetti_Col_Nome}" Width="160" IsReadOnly="True"
+				                    Binding="{Binding Nome, x:DataType=vm:OggettoViewModel}" />
+				<!-- Tipo e posizione hanno un elenco per riga: costruiti nel code-behind -->
+				<DataGridTemplateColumn Header="{x:Static r:Testi.Oggetti_Col_Tipo}" Width="110" />
+				<DataGridTemplateColumn Header="{x:Static r:Testi.Oggetti_Col_Posizione}" Width="*" MinWidth="160" />
+				<DataGridCheckBoxColumn Header="{x:Static r:Testi.Oggetti_Col_Apribile}"
+				                        Binding="{Binding Apribile, x:DataType=vm:OggettoViewModel}" />
+				<DataGridCheckBoxColumn Header="{x:Static r:Testi.Oggetti_Col_Chiudibile}"
+				                        Binding="{Binding Chiudibile, x:DataType=vm:OggettoViewModel}" />
+				<DataGridCheckBoxColumn Header="{x:Static r:Testi.Oggetti_Col_Aperto}"
+				                        Binding="{Binding Aperto, x:DataType=vm:OggettoViewModel}" />
+				<DataGridCheckBoxColumn Header="{x:Static r:Testi.Oggetti_Col_Accendibile}"
+				                        Binding="{Binding Accendibile, x:DataType=vm:OggettoViewModel}" />
+				<DataGridCheckBoxColumn Header="{x:Static r:Testi.Oggetti_Col_Acceso}"
+				                        Binding="{Binding Acceso, x:DataType=vm:OggettoViewModel}" />
+				<DataGridCheckBoxColumn Header="{x:Static r:Testi.Oggetti_Col_Contenitore}"
+				                        Binding="{Binding EContenitore, x:DataType=vm:OggettoViewModel}" />
+			</DataGrid.Columns>
+		</DataGrid>
+	</DockPanel>
+</UserControl>

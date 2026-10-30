@@ -68,7 +68,9 @@
 				<TabItem x:Name="SchedaMappa" Header="{x:Static r:Testi.Scheda_Mappa}">
 					<v:MappaView DataContext="{Binding Mappa}" />
 				</TabItem>
-				<TabItem x:Name="SchedaOggetti" Header="{x:Static r:Testi.Scheda_Oggetti}" />
+				<TabItem x:Name="SchedaOggetti" Header="{x:Static r:Testi.Scheda_Oggetti}">
+					<v:OggettiView DataContext="{Binding Oggetti}" />
+				</TabItem>
 				<TabItem x:Name="SchedaVerbi" Header="{x:Static r:Testi.Scheda_Verbi}" />
 				<TabItem x:Name="SchedaMessaggi" Header="{x:Static r:Testi.Scheda_Messaggi}" />
 				<TabItem x:Name="SchedaGioco" Header="{x:Static r:Testi.Scheda_Gioco}" />
@@ -83,6 +85,7 @@
 						<ContentControl.DataTemplates>
 							<DataTemplate DataType="vm:PannelloStanzaViewModel"><v:PannelloStanza /></DataTemplate>
 							<DataTemplate DataType="vm:PannelloPortaViewModel"><v:PannelloPorta /></DataTemplate>
+							<DataTemplate DataType="vm:PannelloOggettoViewModel"><v:PannelloOggetto /></DataTemplate>
 						</ContentControl.DataTemplates>
 					</ContentControl>
 				</DockPanel>

@@ -1,0 +1,24 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Casasoft.IFBuilder64.Editor.ViewModels"
+             xmlns:v="using:Casasoft.IFBuilder64.Editor.Views"
+             xmlns:r="using:Casasoft.IFBuilder64.Editor.Risorse"
+             x:Class="Casasoft.IFBuilder64.Editor.Views.PannelloOggetto"
+             x:DataType="vm:PannelloOggettoViewModel">
+	<ScrollViewer>
+		<StackPanel Spacing="6">
+			<TextBlock Text="{x:Static r:Testi.Campo_Nome}" FontWeight="SemiBold" />
+			<v:CampoNomeView x:Name="CampoNome" DataContext="{Binding Nome}" />
+			<TextBlock Text="{x:Static r:Testi.Campo_Descrizione}" FontWeight="SemiBold" />
+			<TextBox x:Name="Descrizione" Text="{Binding Oggetto.Descrizione, Mode=TwoWay}"
+			         AcceptsReturn="True" TextWrapping="Wrap" MinHeight="90" />
+			<TextBlock Text="{x:Static r:Testi.Campo_DescrizioneAperto}" FontWeight="SemiBold" />
+			<TextBox x:Name="DescrizioneAperto" Text="{Binding DescrizioneAperto, Mode=TwoWay}"
+			         AcceptsReturn="True" TextWrapping="Wrap" MinHeight="60" />
+			<TextBlock Text="{x:Static r:Testi.Campo_OggettoSblocco}" FontWeight="SemiBold" />
+			<ComboBox x:Name="OggettoSblocco" HorizontalAlignment="Stretch"
+			          ItemsSource="{Binding OggettiSblocco}"
+			          SelectedItem="{Binding SbloccoSelezionato, Mode=TwoWay}" />
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

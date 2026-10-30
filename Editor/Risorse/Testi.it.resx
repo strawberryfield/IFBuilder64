@@ -127,4 +127,30 @@ I riferimenti verranno svuotati. Eliminarla?</value></data>
   <data name="Stanza_NuovoOggetto" xml:space="preserve"><value>Nuovo oggetto qui</value></data>
   <data name="Stanza_SpostaQui" xml:space="preserve"><value>Sposta qui…</value></data>
   <data name="Stanza_ScegliOggetto" xml:space="preserve"><value>Scegli l'oggetto da spostare qui</value></data>
+  <data name="Oggetti_Nuovo" xml:space="preserve"><value>Nuovo</value></data>
+  <data name="Oggetti_Duplica" xml:space="preserve"><value>Duplica</value></data>
+  <data name="Oggetti_Elimina" xml:space="preserve"><value>Elimina</value></data>
+  <data name="Oggetti_Col_Nome" xml:space="preserve"><value>Nome</value></data>
+  <data name="Oggetti_Col_Tipo" xml:space="preserve"><value>Tipo</value></data>
+  <data name="Oggetti_Col_Posizione" xml:space="preserve"><value>Posizione</value></data>
+  <data name="Oggetti_Col_Apribile" xml:space="preserve"><value>Apribile</value></data>
+  <data name="Oggetti_Col_Chiudibile" xml:space="preserve"><value>Chiudibile</value></data>
+  <data name="Oggetti_Col_Aperto" xml:space="preserve"><value>Aperto</value></data>
+  <data name="Oggetti_Col_Accendibile" xml:space="preserve"><value>Accendibile</value></data>
+  <data name="Oggetti_Col_Acceso" xml:space="preserve"><value>Acceso</value></data>
+  <data name="Oggetti_Col_Contenitore" xml:space="preserve"><value>Contenitore</value></data>
+  <data name="Oggetti_Tipo_Statico" xml:space="preserve"><value>Statico</value></data>
+  <data name="Oggetti_Tipo_Mobile" xml:space="preserve"><value>Mobile</value></data>
+  <data name="Oggetti_FiltroStanza" xml:space="preserve"><value>Stanza</value></data>
+  <data name="Oggetti_FiltroTipo" xml:space="preserve"><value>Tipo</value></data>
+  <data name="Oggetti_FiltroStanza_Tutte" xml:space="preserve"><value>— tutte —</value></data>
+  <data name="Oggetti_FiltroTipo_Tutti" xml:space="preserve"><value>Tutti</value></data>
+  <data name="Posizione_Nessuna" xml:space="preserve"><value>— nessuna —</value></data>
+  <data name="Posizione_Giocatore" xml:space="preserve"><value>Giocatore</value></data>
+  <data name="Posizione_Dentro" xml:space="preserve"><value>Dentro: {0}</value></data>
+  <data name="Campo_DescrizioneAperto" xml:space="preserve"><value>Descrizione da aperto</value></data>
+  <data name="Oggetti_Elimina_Titolo" xml:space="preserve"><value>Elimina oggetto</value></data>
+  <data name="Oggetti_Elimina_Messaggio" xml:space="preserve"><value>L'oggetto {0} è riferito da:
+{1}
+I riferimenti verranno svuotati. Eliminarlo?</value></data>
 </root>

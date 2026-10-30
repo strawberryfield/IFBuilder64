@@ -295,7 +295,7 @@ public partial class MappaViewModel : ObservableObject
     private static Direzione DirezioneVerticale(Direzione d) =>
         d is Direzione.Su or Direzione.Giu ? d : throw new ArgumentException($"Direzione non verticale: {d}", nameof(d));
 
-    private static string Descrivi(Riferimento r)
+    internal static string Descrivi(Riferimento r)
     {
         var nome = r.Elemento switch
         {
