@@ -20,9 +20,7 @@
 
 using Casasoft.IFBuilder64.Builder;
 using Casasoft.IFBuilder64.Json;
-using System.Text;
 using System.Text.Json;
-using System.Text.RegularExpressions;
 
 namespace Casasoft.IFBuilder64.Tests;
 
@@ -49,7 +47,7 @@ public class BuilderTests
             Assert.Equal(9, riferimenti.Length);
             foreach (var rif in riferimenti)
             {
-                Assert.Equal(Normalizza(rif), Normalizza(Path.Combine(dir, Path.GetFileName(rif))));
+                Assert.Equal(Confronto.Normalizza(rif), Confronto.Normalizza(Path.Combine(dir, Path.GetFileName(rif))));
             }
         }
         finally
@@ -104,34 +102,5 @@ public class BuilderTests
         var r = new GameBuilder().Build(game, inesistente);
         Assert.False(r.Successo);
         Assert.NotEmpty(r.Log);
-    }
-
-    /// <summary>
-    /// Byte del file; per *ab.seq azzera la quinta riga (data, separatore '\r'),
-    /// per *iFiction.xml svuota <releasedate> e <compilerversion>.
-    /// </summary>
-    private static string Normalizza(string percorso)
-    {
-        var byteFile = File.ReadAllBytes(percorso);
-        var nome = Path.GetFileName(percorso);
-        if (nome.EndsWith("ab.seq", StringComparison.Ordinal))
-        {
-            var righe = Encoding.Latin1.GetString(byteFile).Split('\r');
-            righe[4] = "";
-            return string.Join('\r', righe);
-        }
-        if (nome.EndsWith("iFiction.xml", StringComparison.Ordinal))
-        {
-            var testo = Encoding.UTF8.GetString(byteFile);
-            // Elementi esclusi perché dipendono dalla data o dalla build:
-            // releasedate, originated e serial usano DateTime.Now al momento della compilazione;
-            // compilerversion e generatorversion contengono versione e data di build dell'assembly Builder.
-            foreach (var elemento in new[] { "releasedate", "originated", "serial", "compilerversion", "generatorversion" })
-            {
-                testo = Regex.Replace(testo, $"(<{elemento}>)[^<]*(</{elemento}>)", "$1$2");
-            }
-            return testo;
-        }
-        return Convert.ToHexString(byteFile);
     }
 }
