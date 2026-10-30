@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Azione_0" xml:space="preserve"><value>nord</value></data>
+  <data name="Azione_1" xml:space="preserve"><value>sud</value></data>
+  <data name="Azione_2" xml:space="preserve"><value>est</value></data>
+  <data name="Azione_3" xml:space="preserve"><value>ovest</value></data>
+  <data name="Azione_4" xml:space="preserve"><value>alto</value></data>
+  <data name="Azione_5" xml:space="preserve"><value>basso</value></data>
+  <data name="Azione_6" xml:space="preserve"><value>vai</value></data>
+  <data name="Azione_7" xml:space="preserve"><value>guarda/esamina</value></data>
+  <data name="Azione_8" xml:space="preserve"><value>prendi</value></data>
+  <data name="Azione_9" xml:space="preserve"><value>lascia</value></data>
+  <data name="Azione_10" xml:space="preserve"><value>apri</value></data>
+  <data name="Azione_11" xml:space="preserve"><value>chiudi</value></data>
+  <data name="Azione_12" xml:space="preserve"><value>accendi</value></data>
+  <data name="Azione_13" xml:space="preserve"><value>spegni</value></data>
+  <data name="Azione_14" xml:space="preserve"><value>inserisci</value></data>
+  <data name="Azione_15" xml:space="preserve"><value>inventario</value></data>
+  <data name="Azione_16" xml:space="preserve"><value>parola magica</value></data>
+  <data name="Azione_17" xml:space="preserve"><value>aiuto</value></data>
+  <data name="Azione_18" xml:space="preserve"><value>elenco comandi</value></data>
+  <data name="Azione_19" xml:space="preserve"><value>salva</value></data>
+  <data name="Azione_20" xml:space="preserve"><value>carica</value></data>
+  <data name="Azione_21" xml:space="preserve"><value>annulla</value></data>
+  <data name="Azione_22" xml:space="preserve"><value>fine</value></data>
+  <data name="Azione_23" xml:space="preserve"><value>informazioni</value></data>
+  <data name="Azione_24" xml:space="preserve"><value>registra comandi</value></data>
+  <data name="Azione_25" xml:space="preserve"><value>elenca uscite</value></data>
+</root>

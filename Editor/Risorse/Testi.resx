@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Azione_0" xml:space="preserve"><value>north</value></data>
+  <data name="Azione_1" xml:space="preserve"><value>south</value></data>
+  <data name="Azione_2" xml:space="preserve"><value>east</value></data>
+  <data name="Azione_3" xml:space="preserve"><value>west</value></data>
+  <data name="Azione_4" xml:space="preserve"><value>up</value></data>
+  <data name="Azione_5" xml:space="preserve"><value>down</value></data>
+  <data name="Azione_6" xml:space="preserve"><value>go</value></data>
+  <data name="Azione_7" xml:space="preserve"><value>look/examine</value></data>
+  <data name="Azione_8" xml:space="preserve"><value>take</value></data>
+  <data name="Azione_9" xml:space="preserve"><value>drop</value></data>
+  <data name="Azione_10" xml:space="preserve"><value>open</value></data>
+  <data name="Azione_11" xml:space="preserve"><value>close</value></data>
+  <data name="Azione_12" xml:space="preserve"><value>switch on</value></data>
+  <data name="Azione_13" xml:space="preserve"><value>switch off</value></data>
+  <data name="Azione_14" xml:space="preserve"><value>insert</value></data>
+  <data name="Azione_15" xml:space="preserve"><value>inventory</value></data>
+  <data name="Azione_16" xml:space="preserve"><value>magic word</value></data>
+  <data name="Azione_17" xml:space="preserve"><value>help</value></data>
+  <data name="Azione_18" xml:space="preserve"><value>command list</value></data>
+  <data name="Azione_19" xml:space="preserve"><value>save</value></data>
+  <data name="Azione_20" xml:space="preserve"><value>load</value></data>
+  <data name="Azione_21" xml:space="preserve"><value>undo</value></data>
+  <data name="Azione_22" xml:space="preserve"><value>quit</value></data>
+  <data name="Azione_23" xml:space="preserve"><value>about</value></data>
+  <data name="Azione_24" xml:space="preserve"><value>record commands</value></data>
+  <data name="Azione_25" xml:space="preserve"><value>list exits</value></data>
+</root>
