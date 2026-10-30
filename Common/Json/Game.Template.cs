@@ -131,7 +131,7 @@ public partial class Game
     /// <exception cref="System.Text.Json.JsonException">Thrown when the file contents cannot be parsed as a JSON array of strings.</exception>
     protected void LoadMessages(TemplateLanguage language)
     {
-        string filename = "templates/messages." + language.ToString().ToLower().Substring(0, 2) + ".json";
+        string filename = PercorsoTemplate("messages." + language.ToString().ToLower().Substring(0, 2) + ".json");
         string jsondata = File.ReadAllText(filename);
         messages = System.Text.Json.JsonSerializer.Deserialize<List<string>>(jsondata) ?? [];
     }
@@ -152,7 +152,7 @@ public partial class Game
     /// <exception cref="System.IO.IOException">Thrown when the directions file cannot be read.</exception>
     protected void LoadDirections(TemplateLanguage language)
     {
-        string filename = "templates/directions." + language.ToString().ToLower().Substring(0, 2) + ".txt";
+        string filename = PercorsoTemplate("directions." + language.ToString().ToLower().Substring(0, 2) + ".txt");
         directions = File.ReadAllLines(filename).ToList();
     }
 
@@ -177,8 +177,20 @@ public partial class Game
     /// <exception cref="System.Text.Json.JsonException">Thrown when the file contents cannot be parsed as a JSON array of <see cref="Verb"/>.</exception>
     protected void LoadVerbs(TemplateLanguage language)
     {
-        string filename = "templates/verbs." + language.ToString().ToLower().Substring(0, 2) + ".json";
+        string filename = PercorsoTemplate("verbs." + language.ToString().ToLower().Substring(0, 2) + ".json");
         string jsondata = File.ReadAllText(filename);
         verbs = System.Text.Json.JsonSerializer.Deserialize<List<Verb>>(jsondata) ?? [];
+    }
+
+    /// <summary>
+    /// Resolves the path of a template file: first relative to the application
+    /// directory, falling back to the "templates" folder under the current directory.
+    /// </summary>
+    /// <param name="nomeFile">Template file name (without folder).</param>
+    /// <returns>The path of the template file.</returns>
+    private static string PercorsoTemplate(string nomeFile)
+    {
+        string percorso = Path.Combine(AppContext.BaseDirectory, "templates", nomeFile);
+        return File.Exists(percorso) ? percorso : Path.Combine("templates", nomeFile);
     }
 }

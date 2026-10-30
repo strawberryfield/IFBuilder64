@@ -137,4 +137,14 @@ public class Room : IExits
     [Description("Optional identifier of the location reached when going down.")]
     public string? down { get; set; }
 
+    /// <summary>
+    /// Gets or sets the optional position of the room in the graphical editor map.
+    /// </summary>
+    /// <value>
+    /// A <see cref="MapPosition"/>, or <c>null</c> if the room has not been placed.
+    /// Used only by the editor: the builder ignores it.
+    /// </value>
+    [Description("Optional position of the room in the graphical editor map.")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public MapPosition? map { get; set; }
 }

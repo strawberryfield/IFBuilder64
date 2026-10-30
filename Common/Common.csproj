@@ -81,6 +81,9 @@
 		<Compile Update="Json\Item.cs">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Compile>
+		<Compile Update="Json\MapPosition.cs">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Compile>
 		<Compile Update="Json\Room.cs">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Compile>
