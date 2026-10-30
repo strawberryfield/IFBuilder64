@@ -17,12 +17,15 @@
 // but WITHOUT ANY WARRANTY
 //-----------------------------------------------------------------------
 
+using System.Globalization;
 using System.Text.Json.Nodes;
+using Casasoft.IFBuilder64.Editor.Risorse;
 using Casasoft.IFBuilder64.Editor.Servizi;
 using Casasoft.IFBuilder64.Json;
 
 namespace Casasoft.IFBuilder64.Tests;
 
+[Collection("CartellaCorrente")]
 public class ServizioFileTests
 {
     private static string Esempio => Path.Combine(AppContext.BaseDirectory, "Dati", "esempio.it.json");
@@ -53,24 +56,34 @@ public class ServizioFileTests
     public void Apri_JsonNonValido_ErroreConPosizione()
     {
         var f = Temporaneo();
-        File.WriteAllText(f, "{ \"rooms\": [ }");
+        // Il difetto e' alla riga 3 (la graffa chiusa al posto di un valore).
+        File.WriteAllText(f, "{\n  \"rooms\": [\n  }");
+        var precedente = Testi.Culture;
         try
         {
+            Testi.Culture = new CultureInfo("it");
             var ex = Assert.Throws<ErroreApertura>(() => ServizioFile.Apri(f));
-            Assert.Contains("line", ex.Message);
+            Assert.StartsWith("Riga 3, posizione ", ex.Message);
         }
-        finally { File.Delete(f); }
+        finally
+        {
+            Testi.Culture = precedente;
+            File.Delete(f);
+        }
     }
 
     [Fact]
-    public void Apri_FileNullOMancante_ErroreApertura()
+    public void Apri_FileNull_ErroreApertura()
     {
         var f = Temporaneo();
         File.WriteAllText(f, "null");
         try { Assert.Throws<ErroreApertura>(() => ServizioFile.Apri(f)); }
         finally { File.Delete(f); }
-        Assert.Throws<ErroreApertura>(() => ServizioFile.Apri(f));
     }
+
+    [Fact]
+    public void Apri_FileMancante_ErroreApertura() =>
+        Assert.Throws<ErroreApertura>(() => ServizioFile.Apri(Temporaneo()));
 
     [Fact]
     public void Apri_RiempieTestoTemplate()

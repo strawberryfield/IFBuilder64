@@ -30,4 +30,5 @@
   <data name="Azione_23" xml:space="preserve"><value>informazioni</value></data>
   <data name="Azione_24" xml:space="preserve"><value>registra comandi</value></data>
   <data name="Azione_25" xml:space="preserve"><value>elenca uscite</value></data>
+  <data name="ErroreApertura_Json" xml:space="preserve"><value>Riga {0}, posizione {1}: {2}</value></data>
 </root>

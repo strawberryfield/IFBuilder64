@@ -20,6 +20,7 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Casasoft.IFBuilder64.Editor.Risorse;
 using Casasoft.IFBuilder64.Editor.ViewModels;
 using Casasoft.IFBuilder64.Json;
 
@@ -58,10 +59,9 @@ public static class ServizioFile
         }
         catch (JsonException ex)
         {
-            var posizione = ex.LineNumber is { } riga
-                ? $" (riga {riga}, posizione {ex.BytePositionInLine?.ToString() ?? "?"}; line {riga})"
-                : string.Empty;
-            throw new ErroreApertura(ex.Message + posizione);
+            // LineNumber e BytePositionInLine sono a base 0: si mostrano a base 1.
+            var modello = Testi.ResourceManager.GetString("ErroreApertura_Json", Testi.Culture) ?? "{0}, {1}: {2}";
+            throw new ErroreApertura(string.Format(modello, (ex.LineNumber ?? 0) + 1, (ex.BytePositionInLine ?? 0) + 1, ex.Message));
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
