@@ -31,4 +31,7 @@
   <data name="Azione_24" xml:space="preserve"><value>registra comandi</value></data>
   <data name="Azione_25" xml:space="preserve"><value>elenca uscite</value></data>
   <data name="ErroreApertura_Json" xml:space="preserve"><value>Riga {0}, posizione {1}: {2}</value></data>
+  <data name="Errore_NomeVuoto" xml:space="preserve"><value>Il nome non può essere vuoto.</value></data>
+  <data name="Errore_NomeDuplicato" xml:space="preserve"><value>Il nome {0} è già in uso.</value></data>
+  <data name="Errore_StanzaGiocatore" xml:space="preserve"><value>La stanza player non può essere rinominata né eliminata.</value></data>
 </root>
