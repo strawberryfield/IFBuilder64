@@ -153,4 +153,12 @@ I riferimenti verranno svuotati. Eliminarla?</value></data>
   <data name="Oggetti_Elimina_Messaggio" xml:space="preserve"><value>L'oggetto {0} è riferito da:
 {1}
 I riferimenti verranno svuotati. Eliminarlo?</value></data>
+  <data name="PrefissoVerbo" xml:space="preserve"><value>verbo</value></data>
+  <data name="Verbi_Nuovo" xml:space="preserve"><value>Nuovo</value></data>
+  <data name="Verbi_Elimina" xml:space="preserve"><value>Elimina</value></data>
+  <data name="Verbi_AggiungiSinonimo" xml:space="preserve"><value>Aggiungi sinonimo</value></data>
+  <data name="Verbi_Col_Comando" xml:space="preserve"><value>Comando</value></data>
+  <data name="Verbi_Col_Azione" xml:space="preserve"><value>Azione</value></data>
+  <data name="Verbi_Filtro" xml:space="preserve"><value>Azione</value></data>
+  <data name="Verbi_Filtro_Tutte" xml:space="preserve"><value>— tutte —</value></data>
 </root>

@@ -71,7 +71,9 @@
 				<TabItem x:Name="SchedaOggetti" Header="{x:Static r:Testi.Scheda_Oggetti}">
 					<v:OggettiView DataContext="{Binding Oggetti}" />
 				</TabItem>
-				<TabItem x:Name="SchedaVerbi" Header="{x:Static r:Testi.Scheda_Verbi}" />
+				<TabItem x:Name="SchedaVerbi" Header="{x:Static r:Testi.Scheda_Verbi}">
+					<v:VerbiView DataContext="{Binding Verbi}" />
+				</TabItem>
 				<TabItem x:Name="SchedaMessaggi" Header="{x:Static r:Testi.Scheda_Messaggi}" />
 				<TabItem x:Name="SchedaGioco" Header="{x:Static r:Testi.Scheda_Gioco}" />
 			</TabControl>

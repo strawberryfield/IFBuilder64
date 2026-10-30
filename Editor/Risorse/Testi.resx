@@ -153,4 +153,12 @@ The references will be cleared. Delete it?</value></data>
   <data name="Oggetti_Elimina_Messaggio" xml:space="preserve"><value>Item {0} is referenced by:
 {1}
 The references will be cleared. Delete it?</value></data>
+  <data name="PrefissoVerbo" xml:space="preserve"><value>verb</value></data>
+  <data name="Verbi_Nuovo" xml:space="preserve"><value>New</value></data>
+  <data name="Verbi_Elimina" xml:space="preserve"><value>Delete</value></data>
+  <data name="Verbi_AggiungiSinonimo" xml:space="preserve"><value>Add synonym</value></data>
+  <data name="Verbi_Col_Comando" xml:space="preserve"><value>Command</value></data>
+  <data name="Verbi_Col_Azione" xml:space="preserve"><value>Action</value></data>
+  <data name="Verbi_Filtro" xml:space="preserve"><value>Action</value></data>
+  <data name="Verbi_Filtro_Tutte" xml:space="preserve"><value>— all —</value></data>
 </root>

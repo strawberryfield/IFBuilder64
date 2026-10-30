@@ -1,0 +1,30 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Casasoft.IFBuilder64.Editor.ViewModels"
+             xmlns:r="using:Casasoft.IFBuilder64.Editor.Risorse"
+             x:Class="Casasoft.IFBuilder64.Editor.Views.VerbiView"
+             x:DataType="vm:VerbiViewModel">
+	<DockPanel>
+		<!-- Barra degli strumenti: azioni e filtro -->
+		<StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="4">
+			<Button x:Name="PulsanteNuovo" Content="{x:Static r:Testi.Verbi_Nuovo}" Command="{Binding NuovoCommand}" />
+			<Button x:Name="PulsanteSinonimo" Content="{x:Static r:Testi.Verbi_AggiungiSinonimo}" Command="{Binding AggiungiSinonimoCommand}" />
+			<Button x:Name="PulsanteElimina" Content="{x:Static r:Testi.Verbi_Elimina}" Command="{Binding EliminaCommand}" />
+			<TextBlock Text="{x:Static r:Testi.Verbi_Filtro}" VerticalAlignment="Center" Margin="16,0,0,0" />
+			<ComboBox x:Name="FiltroAzione" MinWidth="200"
+			          ItemsSource="{Binding VociFiltro}"
+			          SelectedIndex="{Binding FiltroIndice, Mode=TwoWay}" />
+		</StackPanel>
+		<DataGrid x:Name="Griglia" AutoGenerateColumns="False" CanUserSortColumns="False"
+		          CanUserReorderColumns="False" SelectionMode="Single" GridLinesVisibility="All"
+		          ItemsSource="{Binding VerbiFiltrati}"
+		          SelectedItem="{Binding Selezionato, Mode=TwoWay}">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="{x:Static r:Testi.Verbi_Col_Comando}" Width="220"
+				                    Binding="{Binding Comando, x:DataType=vm:VerboViewModel}" />
+				<!-- L'azione ha un elenco per riga (voce "? (n)" fuori catalogo): costruita nel code-behind -->
+				<DataGridTemplateColumn Header="{x:Static r:Testi.Verbi_Col_Azione}" Width="*" MinWidth="200" />
+			</DataGrid.Columns>
+		</DataGrid>
+	</DockPanel>
+</UserControl>

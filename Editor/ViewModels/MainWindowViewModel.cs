@@ -52,6 +52,7 @@ public partial class MainWindowViewModel : ObservableObject
     private IDisposable? _validazionePendente;
     private bool _sincronizzaMappa;
     private bool _sincronizzaOggetti;
+    private bool _sincronizzaVerbi;
 
     /// <summary>Documento aperto.</summary>
     [ObservableProperty] private DocumentoViewModel _documento;
@@ -83,6 +84,9 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>Scheda Oggetti del documento corrente; ricreata a ogni cambio di documento.</summary>
     [ObservableProperty] private OggettiViewModel _oggetti;
 
+    /// <summary>Scheda Verbi del documento corrente; ricreata a ogni cambio di documento.</summary>
+    [ObservableProperty] private VerbiViewModel _verbi;
+
     /// <summary>Crea il ViewModel con un documento nuovo nella lingua dell'interfaccia.</summary>
     /// <param name="dialoghi">Dialoghi dell'interfaccia.</param>
     /// <param name="impostazioni">Impostazioni utente (recenti, ultima cartella di output).</param>
@@ -106,6 +110,7 @@ public partial class MainWindowViewModel : ObservableObject
         _documento = ServizioFile.Nuovo(lingua);
         _mappa = CreaMappa(_documento);
         _oggetti = CreaOggetti(_documento);
+        _verbi = CreaVerbi(_documento);
         Iscrivi(_documento);
         ValidaOra();
     }
@@ -322,6 +327,8 @@ public partial class MainWindowViewModel : ObservableObject
         Mappa = CreaMappa(newValue);
         Oggetti.Dispose();
         Oggetti = CreaOggetti(newValue);
+        Verbi.Dispose();
+        Verbi = CreaVerbi(newValue);
         ImpostaPannello(null);
         OnPropertyChanged(nameof(Titolo));
     }
@@ -350,11 +357,29 @@ public partial class MainWindowViewModel : ObservableObject
         return oggetti;
     }
 
+    private VerbiViewModel CreaVerbi(DocumentoViewModel doc)
+    {
+        var verbi = new VerbiViewModel(doc);
+        verbi.PropertyChanged += (sender, e) =>
+        {
+            if (e.PropertyName != nameof(VerbiViewModel.Selezionato) || sender != Verbi) return;
+            // Deselezionare la riga non deve cancellare la selezione di un altro tipo di elemento.
+            if (Verbi.Selezionato is not null || ElementoSelezionato is VerboViewModel)
+                Sincronizza(ref _sincronizzaVerbi, () => ElementoSelezionato = Verbi.Selezionato);
+        };
+        return verbi;
+    }
+
     /// <summary>Le stanze, le porte e gli oggetti selezionati altrove sono selezionati anche sulla mappa e nell'elenco oggetti.</summary>
     partial void OnElementoSelezionatoChanged(object? value)
     {
         Sincronizza(ref _sincronizzaMappa, () => Mappa.Selezione = value is StanzaViewModel or PortaViewModel ? value : null);
         Sincronizza(ref _sincronizzaOggetti, () => Oggetti.Selezionato = value as OggettoViewModel);
+        Sincronizza(ref _sincronizzaVerbi, () =>
+        {
+            if (value is VerboViewModel v) Verbi.Seleziona(v);
+            else Verbi.Selezionato = null;
+        });
         ImpostaPannello(value);
     }
 
@@ -397,6 +422,7 @@ public partial class MainWindowViewModel : ObservableObject
     {
         // Un oggetto eliminato (da qualsiasi punto) non resta selezionato né nel pannello.
         if (ElementoSelezionato is OggettoViewModel o && !Documento.Oggetti.Contains(o)) ElementoSelezionato = null;
+        if (ElementoSelezionato is VerboViewModel v && !Documento.Verbi.Contains(v)) ElementoSelezionato = null;
         _validazionePendente?.Dispose();
         _validazionePendente = _pianificatore(RitardoValidazione, ValidaOra);
     }
