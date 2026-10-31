@@ -18,7 +18,11 @@
 //-----------------------------------------------------------------------
 
 
+using Casasoft.IFBuilder64.Builder;
 using Casasoft.IFBuilder64.Editor.Servizi;
+using Casasoft.IFBuilder64.Editor.ViewModels;
+using Casasoft.IFBuilder64.Json;
+using System.Text.Json;
 
 namespace Casasoft.IFBuilder64.Tests;
 
@@ -68,6 +72,50 @@ public class CompilazioneTests
         }
         Assert.Equal(nomiPrima, doc.Stanze.Select(s => s.Nome).ToList());
         Assert.Equal(modificatoPrima, doc.Modificato);
+    }
+
+    [Fact]
+    public async Task NuovoGioco_SalvatoERiaperto_SiCompilaComeLaCli()
+    {
+        var doc = ServizioFile.Nuovo(TemplateLanguage.Italiano);
+        var ingresso = new StanzaViewModel { Nome = "ingresso", Descrizione = "Un ingresso." };
+        var sala = new StanzaViewModel { Nome = "sala", Descrizione = "Una sala." };
+        var cucina = new StanzaViewModel { Nome = "cucina", Descrizione = "Una cucina." };
+        doc.Stanze.Add(ingresso);
+        doc.Stanze.Add(sala);
+        doc.Stanze.Add(cucina);
+        Collegamenti.Collega(doc, ingresso, Direzione.Nord, sala, senzaRitorno: false);
+        Collegamenti.Collega(doc, sala, Direzione.Est, cucina, senzaRitorno: false);
+        Collegamenti.TrasformaInPorta(doc, sala, Direzione.Est);
+        doc.StanzaIniziale = "ingresso";
+        doc.Oggetti.Add(new OggettoViewModel { Nome = "lampada", Descrizione = "Una lampada.", Posizione = "sala" });
+        doc.Oggetti.Add(new OggettoViewModel { Nome = "tavolo", Descrizione = "Un tavolo.", Posizione = "cucina", Statico = true });
+
+        var dir = Directory.CreateTempSubdirectory().FullName;
+        try
+        {
+            var json = Path.Combine(dir, "nuovo.json");
+            ServizioFile.Salva(doc, json);
+            var riaperto = ServizioFile.Apri(json);
+
+            var r = await new ServizioCompilazione().CompilaAsync(riaperto, Path.Combine(dir, "editor"));
+            Assert.True(r.Successo, string.Join(Environment.NewLine, r.Log));
+
+            var game = JsonSerializer.Deserialize<Game>(File.ReadAllText(json))!;
+            var cli = new GameBuilder().Build(game, Path.Combine(dir, "cli"));
+            Assert.True(cli.Successo, string.Join(Environment.NewLine, cli.Log));
+
+            Assert.Equal(cli.FileGenerati.Count, r.FileGenerati.Count);
+            foreach (var fileCli in cli.FileGenerati)
+            {
+                var suffisso = Path.GetFileName(fileCli)["cli".Length..];
+                Assert.Equal(Confronto.Normalizza(fileCli), Confronto.Normalizza(Path.Combine(dir, "editor" + suffisso)));
+            }
+        }
+        finally
+        {
+            Directory.Delete(dir, true);
+        }
     }
 
     [Fact]

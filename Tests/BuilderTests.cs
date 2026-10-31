@@ -94,6 +94,100 @@ public class BuilderTests
         Assert.Equal("", scrittore.ToString());
     }
 
+    private static BuildResult CompilaInTemp(Game game)
+    {
+        var dir = Directory.CreateTempSubdirectory().FullName;
+        try
+        {
+            return new GameBuilder().Build(game, Path.Combine(dir, "vuoto"));
+        }
+        finally
+        {
+            Directory.Delete(dir, true);
+        }
+    }
+
+    [Fact]
+    public void Build_SenzaMessaggiUtente_Riesce()
+    {
+        var game = CaricaEsempio();
+        game.usermessages = [];
+        var r = CompilaInTemp(game);
+        Assert.True(r.Successo, string.Join(Environment.NewLine, r.Log));
+    }
+
+    [Fact]
+    public void Build_SenzaPorte_Riesce()
+    {
+        var game = CaricaEsempio();
+        game.doors = [];
+        var r = CompilaInTemp(game);
+        Assert.True(r.Successo, string.Join(Environment.NewLine, r.Log));
+    }
+
+    [Fact]
+    public void Build_SenzaOggetti_Riesce()
+    {
+        var game = CaricaEsempio();
+        game.items = [];
+        foreach (var porta in game.doors)
+        {
+            porta.unlockitem = null;
+        }
+        var r = CompilaInTemp(game);
+        Assert.True(r.Successo, string.Join(Environment.NewLine, r.Log));
+    }
+
+    [Fact]
+    public void Build_SenzaOggettiPortabili_Riesce()
+    {
+        var game = CaricaEsempio();
+        game.items = [.. game.items.Where(i => i.notportable is true)];
+        foreach (var oggetto in game.items)
+        {
+            oggetto.initem = null;
+            oggetto.unlockitem = null;
+        }
+        foreach (var porta in game.doors)
+        {
+            porta.unlockitem = null;
+        }
+        var r = CompilaInTemp(game);
+        Assert.True(r.Successo, string.Join(Environment.NewLine, r.Log));
+    }
+
+    [Fact]
+    public void Build_SenzaOggettiStatici_Riesce()
+    {
+        var game = CaricaEsempio();
+        game.items = [.. game.items.Where(i => i.notportable is not true)];
+        foreach (var oggetto in game.items)
+        {
+            oggetto.initem = null;
+        }
+        var r = CompilaInTemp(game);
+        Assert.True(r.Successo, string.Join(Environment.NewLine, r.Log));
+    }
+
+    [Fact]
+    public void Build_SenzaVerbi_Riesce()
+    {
+        var game = CaricaEsempio();
+        game.verbs = [];
+        var r = CompilaInTemp(game);
+        Assert.True(r.Successo, string.Join(Environment.NewLine, r.Log));
+    }
+
+    [Fact]
+    public void Build_Errore_RigaDiLogConPrefissoError()
+    {
+        var game = CaricaEsempio();
+        var inesistente = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"), "sotto", "esempio");
+        var r = new GameBuilder().Build(game, inesistente);
+        Assert.False(r.Successo);
+        Assert.StartsWith("Error: ", r.Log[^1]);
+    }
+
     [Fact]
     public void Build_CartellaInesistente_RestituisceErroreSenzaEccezione()
     {

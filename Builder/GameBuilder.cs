@@ -80,27 +80,27 @@ public class GameBuilder
             (byte[] msgPointers, byte[] msgStringsList) = Strings2Prg.CreateArrays(game.messages, 0, true);
             size = msgPointers.Length + msgStringsList.Length;
             config.messagesAddress = AllocateDown(ref topAddress, size);
-            Strings2Prg.RelocatePointers(msgPointers, config.messagesAddress);
+            RilocaPuntatori(msgPointers, config.messagesAddress);
 
             // user messages
             (byte[] userMsgPointers, byte[] userMsgStringsList) = Strings2Prg.CreateArrays(game.usermessages, 0, true);
             size = userMsgPointers.Length + userMsgStringsList.Length;
             config.userMessagesAddress = AllocateDown(ref topAddress, size);
-            Strings2Prg.RelocatePointers(userMsgPointers, config.userMessagesAddress);
+            RilocaPuntatori(userMsgPointers, config.userMessagesAddress);
 
             // rooms descrptions 
             List<string> roomDescriptions = [.. game.rooms.Select(room => room.description)];
             (byte[] roomsDescPtr, byte[] roomsDescList) = Strings2Prg.CreateArrays(roomDescriptions, 0, true);
             size = roomsDescPtr.Length + roomsDescList.Length;
             config.roomsDescriptionAddress = AllocateDown(ref topAddress, size);
-            Strings2Prg.RelocatePointers(roomsDescPtr, config.roomsDescriptionAddress);
+            RilocaPuntatori(roomsDescPtr, config.roomsDescriptionAddress);
 
             // verbs
             List<string> verbCommands = [.. game.verbs.Select(verb => verb.command)];
             (byte[] verbsPtr, byte[] verbsList) = Strings2Prg.CreateArrays(verbCommands, 0, true);
             size = verbsPtr.Length + verbsList.Length;
             config.verbsAddress = AllocateDown(ref topAddress, size);
-            Strings2Prg.RelocatePointers(verbsPtr, config.verbsAddress);
+            RilocaPuntatori(verbsPtr, config.verbsAddress);
 
             // verbs to actions
             byte[] verbsToActions = new byte[game.verbs.Count];
@@ -114,13 +114,13 @@ public class GameBuilder
             (byte[] dirPointers, byte[] dirStringsList) = Strings2Prg.CreateArrays(game.directions, 0, true);
             size = dirPointers.Length + dirStringsList.Length;
             config.dirsAddress = AllocateDown(ref topAddress, size);
-            Strings2Prg.RelocatePointers(dirPointers, config.dirsAddress);
+            RilocaPuntatori(dirPointers, config.dirsAddress);
 
             // items
             List<string> itemNames = [.. game.items.Where(item => item.notportable != true).Select(item => item.name)];
             (byte[] portableItemsPtr, byte[] portableItemsList) = Strings2Prg.CreateArrays(itemNames, 0, true);
             int delta = game.items.Count * 2 - portableItemsPtr.Length + 2;
-            Strings2Prg.RelocatePointers(portableItemsPtr, (ushort)delta);
+            RilocaPuntatori(portableItemsPtr, (ushort)delta);
             int offset = portableItemsList.Length;
 
             byte[][] ptrItemArray = new byte[game.rooms.Count][];
@@ -152,7 +152,7 @@ public class GameBuilder
                     continue;
                 }
                 delta = (game.items.Count + 1) * 2 - ptrItemArray[i].Length;
-                Strings2Prg.RelocatePointers(ptrItemArray[i], (ushort)delta);
+                RilocaPuntatori(ptrItemArray[i], (ushort)delta);
                 Array.Copy(ptrItemArray[i], 2, itemsPtr, ptrOffset, ptrItemArray[i].Length - 2);
                 ptrOffset += ptrItemArray[i].Length - 2;
                 Array.Copy(listItemArray[i], 0, itemsList, offset, listItemArray[i].Length);
@@ -160,42 +160,42 @@ public class GameBuilder
             }
             size = offset + itemsPtr.Length;
             config.itemsNameAddress = AllocateDown(ref topAddress, size);
-            Strings2Prg.RelocatePointers(itemsPtr, config.itemsNameAddress);
+            RilocaPuntatori(itemsPtr, config.itemsNameAddress);
 
             // items descriptions
             List<string> itemDescriptions = [.. game.items.Select(item => item.description)];
             (byte[] itemsDescPtr, byte[] itemsDescList) = Strings2Prg.CreateArrays(itemDescriptions, 0, true);
             size = itemsDescPtr.Length + itemsDescList.Length;
             config.itemsDescriptionAddress = AllocateDown(ref topAddress, size);
-            Strings2Prg.RelocatePointers(itemsDescPtr, config.itemsDescriptionAddress);
+            RilocaPuntatori(itemsDescPtr, config.itemsDescriptionAddress);
 
             // items open descriptions
             List<string> itemOpenDescriptions = [.. game.items.Select(item => item.opendescription ?? string.Empty)];
             (byte[] itemsOpenDescPtr, byte[] itemsOpenDescList) = Strings2Prg.CreateArrays(itemOpenDescriptions, 0, true);
             size = itemsOpenDescPtr.Length + itemsOpenDescList.Length;
             config.itemsOpenDescriptionAddress = AllocateDown(ref topAddress, size);
-            Strings2Prg.RelocatePointers(itemsOpenDescPtr, config.itemsOpenDescriptionAddress);
+            RilocaPuntatori(itemsOpenDescPtr, config.itemsOpenDescriptionAddress);
 
             // doors
             List<string> doorNames = [.. game.doors.Select(item => item.name)];
             (byte[] doorsPtr, byte[] doorsList) = Strings2Prg.CreateArrays(doorNames, 0, true);
             size = doorsPtr.Length + doorsList.Length;
             config.doorsNameAddress = AllocateDown(ref topAddress, size);
-            Strings2Prg.RelocatePointers(doorsPtr, config.doorsNameAddress);
+            RilocaPuntatori(doorsPtr, config.doorsNameAddress);
 
             // doors deny open descriptions
             List<string> doorDenyOpen = [.. game.doors.Select(item => item.denyopen ?? string.Empty)];
             (byte[] doorsDenyOpenPtr, byte[] doorsDenyOpenList) = Strings2Prg.CreateArrays(doorDenyOpen, 0, true);
             size = doorsDenyOpenPtr.Length + doorsDenyOpenList.Length;
             config.doorsDenyOpenAddress = AllocateDown(ref topAddress, size);
-            Strings2Prg.RelocatePointers(doorsDenyOpenPtr, config.doorsDenyOpenAddress);
+            RilocaPuntatori(doorsDenyOpenPtr, config.doorsDenyOpenAddress);
 
             // doors descriptions
             List<string> doorDescriptions = [.. game.doors.Select(item => item.description)];
             (byte[] doorsDescPtr, byte[] doorsDescList) = Strings2Prg.CreateArrays(doorDescriptions, 0, true);
             size = doorsDescPtr.Length + doorsDescList.Length;
             config.doorsDescriptionAddress = AllocateDown(ref topAddress, size);
-            Strings2Prg.RelocatePointers(doorsDescPtr, config.doorsDescriptionAddress);
+            RilocaPuntatori(doorsDescPtr, config.doorsDescriptionAddress);
 
             // doors exits
             byte[] doorsExits = new byte[game.doors.Count * 6];
@@ -446,7 +446,7 @@ public class GameBuilder
         }
         catch (Exception ex)
         {
-            log.Add(ex.Message);
+            log.Add($"Error: {ex.Message}");
             return new BuildResult(false, files, log);
         }
     }
@@ -457,5 +457,22 @@ public class GameBuilder
         ushort addr = (ushort)(top - size + 1);
         top = (ushort)(addr - 1);
         return addr;
+    }
+
+    /// <summary>
+    /// Riloca la tabella dei puntatori solo se contiene almeno una stringa.
+    /// </summary>
+    /// <remarks>
+    /// Con una lista vuota la tabella contiene solo il conteggio 0 e
+    /// <see cref="Strings2Prg.RelocatePointers"/> la rifiuterebbe come troppo corta;
+    /// non c'è nulla da rilocare, quindi la si lascia invariata.
+    /// </remarks>
+    private static void RilocaPuntatori(byte[] puntatori, ushort indirizzo)
+    {
+        if (puntatori.Length < 2 || (puntatori[0] | puntatori[1] << 8) == 0)
+        {
+            return;
+        }
+        Strings2Prg.RelocatePointers(puntatori, indirizzo);
     }
 }
