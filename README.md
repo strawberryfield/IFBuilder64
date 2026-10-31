@@ -27,6 +27,25 @@ IFBuilder64 is a tool to build and manage Interactive Fiction (IF) targets and r
 4. Run (if the repo contains runnable projects):
    - `dotnet run --project <ProjectPath>` or run via Visual Studio.
 
+## Graphical Editor
+The `Editor` project is a cross-platform desktop application (Avalonia) to create and edit games without writing the JSON by hand: map with drag-and-drop rooms and doors, tabs for items, verbs, messages and game data, live validation with one-click fixes, and compilation (F5) through the same builder used by the command line. The interface is available in Italian and English.
+
+- Run from source: `dotnet run --project Editor`
+- Publish (framework-dependent, requires the .NET 10 runtime): `dotnet publish Editor -c Release -r <rid> --self-contained false -o artifacts/editor-<rid>` with `<rid>` = `win-x64`, `linux-x64`, `osx-x64` or `osx-arm64`
+- User guide: see the "Uso dell'editor grafico" / "Using the graphical editor" sections of the manuals in this repository.
+- Third-party licenses: `Editor/THIRD-PARTY-NOTICES.txt` (also shown in Help → About).
+
+## Tests
+- `dotnet test Tests/Tests.csproj` (xUnit v3, including headless Avalonia UI tests).
+
+## Projects
+- `Common`: JSON game model and language templates.
+- `Builder`: build engine that turns a game into C64 files (used by the CLI and the editor).
+- `IFBuilder64`: command-line tool.
+- `SeqConverter`: legacy SEQ-to-JSON converter.
+- `Editor`: graphical editor.
+- `Tests`: automated tests.
+
 ## Contributing
 - This project follows the conventions set in `.editorconfig` — ensure your changes comply before submitting a PR.
 - Create feature branches from `main` (or the repository's default branch), add tests for new behavior, and open a pull request describing the change.

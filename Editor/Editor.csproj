@@ -19,6 +19,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Content Include="THIRD-PARTY-NOTICES.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\Builder\Builder.csproj" />
 		<ProjectReference Include="..\Common\Common.csproj" />
 	</ItemGroup>

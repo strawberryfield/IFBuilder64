@@ -213,6 +213,54 @@ Puoi aggiungere sinonimi o rimuovere verbi, ma non inventare codici nuovi: un co
 
 `messages` sono i 55 testi del motore e vanno lasciati **nello stesso ordine**, perché il parser li richiama per posizione (0 = "Non ne vedo qui intorno...", 43 = "Hai vinto!", 44 = "Hai perso"). Puoi cambiarne il testo. `usermessages` invece è tuo: la posizione di ciascun testo è il numero con cui lo richiami dagli hook.
 
+## Uso dell'editor grafico
+
+Oltre al JSON scritto a mano puoi costruire il mondo con l'editor grafico, che apre e salva lo stesso formato `.json` e usa lo stesso builder della riga di comando. Serve il runtime .NET 10; avvialo con `dotnet run --project Editor` oppure dalla cartella pubblicata (`dotnet Casasoft.IFBuilder64.Editor.dll`, o l'eseguibile accanto alla DLL).
+
+### Aprire e creare
+
+- **File → Nuovo** (Ctrl+N) chiede la lingua (italiano o inglese) e parte dal template, con verbi, messaggi e direzioni già pronti.
+- **File → Apri** (Ctrl+O) carica un JSON esistente; **Salva** (Ctrl+S) e **Salva con nome** lo scrivono, conservando accenti e codici colore PETSCII. Se nel file le stanze non hanno una posizione sulla mappa, vengono disposte automaticamente.
+- **File recenti** riapre gli ultimi giochi.
+
+### La mappa
+
+La scheda **Mappa** mostra le stanze come caselle su una griglia, un livello alla volta (il selettore **Livello** e i pulsanti **+ Sopra** / **+ Sotto** gestiscono i piani; `su` e `giù` collegano livelli diversi). La stanza `player` è solo il segnaposto degli oggetti in mano al giocatore e non compare sulla mappa.
+
+- **Clic su una cella vuota**: crea una nuova stanza.
+- **Trascina una stanza**: la sposta.
+- **Trascina dal bordo di una stanza** verso un'altra: crea il collegamento, in entrambe le direzioni; con **Ctrl** premuto il collegamento è a **senso unico**.
+- **Menu col tasto destro** su stanze, collegamenti e celle: collega in alto o in basso, imposta come iniziale, trasforma un passaggio in porta (e viceversa), elimina. Prima di eliminare una stanza l'editor elenca gli elementi che la citano.
+- La stanza **iniziale** è marcata da una stella (★).
+- Le **porte** sono disegnate sul collegamento: piene se chiuse, solo contorno se aperte all'inizio.
+- Una stanza con **bordo arancione** non è raggiungibile dalla stanza iniziale.
+- **Ctrl + rotella** cambia lo zoom, il tasto centrale sposta la vista; **Disponi automaticamente** ridispone tutte le stanze.
+
+### Il pannello delle proprietà
+
+Selezionando un elemento, il pannello a destra ne mostra i campi: per una stanza nome, descrizione, uscite, oggetti statici e mobili (con **Nuovo oggetto qui** e **Sposta qui…**); per una porta nome, descrizione, messaggio di apertura negata, oggetto che sblocca e la casella **Aperta**; per un oggetto tutti i suoi attributi. Rinominare una stanza, un oggetto o una porta aggiorna da solo tutti i riferimenti.
+
+Per le porte vale la regola descritta in "Porte": una porta **chiusa** non deve avere le uscite nelle stanze. Una porta **aperta all'inizio**, invece, richiede le uscite dichiarate **in entrambe le stanze**, perché il motore non le scrive: spuntando o togliendo **Aperta** l'editor aggiunge o rimuove per te queste uscite.
+
+### Oggetti, Verbi, Messaggi, Gioco
+
+- **Oggetti**: tabella con filtri per stanza e tipo (statico o mobile); **Nuovo**, **Duplica**, **Elimina** (con l'elenco dei riferimenti), posizione, contenitore e opzioni (apribile, chiudibile, acceso…).
+- **Verbi**: ogni comando è associato a un'azione del catalogo (codici 0-25) e si possono aggiungere sinonimi; il filtro per azione aiuta a trovare quelli esistenti.
+- **Messaggi**: i messaggi standard (con il testo del template e **Ripristina**) e quelli personalizzati, che si possono aggiungere, spostare ed eliminare. Eliminare o spostare un messaggio personalizzato rinumera i successivi, e gli hook BASIC che usano `{var:Message}` vanno aggiornati (l'editor lo ricorda).
+- **Gioco**: introduzione, carico massimo, direzioni e metadati iFiction, con **Genera IFID**.
+
+### Avvisi e correzioni
+
+Il pannello **Avvisi**, in basso, elenca gli errori (che impediscono la compilazione) e gli avvisi: una stanza non raggiungibile, un'uscita dichiarata sia nella stanza sia in una porta chiusa, una porta aperta senza uscite nelle stanze. Il **doppio clic** su un avviso seleziona l'elemento interessato; dove è possibile, il pulsante **Correggi** applica la correzione.
+
+### Compilare
+
+**Compila → Compila** (F5) valida il gioco e genera i file come la riga di comando; un documento mai salvato apre prima "Salva con nome". L'esito è nella scheda **Output compilazione**. **Compila → Opzioni** imposta il nome base dei file generati; lasciandolo vuoto vale quello predefinito, cioè il percorso del JSON senza estensione.
+
+### Lingua dell'interfaccia
+
+**Strumenti → Lingua interfaccia** sceglie l'italiano o l'inglese; la modifica ha effetto al prossimo avvio. **? → Informazioni** mostra versione, licenza e avvisi di terze parti.
+
 ## Logica di gioco: gli hook BASIC
 
 Il JSON descrive il mondo; enigmi, condizioni di vittoria ed eventi si scrivono in BASIC nei file di `C64/custom/`, che il preprocessore inserisce in punti precisi di `parser.bas`.

@@ -213,6 +213,54 @@ You can add synonyms (for example `get` with code 8) or remove verbs, but don't 
 
 `messages` are the engine's 55 texts and must stay **in the same order**, because the parser calls them by position (0 = "I don't see any around here...", 43 = "You win!", 44 = "You lost."). You can change their wording. `usermessages` is yours: each text's position is the number you use to call it from the hooks.
 
+## Using the graphical editor
+
+Besides writing the JSON by hand you can build the world with the graphical editor, which opens and saves the same `.json` format and uses the same builder as the command line. It needs the .NET 10 runtime; start it with `dotnet run --project Editor` or from the published folder (`dotnet Casasoft.IFBuilder64.Editor.dll`, or the executable next to the DLL).
+
+### Opening and creating
+
+- **File → New** (Ctrl+N) asks for the language (Italian or English) and starts from the template, with verbs, messages and directions already in place.
+- **File → Open** (Ctrl+O) loads an existing JSON; **Save** (Ctrl+S) and **Save as** write it, keeping accented text and PETSCII colour codes. If the rooms in a file have no map position, they are laid out automatically.
+- **Recent files** reopens your latest games.
+
+### The map
+
+The **Map** tab shows rooms as boxes on a grid, one level at a time (the **Level** selector and the **+ Above** / **+ Below** buttons manage floors; `up` and `down` link different levels). The `player` room is only the placeholder for items carried by the player and is not drawn on the map.
+
+- **Click an empty cell**: creates a new room.
+- **Drag a room**: moves it.
+- **Drag from a room's border** to another room: creates the link, in both directions; hold **Ctrl** for a **one-way** link.
+- **Right-click menus** on rooms, links and cells: link up or down, set as initial room, turn a passage into a door (and back), delete. Before a room is deleted the editor lists everything that refers to it.
+- The **initial** room is marked with a star (★).
+- **Doors** are drawn on the link: filled when closed, outlined when open at the start.
+- A room with an **orange border** is unreachable from the initial room.
+- **Ctrl + wheel** zooms, the middle button pans the view; **Auto layout** rearranges all rooms.
+
+### The property panel
+
+When you select an element, the panel on the right shows its fields: for a room, name, description, exits, static and portable items (with **New item here** and **Move here…**); for a door, name, description, the message shown when opening is denied, the unlocking item and the **Open** checkbox; for an item, all its attributes. Renaming a room, item or door updates every reference automatically.
+
+The rule described in "Doors" still applies: a **closed** door must not have exits in the rooms. A door that is **open at the start**, however, needs its exits declared **in both rooms**, because the engine does not write them: ticking or clearing **Open** makes the editor add or remove those exits for you.
+
+### Items, Verbs, Messages, Game
+
+- **Items**: a table with filters by room and type (static or portable); **New**, **Duplicate**, **Delete** (listing the references), location, container and options (openable, closeable, switched on…).
+- **Verbs**: each command is tied to an action from the catalogue (codes 0-25) and you can add synonyms; the action filter helps to find existing ones.
+- **Messages**: the standard messages (with the template text and **Restore**) and the custom ones, which can be added, moved and deleted. Deleting or moving a custom message renumbers the following ones, and BASIC hooks using `{var:Message}` must be updated (the editor reminds you).
+- **Game**: introduction, maximum load, directions and iFiction metadata, with **Generate IFID**.
+
+### Warnings and fixes
+
+The **Warnings** panel at the bottom lists errors (which prevent compiling) and warnings: an unreachable room, an exit declared both in a room and in a closed door, an open door without exits in the rooms. **Double-click** a warning to select the element concerned; where possible the **Fix** button applies the correction.
+
+### Compiling
+
+**Build → Build** (F5) validates the game and generates the files as the command line does; a never-saved document first opens "Save as". The result appears in the **Build output** tab. **Build → Options** sets the base name of the generated files; if left empty, the default applies: the JSON path without its extension.
+
+### Interface language
+
+**Tools → Interface language** chooses Italian or English; the change takes effect at the next start. **? → About** shows version, license and third-party notices.
+
 ## Game logic: the BASIC hooks
 
 The JSON describes the world; puzzles, win conditions and events are written in BASIC in the files under `C64/custom/`, which the preprocessor inserts at specific points of `parser.bas`.
