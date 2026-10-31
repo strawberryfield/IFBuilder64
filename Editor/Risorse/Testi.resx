@@ -31,6 +31,9 @@
   <data name="Azione_24" xml:space="preserve"><value>record commands</value></data>
   <data name="Azione_25" xml:space="preserve"><value>list exits</value></data>
   <data name="ErroreApertura_Json" xml:space="preserve"><value>Line {0}, position {1}: {2}</value></data>
+  <data name="ErroreApertura_GiocoNonValido" xml:space="preserve"><value>The file does not contain a valid game.</value></data>
+  <data name="Errore_TemplateNonCaricato" xml:space="preserve"><value>Unable to load the template: {0}</value></data>
+  <data name="Errore_Imprevisto" xml:space="preserve"><value>Unexpected error: {0}</value></data>
   <data name="Errore_NomeVuoto" xml:space="preserve"><value>Name must not be empty.</value></data>
   <data name="Errore_NomeDuplicato" xml:space="preserve"><value>The name {0} is already in use.</value></data>
   <data name="Errore_StanzaGiocatore" xml:space="preserve"><value>The player room cannot be renamed or deleted.</value></data>
@@ -210,4 +213,9 @@ The references will be cleared. Delete it?</value></data>
   <data name="Direzione_3" xml:space="preserve"><value>West</value></data>
   <data name="Direzione_4" xml:space="preserve"><value>Up</value></data>
   <data name="Direzione_5" xml:space="preserve"><value>Down</value></data>
+  <data name="Campo_Posizione" xml:space="preserve"><value>Location</value></data>
+  <data name="Campo_DentroA" xml:space="preserve"><value>Container</value></data>
+  <data name="Campo_StanzaIniziale" xml:space="preserve"><value>Initial room</value></data>
+  <data name="Errore_NessunaUscita" xml:space="preserve"><value>{0}: no exit towards {1}.</value></data>
+  <data name="Errore_PortaSenzaDueLati" xml:space="preserve"><value>{0}: the door does not connect two existing rooms.</value></data>
 </root>

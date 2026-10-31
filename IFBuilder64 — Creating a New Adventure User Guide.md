@@ -230,7 +230,7 @@ The **Map** tab shows rooms as boxes on a grid, one level at a time (the **Level
 - **Click an empty cell**: creates a new room.
 - **Drag a room**: moves it.
 - **Drag from a room's border** to another room: creates the link, in both directions; hold **Ctrl** for a **one-way** link.
-- **Right-click menus** on rooms, links and cells: link up or down, set as initial room, turn a passage into a door (and back), delete. Before a room is deleted the editor lists everything that refers to it.
+- **Right-click menus** on rooms and links: link up or down, set as initial room, turn a passage into a door (and back), delete. Before a room is deleted the editor lists everything that refers to it.
 - The **initial** room is marked with a star (★).
 - **Doors** are drawn on the link: filled when closed, outlined when open at the start.
 - A room with an **orange border** is unreachable from the initial room.
@@ -255,7 +255,7 @@ The **Warnings** panel at the bottom lists errors (which prevent compiling) and 
 
 ### Compiling
 
-**Build → Build** (F5) validates the game and generates the files as the command line does; a never-saved document first opens "Save as". The result appears in the **Build output** tab. **Build → Options** sets the base name of the generated files; if left empty, the default applies: the JSON path without its extension.
+**Build → Build** (F5) validates the game and generates the files as the command line does; a never-saved document first opens "Save as". The result appears in the **Build output** tab. **Build → Options** sets the base name of the generated files; if left empty, the default applies: the JSON path with the extension removed but the dot kept, as on the command line (`castle.en.json` gives `castle.en.in.prg`).
 
 ### Interface language
 

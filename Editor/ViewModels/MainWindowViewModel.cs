@@ -17,6 +17,7 @@
 // but WITHOUT ANY WARRANTY
 //-----------------------------------------------------------------------
 
+using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
@@ -49,6 +50,9 @@ public partial class MainWindowViewModel : ObservableObject
     private readonly string? _percorsoImpostazioni;
     private readonly Func<TimeSpan, Action, IDisposable> _pianificatore;
     private readonly ServizioCompilazione _compilazione = new();
+    private readonly Func<TemplateLanguage, DocumentoViewModel> _creaNuovo;
+    private static readonly ConcurrentDictionary<TemplateLanguage, int> _numeroMessaggiTemplate = new();
+    private string? _erroreAvvio;
     private IDisposable? _validazionePendente;
     private bool _sincronizzaMappa;
     private bool _sincronizzaOggetti;
@@ -99,8 +103,10 @@ public partial class MainWindowViewModel : ObservableObject
     /// Esegue un'azione dopo un ritardo e restituisce un handle per annullarla;
     /// null per un timer del dispatcher Avalonia.
     /// </param>
+    /// <param name="creaNuovo">Crea un documento nuovo dal template; null per <see cref="ServizioFile.Nuovo"/>.</param>
     public MainWindowViewModel(IDialoghi dialoghi, ImpostazioniUtente impostazioni,
-        string? percorsoImpostazioni = null, Func<TimeSpan, Action, IDisposable>? pianificatore = null)
+        string? percorsoImpostazioni = null, Func<TimeSpan, Action, IDisposable>? pianificatore = null,
+        Func<TemplateLanguage, DocumentoViewModel>? creaNuovo = null)
     {
         _dialoghi = dialoghi;
         _impostazioni = impostazioni;
@@ -108,10 +114,21 @@ public partial class MainWindowViewModel : ObservableObject
         _pianificatore = pianificatore ?? ((ritardo, azione) => DispatcherTimer.RunOnce(azione, ritardo));
         foreach (var f in impostazioni.FileRecenti) Recenti.Add(f);
 
+        _creaNuovo = creaNuovo ?? ServizioFile.Nuovo;
         var lingua = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "it"
             ? TemplateLanguage.Italiano
             : TemplateLanguage.English;
-        _documento = ServizioFile.Nuovo(lingua);
+        try
+        {
+            _documento = _creaNuovo(lingua);
+        }
+        catch (Exception ex) when (ErroreTemplate(ex))
+        {
+            // Senza template si parte da un documento vuoto; l'errore si mostra in AvviaAsync,
+            // quando la finestra è visibile.
+            _documento = new DocumentoViewModel();
+            _erroreAvvio = string.Format(Testi.Errore_TemplateNonCaricato, ex.Message);
+        }
         _mappa = CreaMappa(_documento);
         _oggetti = CreaOggetti(_documento);
         _verbi = CreaVerbi(_documento);
@@ -158,9 +175,23 @@ public partial class MainWindowViewModel : ObservableObject
         _validazionePendente?.Dispose();
         _validazionePendente = null;
         var lingua = ServizioFile.RilevaLingua(Documento.ToGame()) ?? TemplateLanguage.English;
-        var avvisi = Validatore.Valida(Documento, ServizioFile.MessaggiTemplate(lingua).Count);
+        var avvisi = Validatore.Valida(Documento, NumeroMessaggiTemplate(lingua));
         Avvisi.Clear();
         foreach (var a in avvisi) Avvisi.Add(a);
+    }
+
+    /// <summary>
+    /// Da chiamare quando la finestra è visibile: mostra l'eventuale errore di caricamento del template
+    /// e apre il file indicato (ad esempio il primo argomento della riga di comando).
+    /// </summary>
+    public async Task AvviaAsync(string? percorso)
+    {
+        if (_erroreAvvio is { } errore)
+        {
+            _erroreAvvio = null;
+            await _dialoghi.MostraErroreAsync(errore);
+        }
+        if (!string.IsNullOrEmpty(percorso)) await ApriPercorsoAsync(percorso);
     }
 
     /// <summary>Chiede se salvare le modifiche prima di chiudere; false se l'utente annulla.</summary>
@@ -192,7 +223,17 @@ public partial class MainWindowViewModel : ObservableObject
     {
         if (!await ConfermaSostituzioneAsync()) return;
         if (await _dialoghi.ScegliTemplateAsync() is not { } lingua) return;
-        ImpostaDocumento(ServizioFile.Nuovo(lingua));
+        DocumentoViewModel doc;
+        try
+        {
+            doc = _creaNuovo(lingua);
+        }
+        catch (Exception ex) when (ErroreTemplate(ex))
+        {
+            await _dialoghi.MostraErroreAsync(string.Format(Testi.Errore_TemplateNonCaricato, ex.Message));
+            return;
+        }
+        ImpostaDocumento(doc);
     }
 
     [RelayCommand]
@@ -298,6 +339,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// </summary>
     private async Task<bool> ConfermaSostituzioneAsync()
     {
+        ConfermaPannello();
         if (!Documento.Modificato) return true;
         return await _dialoghi.ConfermaSalvataggioAsync() switch
         {
@@ -307,7 +349,9 @@ public partial class MainWindowViewModel : ObservableObject
         };
     }
 
-    private async Task ApriPercorsoAsync(string percorso)
+    /// <summary>Apre il file indicato; in caso di errore lo mostra e lascia il documento corrente.</summary>
+    /// <remarks>Non chiede di salvare le modifiche: chi la chiama deve averlo già fatto.</remarks>
+    public async Task ApriPercorsoAsync(string percorso)
     {
         DocumentoViewModel doc;
         try
@@ -324,11 +368,15 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     /// <summary>Salva sul percorso corrente o, se manca, chiede il nome. False se annullato o in errore.</summary>
-    private Task<bool> SalvaDocumentoAsync() =>
-        Documento.Percorso is null ? SalvaConNomeAsync() : SalvaSuAsync(Documento.Percorso);
+    private Task<bool> SalvaDocumentoAsync()
+    {
+        ConfermaPannello();
+        return Documento.Percorso is null ? SalvaConNomeAsync() : SalvaSuAsync(Documento.Percorso);
+    }
 
     private async Task<bool> SalvaConNomeAsync()
     {
+        ConfermaPannello();
         if (await _dialoghi.SalvaFileAsync(Documento.Percorso) is not { } percorso) return false;
         if (!await SalvaSuAsync(percorso)) return false;
         await AggiungiRecenteAsync(percorso);
@@ -465,6 +513,30 @@ public partial class MainWindowViewModel : ObservableObject
             _ => null
         };
     }
+
+    /// <summary>
+    /// Conferma le modifiche digitate nel pannello e non ancora confermate (ad esempio il nome),
+    /// perché le scorciatoie da tastiera e la chiusura non spostano il focus.
+    /// </summary>
+    private void ConfermaPannello() => (Pannello as IConfermabile)?.ConfermaModifiche();
+
+    /// <summary>Numero di messaggi standard del template, letto una sola volta per lingua.</summary>
+    /// <remarks>Se il template non si legge si usa il numero di messaggi del documento (nessun avviso).</remarks>
+    private int NumeroMessaggiTemplate(TemplateLanguage lingua)
+    {
+        try
+        {
+            return _numeroMessaggiTemplate.GetOrAdd(lingua, l => ServizioFile.MessaggiTemplate(l).Count);
+        }
+        catch (Exception ex) when (ErroreTemplate(ex))
+        {
+            return Documento.MessaggiStandard.Count;
+        }
+    }
+
+    /// <summary>Errori possibili nella lettura dei file di template.</summary>
+    private static bool ErroreTemplate(Exception ex) =>
+        ex is IOException or UnauthorizedAccessException or System.Text.Json.JsonException;
 
     /// <summary>Esegue l'aggiornamento di una selezione senza rimbalzi tra mappa e pannello.</summary>
     private static void Sincronizza(ref bool inCorso, Action azione)

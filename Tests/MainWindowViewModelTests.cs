@@ -460,4 +460,140 @@ public sealed class MainWindowViewModelTests : IDisposable
         Assert.Equal(1, vm.Mappa.LivelloCorrente);
         Assert.Same(sommita, vm.Mappa.Selezione);
     }
+
+    [Fact]
+    public async Task Apri_ElementoNull_MostraErroreEMantieneDocumento()
+    {
+        var vm = CreaVm();
+        var prima = vm.Documento;
+        var p = Path.Combine(_cartella, "elemento-null.json");
+        File.WriteAllText(p, "{\"rooms\":[null]}");
+        _dialoghi.RispostaApriFile = p;
+
+        await vm.ApriCommand.ExecuteAsync(null);
+
+        Assert.Same(prima, vm.Documento);
+        Assert.Single(_dialoghi.Errori);
+        Assert.Empty(_impostazioni.FileRecenti);
+    }
+
+    [Fact]
+    public async Task Apri_CollezioniNull_ApreDocumentoVuotoSenzaEccezioni()
+    {
+        var vm = CreaVm();
+        var p = Path.Combine(_cartella, "collezioni-null.json");
+        File.WriteAllText(p, "{\"rooms\":null,\"items\":null,\"doors\":null,\"verbs\":null,"
+            + "\"messages\":null,\"usermessages\":null,\"directions\":null}");
+        _dialoghi.RispostaApriFile = p;
+
+        await vm.ApriCommand.ExecuteAsync(null);
+
+        Assert.Equal(p, vm.Documento.Percorso);
+        Assert.Empty(vm.Documento.Stanze);
+        Assert.Empty(_dialoghi.Errori);
+    }
+
+    [Fact]
+    public async Task Nuovo_TemplateMancante_MostraErroreEMantieneDocumento()
+    {
+        var vm = new MainWindowViewModel(_dialoghi, _impostazioni, PercorsoImpostazioni, _pianificatore.Pianifica,
+            lingua => lingua == TemplateLanguage.English
+                ? throw new FileNotFoundException("templates/messages.en.json")
+                : ServizioFile.Nuovo(lingua));
+        var prima = vm.Documento;
+        _dialoghi.RispostaTemplate = TemplateLanguage.English;
+
+        await vm.NuovoCommand.ExecuteAsync(null);
+
+        Assert.Same(prima, vm.Documento);
+        Assert.Single(_dialoghi.Errori);
+        Assert.Contains("templates/messages.en.json", _dialoghi.Errori[0]);
+    }
+
+    [Fact]
+    public async Task Avvio_TemplateMancante_DocumentoVuotoEErroreMostrato()
+    {
+        var vm = new MainWindowViewModel(_dialoghi, _impostazioni, PercorsoImpostazioni, _pianificatore.Pianifica,
+            _ => throw new DirectoryNotFoundException("templates"));
+        Assert.Empty(vm.Documento.Stanze);
+        Assert.Empty(_dialoghi.Errori);
+
+        await vm.AvviaAsync(null);
+
+        Assert.Single(_dialoghi.Errori);
+    }
+
+    [Fact]
+    public async Task Avvio_ConPercorso_ApreIlFile()
+    {
+        var vm = CreaVm();
+        var p = CopiaEsempio();
+
+        await vm.AvviaAsync(p);
+
+        Assert.Equal(p, vm.Documento.Percorso);
+        Assert.Empty(_dialoghi.Errori);
+    }
+
+    [Fact]
+    public async Task Salva_NomeDigitatoNonConfermato_VieneSalvato()
+    {
+        var vm = await VmConEsempioAperto();
+        vm.ElementoSelezionato = vm.Documento.TrovaStanza("ponte");
+        var pannello = Assert.IsType<PannelloStanzaViewModel>(vm.Pannello);
+        pannello.Nome.Testo = "ponticello";
+
+        await vm.SalvaCommand.ExecuteAsync(null);
+
+        var salvato = File.ReadAllText(vm.Documento.Percorso!);
+        Assert.Contains("\"ponticello\"", salvato);
+        Assert.False(vm.Documento.Modificato);
+        Assert.Null(pannello.Nome.Errore);
+    }
+
+    [Fact]
+    public async Task Salva_NomeDuplicatoNonConfermato_SalvaComunqueEMostraErrore()
+    {
+        var vm = await VmConEsempioAperto();
+        vm.ElementoSelezionato = vm.Documento.TrovaStanza("ponte");
+        var pannello = Assert.IsType<PannelloStanzaViewModel>(vm.Pannello);
+        pannello.Nome.Testo = "cortile";
+        vm.Documento.Intro = "intro modificata";
+
+        await vm.SalvaCommand.ExecuteAsync(null);
+
+        Assert.NotNull(pannello.Nome.Errore);
+        Assert.Equal("cortile", pannello.Nome.Testo);
+        Assert.NotNull(vm.Documento.TrovaStanza("ponte"));
+        Assert.False(vm.Documento.Modificato);
+        Assert.Contains("intro modificata", File.ReadAllText(vm.Documento.Percorso!));
+    }
+
+    [Fact]
+    public async Task PuoChiudere_NomeOggettoDigitatoNonConfermato_ChiedeDiSalvare()
+    {
+        var vm = await VmConEsempioAperto();
+        vm.ElementoSelezionato = vm.Documento.Oggetti.Single(o => o.Nome == "borsa");
+        var pannello = Assert.IsType<PannelloOggettoViewModel>(vm.Pannello);
+        pannello.Nome.Testo = "sacca";
+        _dialoghi.RispostaConfermaSalvataggio = null;
+
+        Assert.False(await vm.PuoChiudereAsync());
+        Assert.Contains(nameof(IDialoghi.ConfermaSalvataggioAsync), _dialoghi.Chiamate);
+        Assert.NotNull(vm.Documento.Oggetti.SingleOrDefault(o => o.Nome == "sacca"));
+    }
+
+    [Fact]
+    public async Task Compila_NomePortaDigitatoNonConfermato_VieneSalvato()
+    {
+        var vm = await VmConEsempioAperto();
+        vm.ElementoSelezionato = vm.Documento.Porte.Single(p => p.Nome == "portone");
+        var pannello = Assert.IsType<PannelloPortaViewModel>(vm.Pannello);
+        pannello.Nome.Testo = "portale";
+        vm.OutputBase = Path.Combine(_cartella, "out");
+
+        await vm.CompilaCommand.ExecuteAsync(null);
+
+        Assert.Contains("\"portale\"", File.ReadAllText(vm.Documento.Percorso!));
+    }
 }

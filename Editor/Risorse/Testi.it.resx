@@ -31,6 +31,9 @@
   <data name="Azione_24" xml:space="preserve"><value>registra comandi</value></data>
   <data name="Azione_25" xml:space="preserve"><value>elenca uscite</value></data>
   <data name="ErroreApertura_Json" xml:space="preserve"><value>Riga {0}, posizione {1}: {2}</value></data>
+  <data name="ErroreApertura_GiocoNonValido" xml:space="preserve"><value>Il file non contiene un gioco valido.</value></data>
+  <data name="Errore_TemplateNonCaricato" xml:space="preserve"><value>Impossibile caricare il template: {0}</value></data>
+  <data name="Errore_Imprevisto" xml:space="preserve"><value>Errore imprevisto: {0}</value></data>
   <data name="Errore_NomeVuoto" xml:space="preserve"><value>Il nome non può essere vuoto.</value></data>
   <data name="Errore_NomeDuplicato" xml:space="preserve"><value>Il nome {0} è già in uso.</value></data>
   <data name="Errore_StanzaGiocatore" xml:space="preserve"><value>La stanza player non può essere rinominata né eliminata.</value></data>
@@ -210,4 +213,9 @@ I riferimenti verranno svuotati. Eliminarlo?</value></data>
   <data name="Direzione_3" xml:space="preserve"><value>Ovest</value></data>
   <data name="Direzione_4" xml:space="preserve"><value>Su</value></data>
   <data name="Direzione_5" xml:space="preserve"><value>Giù</value></data>
+  <data name="Campo_Posizione" xml:space="preserve"><value>Posizione</value></data>
+  <data name="Campo_DentroA" xml:space="preserve"><value>Contenitore</value></data>
+  <data name="Campo_StanzaIniziale" xml:space="preserve"><value>Stanza iniziale</value></data>
+  <data name="Errore_NessunaUscita" xml:space="preserve"><value>{0}: nessuna uscita in direzione {1}.</value></data>
+  <data name="Errore_PortaSenzaDueLati" xml:space="preserve"><value>{0}: la porta non ha due lati su stanze esistenti.</value></data>
 </root>

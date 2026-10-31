@@ -17,6 +17,7 @@
 // but WITHOUT ANY WARRANTY
 //-----------------------------------------------------------------------
 
+using System.Collections.Concurrent;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -67,20 +68,62 @@ public static class ServizioFile
         {
             throw new ErroreApertura(ex.Message);
         }
-        if (game is null) throw new ErroreApertura("Il file non contiene un gioco valido.");
+        if (game is null) throw new ErroreApertura(Testi.ErroreApertura_GiocoNonValido);
 
-        var doc = DocumentoViewModel.DaGame(game);
-        doc.Percorso = percorso;
-        if (RilevaLingua(game) is { } lingua) RiempiTestoTemplate(doc, lingua);
-        DisposizioneAutomatica.Disponi(doc, tutte: false);
-        doc.Modificato = false;
-        return doc;
+        // Un JSON valido può contenere collezioni null: si trattano come vuote
+        // e sarà il validatore a segnalare ciò che manca.
+        game.rooms ??= [];
+        game.items ??= [];
+        game.doors ??= [];
+        game.verbs ??= [];
+        game.messages ??= [];
+        game.usermessages ??= [];
+        game.directions ??= [];
+        game.intro ??= string.Empty;
+        game.initialroom ??= string.Empty;
+
+        try
+        {
+            var doc = DocumentoViewModel.DaGame(game);
+            doc.Percorso = percorso;
+            if (RilevaLingua(game) is { } lingua) RiempiTestoTemplate(doc, lingua);
+            DisposizioneAutomatica.Disponi(doc, tutte: false);
+            doc.Modificato = false;
+            return doc;
+        }
+        catch (Exception ex)
+        {
+            // Elementi null o incompleti nelle collezioni: il documento corrente non va toccato.
+            throw new ErroreApertura($"{Testi.ErroreApertura_GiocoNonValido} {ex.Message}");
+        }
     }
 
-    /// <summary>Salva il documento; aggiorna <see cref="DocumentoViewModel.Percorso"/> e azzera la modifica.</summary>
+    /// <summary>
+    /// Salva il documento; aggiorna <see cref="DocumentoViewModel.Percorso"/> e azzera la modifica.
+    /// Scrive prima su <c>percorso.tmp</c> e poi lo sostituisce al file, così un errore
+    /// di scrittura non lascia il file troncato.
+    /// </summary>
     public static void Salva(DocumentoViewModel doc, string percorso)
     {
-        File.WriteAllText(percorso, JsonSerializer.Serialize(doc.ToGame(), Opzioni));
+        var testo = JsonSerializer.Serialize(doc.ToGame(), Opzioni);
+        var temporaneo = percorso + ".tmp";
+        try
+        {
+            File.WriteAllText(temporaneo, testo);
+            File.Move(temporaneo, percorso, overwrite: true);
+        }
+        catch
+        {
+            try
+            {
+                File.Delete(temporaneo);
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                // il file temporaneo non si può rimuovere: resta l'errore originale
+            }
+            throw;
+        }
         doc.Percorso = percorso;
         doc.Modificato = false;
     }
@@ -95,8 +138,23 @@ public static class ServizioFile
             if (codice.StartsWith("en", StringComparison.OrdinalIgnoreCase)) return TemplateLanguage.English;
         }
         foreach (var lingua in new[] { TemplateLanguage.Italiano, TemplateLanguage.English })
-            if (g.directions.SequenceEqual(new Game(lingua).directions)) return lingua;
+            if (DirezioniTemplate(lingua) is { } direzioni && g.directions.SequenceEqual(direzioni)) return lingua;
         return null;
+    }
+
+    private static readonly ConcurrentDictionary<TemplateLanguage, IReadOnlyList<string>> _direzioniTemplate = new();
+
+    /// <summary>Direzioni del template, lette una sola volta per lingua; null se il template non si legge.</summary>
+    private static IReadOnlyList<string>? DirezioniTemplate(TemplateLanguage lingua)
+    {
+        try
+        {
+            return _direzioniTemplate.GetOrAdd(lingua, l => new Game(l).directions);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException)
+        {
+            return null;
+        }
     }
 
     /// <summary>Messaggi standard del template nella lingua indicata.</summary>

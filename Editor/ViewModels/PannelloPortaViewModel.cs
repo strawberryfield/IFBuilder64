@@ -24,7 +24,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 namespace Casasoft.IFBuilder64.Editor.ViewModels;
 
 /// <summary>Pannello proprietà di una porta.</summary>
-public partial class PannelloPortaViewModel : ObservableObject, IDisposable
+public partial class PannelloPortaViewModel : ObservableObject, IDisposable, IConfermabile
 {
     private readonly DocumentoViewModel _documento;
     private IReadOnlyList<string> _oggettiSblocco = [];
@@ -94,6 +94,9 @@ public partial class PannelloPortaViewModel : ObservableObject, IDisposable
             OnPropertyChanged();
         }
     }
+
+    /// <inheritdoc />
+    public void ConfermaModifiche() => Nome.ConfermaSeModificato();
 
     /// <inheritdoc />
     public void Dispose() => _documento.ContenutoCambiato -= DocumentoCambiato;

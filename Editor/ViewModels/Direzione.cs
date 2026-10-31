@@ -17,6 +17,8 @@
 // but WITHOUT ANY WARRANTY
 //-----------------------------------------------------------------------
 
+using Casasoft.IFBuilder64.Editor.Risorse;
+
 namespace Casasoft.IFBuilder64.Editor.ViewModels;
 
 /// <summary>Direzioni di uscita, nello stesso ordine di <c>Game.RoomExits</c>.</summary>
@@ -48,6 +50,10 @@ public static class DirezioneEstensioni
         Direzione.Giu => (0, 0, -1),
         _ => throw new ArgumentOutOfRangeException(nameof(d))
     };
+
+    /// <summary>Nome della direzione nella lingua dell'interfaccia.</summary>
+    public static string NomeLocalizzato(this Direzione d) =>
+        Testi.ResourceManager.GetString($"Direzione_{(int)d}", Testi.Culture) ?? d.ToString();
 }
 
 /// <summary>Elemento (stanza o porta) con le sei uscite direzionali.</summary>

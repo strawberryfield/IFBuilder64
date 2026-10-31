@@ -83,7 +83,7 @@ public static class Collegamenti
     {
         var destinazione = da.Uscita(dir);
         if (string.IsNullOrEmpty(destinazione))
-            throw new InvalidOperationException($"{da.Nome}: nessuna uscita in direzione {dir}.");
+            throw new InvalidOperationException(string.Format(Testi.Errore_NessunaUscita, da.Nome, dir.NomeLocalizzato()));
 
         var porta = new PortaViewModel
         {
@@ -102,7 +102,7 @@ public static class Collegamenti
     public static void TrasformaInPassaggio(DocumentoViewModel doc, PortaViewModel porta)
     {
         var l = Lati(doc, porta) ?? throw new InvalidOperationException(
-            $"{porta.Nome}: la porta non ha due lati su stanze esistenti.");
+            string.Format(Testi.Errore_PortaSenzaDueLati, porta.Nome));
         doc.Elimina(porta);
         l.s1.ImpostaUscita(l.d1, l.s2.Nome);
         l.s2.ImpostaUscita(l.d2, l.s1.Nome);

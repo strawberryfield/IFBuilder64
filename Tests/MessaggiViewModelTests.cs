@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------
-// <copyright file="Tests/OggettiViewModelTests.cs" company="Casasoft">
+// <copyright file="Tests/MessaggiViewModelTests.cs" company="Casasoft">
 //     Author: Roberto Ceccarelli (http://strawberryfield.altervista.org)
 //     Copyright (c) 2026 All rights reserved.
 // </copyright>

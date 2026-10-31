@@ -28,7 +28,8 @@ internal static class Confronto
 {
     /// <summary>
     /// Byte del file; per *ab.seq azzera la quinta riga (data, separatore '\r'),
-    /// per *iFiction.xml svuota <releasedate> e <compilerversion>.
+    /// per *iFiction.xml svuota &lt;releasedate&gt;, &lt;originated&gt;, &lt;serial&gt;,
+    /// &lt;compilerversion&gt; e &lt;generatorversion&gt;.
     /// </summary>
     public static string Normalizza(string percorso)
     {

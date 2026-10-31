@@ -53,6 +53,12 @@ public partial class CampoNomeViewModel : ObservableObject
         if (Errore is null) Testo = _leggi();
     }
 
+    /// <summary>Conferma solo se il testo è diverso dal nome corrente (modifica digitata e non confermata).</summary>
+    public void ConfermaSeModificato()
+    {
+        if (Testo != _leggi()) Conferma();
+    }
+
     /// <summary>Ripristina il nome corrente e cancella l'errore.</summary>
     public void Annulla()
     {

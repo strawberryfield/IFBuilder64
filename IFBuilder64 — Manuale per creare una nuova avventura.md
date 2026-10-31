@@ -230,7 +230,7 @@ La scheda **Mappa** mostra le stanze come caselle su una griglia, un livello all
 - **Clic su una cella vuota**: crea una nuova stanza.
 - **Trascina una stanza**: la sposta.
 - **Trascina dal bordo di una stanza** verso un'altra: crea il collegamento, in entrambe le direzioni; con **Ctrl** premuto il collegamento è a **senso unico**.
-- **Menu col tasto destro** su stanze, collegamenti e celle: collega in alto o in basso, imposta come iniziale, trasforma un passaggio in porta (e viceversa), elimina. Prima di eliminare una stanza l'editor elenca gli elementi che la citano.
+- **Menu col tasto destro** su stanze e collegamenti: collega in alto o in basso, imposta come iniziale, trasforma un passaggio in porta (e viceversa), elimina. Prima di eliminare una stanza l'editor elenca gli elementi che la citano.
 - La stanza **iniziale** è marcata da una stella (★).
 - Le **porte** sono disegnate sul collegamento: piene se chiuse, solo contorno se aperte all'inizio.
 - Una stanza con **bordo arancione** non è raggiungibile dalla stanza iniziale.
@@ -255,7 +255,7 @@ Il pannello **Avvisi**, in basso, elenca gli errori (che impediscono la compilaz
 
 ### Compilare
 
-**Compila → Compila** (F5) valida il gioco e genera i file come la riga di comando; un documento mai salvato apre prima "Salva con nome". L'esito è nella scheda **Output compilazione**. **Compila → Opzioni** imposta il nome base dei file generati; lasciandolo vuoto vale quello predefinito, cioè il percorso del JSON senza estensione.
+**Compila → Compila** (F5) valida il gioco e genera i file come la riga di comando; un documento mai salvato apre prima "Salva con nome". L'esito è nella scheda **Output compilazione**. **Compila → Opzioni** imposta il nome base dei file generati; lasciandolo vuoto vale quello predefinito, cioè il percorso del JSON senza l'estensione ma con il punto, come nella riga di comando (da `castello.it.json` si ottiene `castello.it.in.prg`).
 
 ### Lingua dell'interfaccia
 

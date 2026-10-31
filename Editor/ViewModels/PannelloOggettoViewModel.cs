@@ -23,7 +23,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 namespace Casasoft.IFBuilder64.Editor.ViewModels;
 
 /// <summary>Pannello proprietà di un oggetto: nome, descrizioni e oggetto di sblocco.</summary>
-public partial class PannelloOggettoViewModel : ObservableObject, IDisposable
+public partial class PannelloOggettoViewModel : ObservableObject, IDisposable, IConfermabile
 {
     private readonly DocumentoViewModel _documento;
     private IReadOnlyList<string> _oggettiSblocco = [];
@@ -81,6 +81,9 @@ public partial class PannelloOggettoViewModel : ObservableObject, IDisposable
             OnPropertyChanged();
         }
     }
+
+    /// <inheritdoc />
+    public void ConfermaModifiche() => Nome.ConfermaSeModificato();
 
     /// <inheritdoc />
     public void Dispose() => _documento.ContenutoCambiato -= DocumentoCambiato;

@@ -304,6 +304,18 @@ public partial class MappaViewModel : ObservableObject
             OggettoViewModel o => o.Nome,
             _ => string.Empty
         };
-        return string.IsNullOrEmpty(nome) ? r.Campo : $"{nome} ({r.Campo})";
+        var campo = NomeCampo(r.Campo);
+        return string.IsNullOrEmpty(nome) ? campo : $"{nome} ({campo})";
     }
+
+    /// <summary>Nome del campo di un riferimento nella lingua dell'interfaccia.</summary>
+    private static string NomeCampo(string campo) => campo switch
+    {
+        _ when Enum.TryParse<Direzione>(campo, out var d) => d.NomeLocalizzato(),
+        nameof(OggettoViewModel.Posizione) => Testi.Campo_Posizione,
+        nameof(OggettoViewModel.DentroA) => Testi.Campo_DentroA,
+        nameof(OggettoViewModel.OggettoSblocco) => Testi.Campo_OggettoSblocco,
+        nameof(DocumentoViewModel.StanzaIniziale) => Testi.Campo_StanzaIniziale,
+        _ => campo
+    };
 }

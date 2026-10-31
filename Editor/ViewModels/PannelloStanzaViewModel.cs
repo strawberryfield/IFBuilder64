@@ -36,7 +36,7 @@ public record UscitaPannello(string Etichetta, string? Destinazione, IRelayComma
 }
 
 /// <summary>Pannello proprietà di una stanza (mai la stanza "player").</summary>
-public partial class PannelloStanzaViewModel : ObservableObject, IDisposable
+public partial class PannelloStanzaViewModel : ObservableObject, IDisposable, IConfermabile
 {
     private readonly DocumentoViewModel _documento;
     private readonly MappaViewModel _mappa;
@@ -102,6 +102,9 @@ public partial class PannelloStanzaViewModel : ObservableObject, IDisposable
         if (await _dialoghi.ScegliOggettoAsync(Testi.Stanza_ScegliOggetto, candidati) is { } scelto)
             _documento.SpostaOggetto(scelto, Stanza.Nome, null);
     });
+
+    /// <inheritdoc />
+    public void ConfermaModifiche() => Nome.ConfermaSeModificato();
 
     /// <inheritdoc />
     public void Dispose() => _documento.ContenutoCambiato -= DocumentoCambiato;
