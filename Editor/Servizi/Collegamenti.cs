@@ -129,12 +129,21 @@ public static class Collegamenti
     }
 
     /// <summary>
-    /// Rimuove l'uscita della stanza se esiste una porta chiusa (Aperta diverso da true) che la
-    /// dichiara allo stesso modo; altrimenti non cambia nulla. Una porta aperta richiede le uscite.
+    /// Vero se la porta è chiusa (Aperta diverso da true), ha due lati su stanze esistenti e uno
+    /// dei lati è <paramref name="stanza"/> in direzione <paramref name="dir"/>: aprendosi scriverà
+    /// quell'uscita, quindi l'uscita dichiarata nella stanza è un doppione. Una porta con un solo
+    /// lato (ad esempio una porta finta che non si apre mai) non scrive uscite e non duplica nulla.
+    /// </summary>
+    public static bool DichiaraUscita(DocumentoViewModel doc, PortaViewModel porta, StanzaViewModel stanza, Direzione dir) =>
+        porta.Aperta != true && porta.Uscita(dir) == stanza.Nome && Lati(doc, porta) is not null;
+
+    /// <summary>
+    /// Rimuove l'uscita della stanza se esiste una porta chiusa a due lati che la dichiara allo
+    /// stesso modo (vedi <see cref="DichiaraUscita"/>); altrimenti non cambia nulla.
     /// </summary>
     public static void CorreggiUscitaDoppia(DocumentoViewModel doc, StanzaViewModel stanza, Direzione dir)
     {
-        if (doc.Porte.Any(p => p.Aperta != true && p.Uscita(dir) == stanza.Nome))
+        if (doc.Porte.Any(p => DichiaraUscita(doc, p, stanza, dir)))
             stanza.ImpostaUscita(dir, null);
     }
 

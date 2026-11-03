@@ -303,6 +303,22 @@ public class ValidatoreTests
     }
 
     [Fact]
+    public void PortaConUnSoloLatoSuUscitaEsistente_NessunAvviso()
+    {
+        // Caso di latinorum: la stanza iniziale ha l'uscita ovest e una porta finta (un solo lato,
+        // mai apribile) sullo stesso lato. Rimuovere l'uscita isolerebbe la stanza iniziale.
+        var d = Minimo();
+        var torre = Stanza(d, "torre");
+        var sala = d.TrovaStanza("sala")!;
+        sala.Ovest = "torre";
+        torre.Est = "sala";
+        d.Porte.Add(new PortaViewModel { Nome = "uscita", Ovest = "sala", Aperta = false });
+
+        Assert.Empty(Valida(d));
+        Assert.Equal("torre", sala.Ovest);
+    }
+
+    [Fact]
     public void PortaApertaConUscite_NessunAvviso()
     {
         var d = Minimo();

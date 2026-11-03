@@ -236,4 +236,15 @@ public class CollegamentiTests
         Collegamenti.CorreggiUscitaDoppia(d, a, Direzione.Nord);
         Assert.Equal("b", a.Nord);
     }
+
+    [Fact]
+    public void CorreggiUscitaDoppia_PortaConUnSoloLatoNonTocca()
+    {
+        // Porta finta (un solo lato, mai apribile): non scrive uscite, quindi non duplica nulla.
+        var (d, a, _) = Coppia();
+        d.Porte.Add(new PortaViewModel { Nome = "p", Nord = "a", Aperta = false });
+        a.Nord = "b";
+        Collegamenti.CorreggiUscitaDoppia(d, a, Direzione.Nord);
+        Assert.Equal("b", a.Nord);
+    }
 }

@@ -135,7 +135,7 @@ public static class Validatore
                 var stanza = doc.TrovaStanza(p.Uscita(d));
                 if (stanza is null)
                     Avvisa(r, p, "Val_UscitaInesistente", p.Nome, p.Uscita(d));
-                else if (p.Aperta != true && !string.IsNullOrEmpty(stanza.Uscita(d)))
+                else if (!string.IsNullOrEmpty(stanza.Uscita(d)) && Collegamenti.DichiaraUscita(doc, p, stanza, d))
                     r.Add(new Avviso(Gravita.Avviso, Testo("Val_UscitaDoppia", stanza.Nome, d), stanza,
                         () => Collegamenti.CorreggiUscitaDoppia(doc, stanza, d)));
             }
