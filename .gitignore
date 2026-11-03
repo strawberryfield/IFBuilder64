@@ -19,6 +19,7 @@ mono_crash.*
 # Claude
 .claude/
 CLAUDE.md
+[Dd]ocs/
 
 # Build results
 [Dd]ebug/
