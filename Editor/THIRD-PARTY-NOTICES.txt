@@ -29,7 +29,7 @@ Pacchetti diretti / Direct packages
   CommunityToolkit.Mvvm 8.4.2                  MIT
       (c) .NET Foundation and Contributors
       https://github.com/CommunityToolkit/dotnet
-  Casasoft.Commodore 1.0.2                     AGPL-3.0-or-later
+  Casasoft.Commodore 1.0.5                     AGPL-3.0-or-later
       Copyright (c) 2025-2026 Roberto Ceccarelli - Casasoft
       https://github.com/strawberryfield/CommodoreUtils
 

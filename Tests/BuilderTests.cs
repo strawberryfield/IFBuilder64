@@ -57,6 +57,28 @@ public class BuilderTests
     }
 
     [Fact]
+    public void Build_TagColore_StessiByteDeiCodiciDiControllo()
+    {
+        var game = CaricaEsempio();
+        Editor.Servizi.ServizioFile.CodiciControlloInTag(game);
+        Assert.Contains("[red]", game.rooms.Select(r => r.description).Concat(game.items.Select(i => i.description)).Aggregate(string.Concat));
+        var dir = Directory.CreateTempSubdirectory().FullName;
+        try
+        {
+            var r = new GameBuilder().Build(game, Path.Combine(dir, "esempio"));
+            Assert.True(r.Successo, string.Join(Environment.NewLine, r.Log));
+            foreach (var rif in Directory.GetFiles(CartellaRiferimenti))
+            {
+                Assert.Equal(Confronto.Normalizza(rif), Confronto.Normalizza(Path.Combine(dir, Path.GetFileName(rif))));
+            }
+        }
+        finally
+        {
+            Directory.Delete(dir, true);
+        }
+    }
+
+    [Fact]
     public void Build_NonModificaIlGameDelChiamante()
     {
         var game = CaricaEsempio();

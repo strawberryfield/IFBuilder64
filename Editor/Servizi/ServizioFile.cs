@@ -21,6 +21,7 @@ using System.Collections.Concurrent;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Casasoft.Commodore;
 using Casasoft.IFBuilder64.Editor.Risorse;
 using Casasoft.IFBuilder64.Editor.ViewModels;
 using Casasoft.IFBuilder64.Json;
@@ -81,6 +82,7 @@ public static class ServizioFile
         game.directions ??= [];
         game.intro ??= string.Empty;
         game.initialroom ??= string.Empty;
+        CodiciControlloInTag(game);
 
         try
         {
@@ -126,6 +128,34 @@ public static class ServizioFile
         }
         doc.Percorso = percorso;
         doc.Modificato = false;
+    }
+
+    /// <summary>
+    /// Sostituisce nei testi i codici di controllo PETSCII (colori, reverse, cursore)
+    /// con tag leggibili come <c>[red]</c>; il Builder li riconverte in compilazione.
+    /// I nomi non si toccano: sono usati come identificatori.
+    /// </summary>
+    public static void CodiciControlloInTag(Game game)
+    {
+        static string Tag(string testo) => Charset.ControlCodesToTags(testo);
+        static string? TagOpz(string? testo) => testo is null ? null : Tag(testo);
+
+        game.intro = Tag(game.intro);
+        // eventuali elementi null restano tali: li segnala l'apertura del documento
+        game.messages = [.. game.messages.Select(m => TagOpz(m)!)];
+        game.usermessages = [.. game.usermessages.Select(m => TagOpz(m)!)];
+        foreach (var stanza in game.rooms.OfType<Room>())
+            stanza.description = TagOpz(stanza.description)!;
+        foreach (var oggetto in game.items.OfType<Item>())
+        {
+            oggetto.description = TagOpz(oggetto.description)!;
+            oggetto.opendescription = TagOpz(oggetto.opendescription);
+        }
+        foreach (var porta in game.doors.OfType<Door>())
+        {
+            porta.description = TagOpz(porta.description)!;
+            porta.denyopen = TagOpz(porta.denyopen);
+        }
     }
 
     /// <summary>Deduce la lingua del template da <c>ifiction.language</c> o dalle direzioni; null se ignota.</summary>

@@ -19,6 +19,7 @@
 
 using System.Globalization;
 using System.Text.Json.Nodes;
+using Casasoft.Commodore;
 using Casasoft.IFBuilder64.Editor.Risorse;
 using Casasoft.IFBuilder64.Editor.Servizi;
 using Casasoft.IFBuilder64.Json;
@@ -33,7 +34,7 @@ public class ServizioFileTests
     private static string Temporaneo() => Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N") + ".json");
 
     [Fact]
-    public void Apri_Salva_ConservaAccentiEControlli()
+    public void Apri_Salva_ConservaAccentiEControlliComeTag()
     {
         var uscita = Temporaneo();
         try
@@ -42,14 +43,69 @@ public class ServizioFileTests
             var testo = File.ReadAllText(uscita);
             Assert.Contains("è", testo);
             Assert.DoesNotContain("\\u00E8", testo);
+            Assert.Contains("[red]", testo);
+            Assert.Contains("[blue]", testo);
+            Assert.DoesNotContain("\\u001C", testo, StringComparison.OrdinalIgnoreCase);
 
-            var originale = JsonNode.Parse(File.ReadAllText(Esempio))!;
+            // l'originale, con i codici di controllo resi come tag, deve coincidere col salvato
+            var originale = InTag(JsonNode.Parse(File.ReadAllText(Esempio))!);
             var salvato = JsonNode.Parse(testo)!;
             foreach (var stanza in salvato["rooms"]!.AsArray()) stanza!.AsObject().Remove("map");
             foreach (var oggetto in salvato["items"]!.AsArray()) oggetto!.AsObject().Remove("id");
             Assert.True(JsonNode.DeepEquals(originale, salvato));
         }
         finally { File.Delete(uscita); }
+    }
+
+    private static JsonNode InTag(JsonNode nodo)
+    {
+        switch (nodo)
+        {
+            case JsonObject o:
+                foreach (var (chiave, valore) in o.ToList())
+                    if (valore is not null) o[chiave] = InTag(valore.DeepClone());
+                return o;
+            case JsonArray a:
+                for (int i = 0; i < a.Count; i++)
+                    if (a[i] is { } valore) a[i] = InTag(valore.DeepClone());
+                return a;
+            case JsonValue v when v.TryGetValue<string>(out var s):
+                return JsonValue.Create(Charset.ControlCodesToTags(s));
+            default:
+                return nodo;
+        }
+    }
+
+    [Fact]
+    public void CodiciControlloInTag_TestiConvertitiNomiIntatti()
+    {
+        var game = new Game
+        {
+            intro = "\x1cIntro\x90",
+            rooms = [new Room { name = "sala", description = "La \x1cporta\x90 e \x95muro\x90." }],
+            items = [new Item { name = "libro", description = "\x9cTitolo\x90", opendescription = "\u001Fblu\u0090", location = "sala" }],
+            doors = [new Door { name = "porta", description = "\x12rvs\x92", denyopen = null }],
+            messages = ["\u0005bianco"],
+            usermessages = [],
+            verbs = [],
+            directions = []
+        };
+        ServizioFile.CodiciControlloInTag(game);
+        Assert.Equal("[red]Intro[black]", game.intro);
+        Assert.Equal("La [red]porta[black] e [brown]muro[black].", game.rooms[0].description);
+        Assert.Equal("[purple]Titolo[black]", game.items[0].description);
+        Assert.Equal("[blue]blu[black]", game.items[0].opendescription);
+        Assert.Equal("[rvson]rvs[rvsoff]", game.doors[0].description);
+        Assert.Null(game.doors[0].denyopen);
+        Assert.Equal("[white]bianco", game.messages[0]);
+    }
+
+    [Fact]
+    public void Charset_Tag_RiconvertitiInCodici()
+    {
+        Assert.Equal(new byte[] { 0x1C, (byte)'A', 0x90 }, Charset.PETSCIIBytes("[RED]a[black]", true));
+        // i tag sconosciuti restano testo
+        Assert.Equal(Charset.PETSCIIBytes("[", true).Concat(Charset.PETSCIIBytes("x]", true)), Charset.PETSCIIBytes("[x]", true));
     }
 
     [Fact]
