@@ -104,9 +104,20 @@ public class RiferimentiTests
         Assert.Equal("chiave", chiave.Nome);
         Assert.Equal("chiave", Po(d, "portone").OggettoSblocco);
 
+        // portone e cancello si affacciano entrambi sul cortile.
         var cancello = Po(d, "cancello");
         Assert.NotNull(d.RinominaPorta(cancello, "portone"));
         Assert.Equal("cancello", cancello.Nome);
+    }
+
+    [Fact]
+    public void RinominaPorta_StessoNomeSuStanzeDiverse_Consentito()
+    {
+        var d = Esempio();
+        var altra = new PortaViewModel { Nome = "botola" };
+        d.Porte.Add(altra);
+        Assert.Null(d.RinominaPorta(altra, "portone"));
+        Assert.Equal("portone", altra.Nome);
     }
 
     [Fact]

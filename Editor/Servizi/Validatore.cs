@@ -77,8 +77,19 @@ public static class Validatore
     private static void ControllaDuplicati(DocumentoViewModel doc, List<Avviso> r)
     {
         Duplicati(doc.Stanze, s => s.Nome, "Val_NomeStanzaDuplicato", r);
-        Duplicati(doc.Porte, p => p.Nome, "Val_NomePortaDuplicato", r);
+        PorteOmonime(doc, r);
         Duplicati(doc.Oggetti, o => o.Id, "Val_IdOggettoDuplicato", r);
+    }
+
+    /// <summary>Le porte possono avere lo stesso nome, ma non due porte omonime sulla stessa stanza.</summary>
+    private static void PorteOmonime(DocumentoViewModel doc, List<Avviso> r)
+    {
+        for (int i = 1; i < doc.Porte.Count; i++)
+        {
+            var p = doc.Porte[i];
+            if (DocumentoViewModel.StanzaConPortaOmonima(p, p.Nome, doc.Porte.Take(i)) is { } stanza)
+                Errore(r, p, "Val_NomePortaDuplicato", p.Nome, stanza);
+        }
     }
 
     private static void Duplicati<T>(IEnumerable<T> elementi, Func<T, string> chiave, string messaggio, List<Avviso> r)

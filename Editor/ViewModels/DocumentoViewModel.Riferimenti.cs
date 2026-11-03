@@ -85,17 +85,36 @@ public partial class DocumentoViewModel
         return null;
     }
 
-    /// <summary>Rinomina una porta. Restituisce null se riuscita, altrimenti l'errore.</summary>
+    /// <summary>
+    /// Rinomina una porta. Restituisce null se riuscita, altrimenti l'errore.
+    /// Porte diverse possono avere lo stesso nome, purché non si affaccino sulla stessa stanza
+    /// (il motore cerca la porta per nome solo tra quelle della stanza corrente).
+    /// </summary>
     public string? RinominaPorta(PortaViewModel p, string nuovo)
     {
         nuovo = nuovo?.Trim() ?? string.Empty;
         if (nuovo.Length == 0) return Testo("Errore_NomeVuoto");
         if (nuovo == p.Nome) return null;
-        if (Porte.Any(x => x != p && x.Nome == nuovo))
-            return string.Format(Testi.Culture, Testo("Errore_NomeDuplicato"), nuovo);
+        if (StanzaConPortaOmonima(p, nuovo, Porte) is { } stanza)
+            return string.Format(Testi.Culture, Testo("Errore_NomePortaDuplicato"), nuovo, stanza);
         p.Nome = nuovo;
         return null;
     }
+
+    /// <summary>
+    /// Prima stanza su cui si affacciano sia <paramref name="p"/> sia un'altra porta di <paramref name="altre"/>
+    /// con nome <paramref name="nome"/>; null se non ce ne sono.
+    /// </summary>
+    public static string? StanzaConPortaOmonima(PortaViewModel p, string nome, IEnumerable<PortaViewModel> altre)
+    {
+        var stanze = StanzeDellaPorta(p).ToHashSet(StringComparer.Ordinal);
+        return altre.Where(x => x != p && x.Nome == nome)
+            .SelectMany(StanzeDellaPorta)
+            .FirstOrDefault(stanze.Contains);
+    }
+
+    private static IEnumerable<string> StanzeDellaPorta(PortaViewModel p) =>
+        _direzioni.Select(p.Uscita).Where(s => !string.IsNullOrEmpty(s)).Select(s => s!);
 
     /// <summary>Sposta un oggetto; gli oggetti che lo contengono (<c>initem</c>) seguono il nuovo Id.</summary>
     public void SpostaOggetto(OggettoViewModel o, string? posizione, string? dentroA)

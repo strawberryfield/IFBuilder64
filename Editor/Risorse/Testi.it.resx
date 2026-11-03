@@ -36,12 +36,13 @@
   <data name="Errore_Imprevisto" xml:space="preserve"><value>Errore imprevisto: {0}</value></data>
   <data name="Errore_NomeVuoto" xml:space="preserve"><value>Il nome non può essere vuoto.</value></data>
   <data name="Errore_NomeDuplicato" xml:space="preserve"><value>Il nome {0} è già in uso.</value></data>
+  <data name="Errore_NomePortaDuplicato" xml:space="preserve"><value>Sulla stanza {1} si affaccia già una porta di nome {0}.</value></data>
   <data name="Errore_StanzaGiocatore" xml:space="preserve"><value>La stanza player non può essere rinominata né eliminata.</value></data>
   <data name="PrefissoPorta" xml:space="preserve"><value>porta</value></data>
   <data name="Val_NessunaStanza" xml:space="preserve"><value>Il gioco non ha stanze.</value></data>
   <data name="Val_StanzaInizialeNonValida" xml:space="preserve"><value>La stanza iniziale è vuota o inesistente.</value></data>
   <data name="Val_NomeStanzaDuplicato" xml:space="preserve"><value>Nome di stanza duplicato: {0}.</value></data>
-  <data name="Val_NomePortaDuplicato" xml:space="preserve"><value>Nome di porta duplicato: {0}.</value></data>
+  <data name="Val_NomePortaDuplicato" xml:space="preserve"><value>Due porte di nome {0} si affacciano sulla stanza {1}.</value></data>
   <data name="Val_IdOggettoDuplicato" xml:space="preserve"><value>Identificatore di oggetto duplicato: {0}.</value></data>
   <data name="Val_TroppeStanze" xml:space="preserve"><value>Più di 255 stanze.</value></data>
   <data name="Val_TroppiOggetti" xml:space="preserve"><value>Più di 255 oggetti.</value></data>

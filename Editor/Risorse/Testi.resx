@@ -36,12 +36,13 @@
   <data name="Errore_Imprevisto" xml:space="preserve"><value>Unexpected error: {0}</value></data>
   <data name="Errore_NomeVuoto" xml:space="preserve"><value>Name must not be empty.</value></data>
   <data name="Errore_NomeDuplicato" xml:space="preserve"><value>The name {0} is already in use.</value></data>
+  <data name="Errore_NomePortaDuplicato" xml:space="preserve"><value>A door named {0} already faces room {1}.</value></data>
   <data name="Errore_StanzaGiocatore" xml:space="preserve"><value>The player room cannot be renamed or deleted.</value></data>
   <data name="PrefissoPorta" xml:space="preserve"><value>door</value></data>
   <data name="Val_NessunaStanza" xml:space="preserve"><value>The game has no rooms.</value></data>
   <data name="Val_StanzaInizialeNonValida" xml:space="preserve"><value>The initial room is empty or does not exist.</value></data>
   <data name="Val_NomeStanzaDuplicato" xml:space="preserve"><value>Duplicate room name: {0}.</value></data>
-  <data name="Val_NomePortaDuplicato" xml:space="preserve"><value>Duplicate door name: {0}.</value></data>
+  <data name="Val_NomePortaDuplicato" xml:space="preserve"><value>Two doors named {0} face room {1}.</value></data>
   <data name="Val_IdOggettoDuplicato" xml:space="preserve"><value>Duplicate item id: {0}.</value></data>
   <data name="Val_TroppeStanze" xml:space="preserve"><value>More than 255 rooms.</value></data>
   <data name="Val_TroppiOggetti" xml:space="preserve"><value>More than 255 items.</value></data>

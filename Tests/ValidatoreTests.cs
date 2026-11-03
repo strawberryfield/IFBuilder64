@@ -86,15 +86,27 @@ public class ValidatoreTests
     }
 
     [Fact]
-    public void NomiPortaDuplicati_Errore()
+    public void PorteOmonimeSullaStessaStanza_Errore()
     {
         var d = Minimo();
-        d.Porte.Add(new PortaViewModel { Nome = "p" });
-        var seconda = new PortaViewModel { Nome = "p" };
+        Stanza(d, "torre");
+        Stanza(d, "cantina");
+        d.Porte.Add(new PortaViewModel { Nome = "p", Nord = "torre", Sud = "sala" });
+        var seconda = new PortaViewModel { Nome = "p", Est = "cantina", Ovest = "sala" };
         d.Porte.Add(seconda);
-        var a = Assert.Single(Valida(d));
-        Assert.Equal(Gravita.Errore, a.Gravita);
+        var a = Assert.Single(Valida(d), x => x.Gravita == Gravita.Errore);
         Assert.Same(seconda, a.Elemento);
+        Assert.Contains("sala", a.Messaggio);
+    }
+
+    [Fact]
+    public void PorteOmonimeSuStanzeDiverse_NonDuplicato()
+    {
+        var d = Minimo();
+        foreach (var n in new[] { "torre", "cantina", "soffitta" }) Stanza(d, n);
+        d.Porte.Add(new PortaViewModel { Nome = "p", Nord = "torre", Sud = "sala" });
+        d.Porte.Add(new PortaViewModel { Nome = "p", Est = "soffitta", Ovest = "cantina" });
+        Assert.DoesNotContain(Valida(d), a => a.Gravita == Gravita.Errore);
     }
 
     [Fact]
