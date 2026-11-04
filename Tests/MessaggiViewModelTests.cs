@@ -155,7 +155,7 @@ public sealed class MessaggiViewModelTests : IDisposable
     [Fact]
     public void VaiAdAvvisoMessaggioPersonalizzato_CambiaSchedaESeleziona()
     {
-        var vm = new MainWindowViewModel(_dialoghi, new ImpostazioniUtente(), Path.Combine(_cartella, "e.json"));
+        var vm = new MainWindowViewModel(_dialoghi, new ImpostazioniUtente(), Path.Combine(_cartella, "e.json"), new PianificatoreFinto().Pianifica);
         vm.Documento = Esempio();
         var m = vm.Documento.MessaggiUtente[1];
 

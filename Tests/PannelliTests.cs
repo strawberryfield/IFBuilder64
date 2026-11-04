@@ -209,7 +209,7 @@ public class PannelliTests
     [Fact]
     public void MainWindowViewModel_PannelloSegueLaSelezione_PlayerNessunPannello()
     {
-        var vm = new MainWindowViewModel(_dialoghi, new ImpostazioniUtente(), Path.Combine(Path.GetTempPath(), "x-editor.json"));
+        var vm = new MainWindowViewModel(_dialoghi, new ImpostazioniUtente(), Path.Combine(Path.GetTempPath(), "x-editor.json"), new PianificatoreFinto().Pianifica);
         var d = Esempio();
         vm.Documento = d;
 
@@ -254,7 +254,7 @@ public class PannelliTests
     [Fact]
     public void MainWindowViewModel_ElementoEliminato_SvuotaSelezioneEPannello()
     {
-        var vm = new MainWindowViewModel(_dialoghi, new ImpostazioniUtente(), Path.Combine(Path.GetTempPath(), "x-editor.json"));
+        var vm = new MainWindowViewModel(_dialoghi, new ImpostazioniUtente(), Path.Combine(Path.GetTempPath(), "x-editor.json"), new PianificatoreFinto().Pianifica);
         var d = Esempio();
         vm.Documento = d;
 

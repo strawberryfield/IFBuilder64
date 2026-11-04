@@ -32,11 +32,15 @@ public sealed class GiocoTests : IDisposable
     private readonly DialoghiFinti _dialoghi = new();
     private readonly ImpostazioniUtente _impostazioni = new();
 
+    // Niente DispatcherTimer reale: i [Fact] girano fuori dal thread UI di Avalonia,
+    // in parallelo con i test headless delle altre classi.
+    private readonly PianificatoreFinto _pianificatore = new();
+
     public void Dispose() => Directory.Delete(_cartella, true);
 
     private string PercorsoImpostazioni => Path.Combine(_cartella, "editor.json");
 
-    private MainWindowViewModel CreaVm() => new(_dialoghi, _impostazioni, PercorsoImpostazioni);
+    private MainWindowViewModel CreaVm() => new(_dialoghi, _impostazioni, PercorsoImpostazioni, _pianificatore.Pianifica);
 
     private static DocumentoViewModel Esempio() =>
         ServizioFile.Apri(Path.Combine(AppContext.BaseDirectory, "Dati", "esempio.it.json"));

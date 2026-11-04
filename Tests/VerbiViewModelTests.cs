@@ -140,7 +140,7 @@ public sealed class VerbiViewModelTests : IDisposable
     [Fact]
     public void VaiAdAvvisoVerbo_CambiaSchedaESelezionaAnnullandoIlFiltro()
     {
-        var vm = new MainWindowViewModel(_dialoghi, new ImpostazioniUtente(), Path.Combine(_cartella, "e.json"));
+        var vm = new MainWindowViewModel(_dialoghi, new ImpostazioniUtente(), Path.Combine(_cartella, "e.json"), new PianificatoreFinto().Pianifica);
         vm.Documento = Esempio();
         var d = vm.Documento;
         var verbo = d.Verbi.First(x => x.Azione != 8);

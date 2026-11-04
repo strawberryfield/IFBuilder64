@@ -319,7 +319,7 @@ public sealed class OggettiViewModelTests : IDisposable
     [Fact]
     public void Selezione_SincronizzataConElementoSelezionato()
     {
-        var vm = new MainWindowViewModel(_dialoghi, new ImpostazioniUtente(), Path.Combine(_cartella, "e.json"));
+        var vm = new MainWindowViewModel(_dialoghi, new ImpostazioniUtente(), Path.Combine(_cartella, "e.json"), new PianificatoreFinto().Pianifica);
         vm.Documento = Esempio();
         var d = vm.Documento;
         Assert.NotNull(vm.Oggetti);
@@ -346,7 +346,7 @@ public sealed class OggettiViewModelTests : IDisposable
     [Fact]
     public void Eliminare_OggettoSelezionato_AzzeraSelezioneEPannello()
     {
-        var vm = new MainWindowViewModel(_dialoghi, new ImpostazioniUtente(), Path.Combine(_cartella, "e.json"));
+        var vm = new MainWindowViewModel(_dialoghi, new ImpostazioniUtente(), Path.Combine(_cartella, "e.json"), new PianificatoreFinto().Pianifica);
         vm.Documento = Esempio();
         var d = vm.Documento;
         vm.ElementoSelezionato = Og(d, "pozzo@cortile");
