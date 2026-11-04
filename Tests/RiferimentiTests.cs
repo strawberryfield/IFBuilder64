@@ -201,27 +201,138 @@ public class RiferimentiTests
         var b = new OggettoViewModel { Nome = "tavolo", Posizione = "torre", Statico = true };
         d.Oggetti.Add(a);
         d.Oggetti.Add(b);
-        Po(d, "portone").OggettoSblocco = "tavolo";
+        Po(d, "portone").OggettoSblocco = "tavolo@cortile";
         return (d, a, b);
     }
 
     [Fact]
-    public void RinominaUnoDeiDueOmonimi_NonToccaGliSblocchi()
+    public void RinominaOmonimoPuntato_AggiornaSblocco()
     {
-        var (d, a, _) = DueTavoli();
+        var (d, a, b) = DueTavoli();
+        Assert.Null(d.RinominaOggetto(b, "scrivania"));
+        Assert.Equal("tavolo@cortile", Po(d, "portone").OggettoSblocco);
         Assert.Null(d.RinominaOggetto(a, "scrivania"));
-        Assert.Equal("tavolo", Po(d, "portone").OggettoSblocco);
+        Assert.Equal("scrivania@cortile", Po(d, "portone").OggettoSblocco);
     }
 
     [Fact]
-    public void EliminaUnoDeiDueOmonimi_NonSvuotaGliSblocchi()
+    public void EliminaOmonimoNonPuntato_NonSvuotaGliSblocchi()
     {
         var (d, a, b) = DueTavoli();
-        Assert.DoesNotContain(d.TrovaRiferimenti(a), r => r.Campo == "OggettoSblocco");
-        d.Elimina(a);
-        Assert.Equal("tavolo", Po(d, "portone").OggettoSblocco);
-        Assert.Single(d.TrovaRiferimenti(b));
+        Assert.DoesNotContain(d.TrovaRiferimenti(b), r => r.Campo == "OggettoSblocco");
         d.Elimina(b);
+        Assert.Equal("tavolo@cortile", Po(d, "portone").OggettoSblocco);
+        Assert.Single(d.TrovaRiferimenti(a));
+        d.Elimina(a);
+        Assert.Null(Po(d, "portone").OggettoSblocco);
+    }
+
+    [Fact]
+    public void ImpostaIdOggetto_AggiornaSbloccoPorta()
+    {
+        var d = Esempio();
+        var chiave = Og(d, "chiave");
+        Assert.Null(d.ImpostaIdOggetto(chiave, "key0"));
+        Assert.Equal("key0", Po(d, "portone").OggettoSblocco);
+        Assert.Equal("key0", chiave.IdPersonalizzato);
+    }
+
+    [Fact]
+    public void ImpostaIdOggetto_AggiornaDentroA()
+    {
+        var d = Esempio();
+        Assert.Null(d.ImpostaIdOggetto(Og(d, "baule"), "cassa"));
+        Assert.Equal("cassa", Og(d, "pergamena").DentroA);
+    }
+
+    [Fact]
+    public void ImpostaIdOggetto_Duplicato_Rifiutato()
+    {
+        var d = Esempio();
+        var moneta = Og(d, "moneta");
+        Assert.NotNull(d.ImpostaIdOggetto(moneta, "chiave"));
+        Assert.Null(moneta.IdPersonalizzato);
+    }
+
+    [Fact]
+    public void ImpostaIdOggetto_Vuoto_TornaAutomatico()
+    {
+        var d = Esempio();
+        var chiave = Og(d, "chiave");
+        Assert.Null(d.ImpostaIdOggetto(chiave, "key0"));
+        Assert.Null(d.ImpostaIdOggetto(chiave, "  "));
+        Assert.Null(chiave.IdPersonalizzato);
+        Assert.Equal("chiave", Po(d, "portone").OggettoSblocco);
+    }
+
+    [Fact]
+    public void ImpostaIdOggetto_UgualeAllaRegola_Automatico()
+    {
+        var d = Esempio();
+        var baule = Og(d, "baule");
+        Assert.Null(d.ImpostaIdOggetto(baule, "baule@torre"));
+        Assert.Null(baule.IdPersonalizzato);
+    }
+
+    [Fact]
+    public void RinominaOggettoPersonalizzato_IdERiferimentiInvariati()
+    {
+        var d = Esempio();
+        var chiave = Og(d, "chiave");
+        Assert.Null(d.ImpostaIdOggetto(chiave, "k"));
+        Assert.Null(d.RinominaOggetto(chiave, "key"));
+        Assert.Equal("k", chiave.Id);
+        Assert.Equal("k", Po(d, "portone").OggettoSblocco);
+    }
+
+    [Fact]
+    public void RinominaOggettoAutomatico_AggiornaSblocchi()
+    {
+        var d = Esempio();
+        Assert.Null(d.RinominaOggetto(Og(d, "chiave"), "key"));
+        Assert.Equal("key", Po(d, "portone").OggettoSblocco);
+    }
+
+    [Fact]
+    public void RinominaOggettoAutomatico_CollideConPersonalizzato_Rifiutata()
+    {
+        var d = Esempio();
+        var chiave = Og(d, "chiave");
+        Assert.Null(d.ImpostaIdOggetto(Og(d, "moneta"), "key"));
+        Assert.NotNull(d.RinominaOggetto(chiave, "key"));
+        Assert.Equal("chiave", chiave.Nome);
+    }
+
+    [Fact]
+    public void SpostaOggettoPersonalizzato_IdInvariato()
+    {
+        var d = Esempio();
+        var baule = Og(d, "baule");
+        Assert.Null(d.ImpostaIdOggetto(baule, "cassa"));
+        d.SpostaOggetto(baule, "cantina", null);
+        Assert.Equal("cassa", baule.Id);
+        Assert.Equal("cassa", Og(d, "pergamena").DentroA);
+    }
+
+    [Fact]
+    public void ImpostaStaticoPersonalizzato_IdInvariato()
+    {
+        var d = Esempio();
+        var chiave = Og(d, "chiave");
+        Assert.Null(d.ImpostaIdOggetto(chiave, "k"));
+        d.SpostaOggetto(chiave, "cantina", null);
+        d.ImpostaStatico(chiave, true);
+        Assert.Equal("k", chiave.Id);
+        Assert.Equal("k", Po(d, "portone").OggettoSblocco);
+    }
+
+    [Fact]
+    public void EliminaOggettoPersonalizzato_SvuotaSblocchi()
+    {
+        var d = Esempio();
+        var chiave = Og(d, "chiave");
+        Assert.Null(d.ImpostaIdOggetto(chiave, "k"));
+        d.Elimina(chiave);
         Assert.Null(Po(d, "portone").OggettoSblocco);
     }
 }

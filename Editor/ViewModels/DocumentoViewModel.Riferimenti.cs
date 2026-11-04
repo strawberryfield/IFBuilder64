@@ -18,6 +18,7 @@
 //-----------------------------------------------------------------------
 
 using Casasoft.IFBuilder64.Editor.Risorse;
+using Casasoft.IFBuilder64.Json;
 
 namespace Casasoft.IFBuilder64.Editor.ViewModels;
 
@@ -55,33 +56,46 @@ public partial class DocumentoViewModel
             if (o.Posizione == vecchio) o.Posizione = nuovo;
         if (StanzaIniziale == vecchio) StanzaIniziale = nuovo;
         foreach (var (o, id) in idVecchi)
-            AggiornaDentroA(id, o.Id, o);
+            AggiornaRiferimentiId(id, o.Id, o);
         return null;
     }
 
-    /// <summary>Rinomina un oggetto aggiornando sblocchi e contenitori. Restituisce null se riuscita, altrimenti l'errore.</summary>
+    /// <summary>
+    /// Rinomina un oggetto. Se l'id è automatico cambia anche l'id e i riferimenti (contenitori e sblocchi)
+    /// lo seguono; se è personalizzato l'id e i riferimenti restano invariati.
+    /// Restituisce null se riuscita, altrimenti l'errore.
+    /// </summary>
     public string? RinominaOggetto(OggettoViewModel o, string nuovo)
     {
         nuovo = nuovo?.Trim() ?? string.Empty;
         if (nuovo.Length == 0) return Testo("Errore_NomeVuoto");
         if (nuovo == o.Nome) return null;
-        var idNuovo = o.Statico == true && !string.IsNullOrEmpty(o.Posizione) ? $"{nuovo}@{o.Posizione}" : nuovo;
+        var idNuovo = o.IdPersonalizzato ?? Item.DefaultId(nuovo, o.Statico, o.Posizione);
         if (Oggetti.Any(x => x != o && x.Id == idNuovo))
             return string.Format(Testi.Culture, Testo("Errore_NomeDuplicato"), idNuovo);
 
-        var vecchio = o.Nome;
         var idVecchio = o.Id;
-        // Il motore risolve unlockitem sul primo oggetto con quel nome: se ne resta un altro, i riferimenti restano validi.
-        var nomeResta = Oggetti.Any(x => x != o && x.Nome == vecchio);
         o.Nome = nuovo;
-        if (!nomeResta)
-        {
-            foreach (var x in Oggetti)
-                if (x.OggettoSblocco == vecchio) x.OggettoSblocco = nuovo;
-            foreach (var p in Porte)
-                if (p.OggettoSblocco == vecchio) p.OggettoSblocco = nuovo;
-        }
-        AggiornaDentroA(idVecchio, o.Id, o);
+        AggiornaRiferimentiId(idVecchio, o.Id, o);
+        return null;
+    }
+
+    /// <summary>
+    /// Imposta l'identificatore di un oggetto aggiornando contenitori e sblocchi che lo puntano.
+    /// Un testo vuoto o uguale all'id automatico rende l'id automatico.
+    /// Restituisce null se riuscito, altrimenti l'errore.
+    /// </summary>
+    public string? ImpostaIdOggetto(OggettoViewModel o, string nuovo)
+    {
+        nuovo = nuovo?.Trim() ?? string.Empty;
+        string? personalizzato = nuovo.Length == 0 || nuovo == o.IdAutomatico ? null : nuovo;
+        var idNuovo = personalizzato ?? o.IdAutomatico;
+        if (Oggetti.Any(x => x != o && x.Id == idNuovo))
+            return string.Format(Testi.Culture, Testo("Errore_NomeDuplicato"), idNuovo);
+
+        var idVecchio = o.Id;
+        o.IdPersonalizzato = personalizzato;
+        AggiornaRiferimentiId(idVecchio, o.Id, o);
         return null;
     }
 
@@ -116,21 +130,21 @@ public partial class DocumentoViewModel
     private static IEnumerable<string> StanzeDellaPorta(PortaViewModel p) =>
         _direzioni.Select(p.Uscita).Where(s => !string.IsNullOrEmpty(s)).Select(s => s!);
 
-    /// <summary>Sposta un oggetto; gli oggetti che lo contengono (<c>initem</c>) seguono il nuovo Id.</summary>
+    /// <summary>Sposta un oggetto; contenitori e sblocchi che lo puntano seguono il nuovo Id (invariato se personalizzato).</summary>
     public void SpostaOggetto(OggettoViewModel o, string? posizione, string? dentroA)
     {
         var idVecchio = o.Id;
         o.Posizione = posizione;
         o.DentroA = dentroA;
-        AggiornaDentroA(idVecchio, o.Id, o);
+        AggiornaRiferimentiId(idVecchio, o.Id, o);
     }
 
-    /// <summary>Imposta il flag statico; l'Id cambia e gli <c>initem</c> che lo puntano vengono aggiornati.</summary>
+    /// <summary>Imposta il flag statico; se l'Id è automatico cambia e contenitori e sblocchi che lo puntano vengono aggiornati.</summary>
     public void ImpostaStatico(OggettoViewModel o, bool statico)
     {
         var idVecchio = o.Id;
         o.Statico = statico;
-        AggiornaDentroA(idVecchio, o.Id, o);
+        AggiornaRiferimentiId(idVecchio, o.Id, o);
     }
 
     /// <summary>Elenca i riferimenti all'elemento (stanza, oggetto o porta).</summary>
@@ -152,16 +166,13 @@ public partial class DocumentoViewModel
                 if (StanzaIniziale == s.Nome) r.Add(new Riferimento(this, nameof(StanzaIniziale)));
                 break;
             case OggettoViewModel g:
-                // Gli sblocchi sono per nome: contano solo se g è l'unico oggetto con quel nome.
-                var nomeUnico = !Oggetti.Any(x => x != g && x.Nome == g.Nome);
                 foreach (var o in Oggetti)
                 {
-                    if (nomeUnico && o.OggettoSblocco == g.Nome) r.Add(new Riferimento(o, nameof(OggettoViewModel.OggettoSblocco)));
+                    if (o.OggettoSblocco == g.Id) r.Add(new Riferimento(o, nameof(OggettoViewModel.OggettoSblocco)));
                     if (o.DentroA == g.Id) r.Add(new Riferimento(o, nameof(OggettoViewModel.DentroA)));
                 }
-                if (nomeUnico)
-                    foreach (var p in Porte)
-                        if (p.OggettoSblocco == g.Nome) r.Add(new Riferimento(p, nameof(PortaViewModel.OggettoSblocco)));
+                foreach (var p in Porte)
+                    if (p.OggettoSblocco == g.Id) r.Add(new Riferimento(p, nameof(PortaViewModel.OggettoSblocco)));
                 break;
         }
         return r;
@@ -206,11 +217,20 @@ public partial class DocumentoViewModel
         }
     }
 
-    /// <summary>Sostituisce i <c>DentroA</c> uguali al vecchio Id con il nuovo (escluso l'oggetto stesso).</summary>
-    private void AggiornaDentroA(string idVecchio, string idNuovo, OggettoViewModel escluso)
+    /// <summary>
+    /// Sostituisce il vecchio Id con il nuovo nei <c>DentroA</c> e negli sblocchi degli oggetti
+    /// (escluso l'oggetto stesso) e negli sblocchi delle porte.
+    /// </summary>
+    private void AggiornaRiferimentiId(string idVecchio, string idNuovo, OggettoViewModel escluso)
     {
         if (idVecchio == idNuovo) return;
         foreach (var x in Oggetti)
-            if (x != escluso && x.DentroA == idVecchio) x.DentroA = idNuovo;
+        {
+            if (x == escluso) continue;
+            if (x.DentroA == idVecchio) x.DentroA = idNuovo;
+            if (x.OggettoSblocco == idVecchio) x.OggettoSblocco = idNuovo;
+        }
+        foreach (var p in Porte)
+            if (p.OggettoSblocco == idVecchio) p.OggettoSblocco = idNuovo;
     }
 }

@@ -122,8 +122,8 @@ public static class Validatore
         }
     }
 
-    private static bool SbloccoOrfano(DocumentoViewModel doc, string? nome) =>
-        !string.IsNullOrEmpty(nome) && !doc.Oggetti.Any(o => o.Nome == nome);
+    private static bool SbloccoOrfano(DocumentoViewModel doc, string? id) =>
+        !string.IsNullOrEmpty(id) && doc.TrovaOggettoPerId(id) is null;
 
     private static void ControllaPorte(DocumentoViewModel doc, List<Avviso> r)
     {

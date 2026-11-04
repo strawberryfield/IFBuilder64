@@ -226,6 +226,26 @@ public class ValidatoreTests
     }
 
     [Fact]
+    public void SbloccoPerIdPersonalizzato_NonOrfano()
+    {
+        var d = ServizioFile.Apri(Path.Combine(AppContext.BaseDirectory, "Dati", "esempio.it.json"));
+        var prima = Valida(d).Select(a => a.Messaggio).ToList();
+        Assert.Null(d.ImpostaIdOggetto(d.Oggetti.First(o => o.Nome == "chiave"), "k"));
+        Assert.Equal(prima, Valida(d).Select(a => a.Messaggio).ToList());
+    }
+
+    [Fact]
+    public void SbloccoVersoNomeNonId_Orfano()
+    {
+        var d = Minimo();
+        d.Oggetti.Add(new OggettoViewModel { Nome = "tavolo", Posizione = "sala", Statico = true });
+        var p = new PortaViewModel { Nome = "p", OggettoSblocco = "tavolo" };
+        d.Porte.Add(p);
+        var a = Assert.Single(Valida(d));
+        Assert.Same(p, a.Elemento);
+    }
+
+    [Fact]
     public void SbloccoOrfanoSuPorta_Avviso()
     {
         var d = Minimo();
