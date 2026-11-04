@@ -172,4 +172,88 @@ public class DocumentoTests
     [Fact]
     public void NomeUnivoco_PrimoLibero() =>
         Assert.Equal("stanza2", new DocumentoViewModel().NomeUnivoco("stanza", ["stanza1", "stanza3"]));
+
+    private static Item It(string name, string? id = null, bool? notportable = null, string? location = null, string? unlockitem = null) =>
+        new() { name = name, description = "", id = id, notportable = notportable, location = location, unlockitem = unlockitem };
+
+    private static Game GiocoCon(List<Item> items, List<Door>? doors = null)
+    {
+        var g = new Game(TemplateLanguage.Italiano);
+        g.items = items;
+        g.doors = doors ?? [];
+        return g;
+    }
+
+    [Fact]
+    public void Carica_IdUgualeAllaRegola_Automatico()
+    {
+        var o = DocumentoViewModel.DaGame(GiocoCon([It("chiave", "chiave")])).Oggetti[0];
+        Assert.Null(o.IdPersonalizzato);
+        Assert.Equal("chiave", o.Id);
+    }
+
+    [Fact]
+    public void Carica_IdDiverso_Personalizzato()
+    {
+        var d = DocumentoViewModel.DaGame(GiocoCon([It("key", "chiave")]));
+        var o = d.Oggetti[0];
+        Assert.Equal("chiave", o.IdPersonalizzato);
+        Assert.Equal("chiave", o.Id);
+        var i = d.ToGame().items[0];
+        Assert.Equal("chiave", i.id);
+        Assert.Equal("key", i.name);
+    }
+
+    [Fact]
+    public void OggettoAutomatico_IdSegueIlNome()
+    {
+        var o = DocumentoViewModel.DaGame(GiocoCon([It("chiave")])).Oggetti[0];
+        var notificate = new List<string?>();
+        o.PropertyChanged += (_, e) => notificate.Add(e.PropertyName);
+        o.Nome = "x";
+        Assert.Equal("x", o.Id);
+        Assert.Contains(nameof(OggettoViewModel.Id), notificate);
+        Assert.Contains(nameof(OggettoViewModel.IdAutomatico), notificate);
+    }
+
+    [Fact]
+    public void Carica_SbloccoPerNome_NormalizzatoInId()
+    {
+        var porta = new Door { name = "porta", description = "", unlockitem = "baule" };
+        var d = DocumentoViewModel.DaGame(GiocoCon(
+            [It("baule", notportable: true, location: "torre"), It("baule", notportable: true, location: "cantina"), It("forziere", unlockitem: "baule")],
+            [porta]));
+        Assert.Equal("baule@torre", d.Oggetti[2].OggettoSblocco);
+        Assert.Equal("baule@torre", d.Porte[0].OggettoSblocco);
+        Assert.False(d.Modificato);
+    }
+
+    [Fact]
+    public void Carica_SbloccoGiaId_Invariato()
+    {
+        var d = DocumentoViewModel.DaGame(GiocoCon([It("chiave"), It("forziere", unlockitem: "chiave")]));
+        Assert.Equal("chiave", d.Oggetti[1].OggettoSblocco);
+    }
+
+    [Fact]
+    public void EsempioApertoESalvato_BuildIdentico()
+    {
+        var g = Casasoft.IFBuilder64.Editor.Servizi.ServizioFile.Apri(Path.Combine(AppContext.BaseDirectory, "Dati", "esempio.it.json")).ToGame();
+        var dir = Directory.CreateTempSubdirectory().FullName;
+        try
+        {
+            var r = new Casasoft.IFBuilder64.Builder.GameBuilder().Build(g, Path.Combine(dir, "esempio"));
+            Assert.True(r.Successo, string.Join(Environment.NewLine, r.Log));
+            var riferimenti = Directory.GetFiles(Path.Combine(AppContext.BaseDirectory, "Riferimenti"));
+            Assert.Equal(9, riferimenti.Length);
+            foreach (var rif in riferimenti)
+            {
+                Assert.Equal(Confronto.Normalizza(rif), Confronto.Normalizza(Path.Combine(dir, Path.GetFileName(rif))));
+            }
+        }
+        finally
+        {
+            Directory.Delete(dir, true);
+        }
+    }
 }

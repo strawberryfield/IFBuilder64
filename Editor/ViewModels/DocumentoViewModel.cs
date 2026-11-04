@@ -88,8 +88,25 @@ public partial class DocumentoViewModel : ObservableObject
         Riempi(d.MessaggiStandard, g.messages);
         Riempi(d.MessaggiUtente, g.usermessages);
         Riempi(d.Direzioni, g.directions);
+        d.NormalizzaSblocchi();
         d.Modificato = false;
         return d;
+    }
+
+    /// <summary>
+    /// Converte in id gli sblocchi (di oggetti e porte) scritti come nome: uno sblocco che non
+    /// corrisponde ad alcun id ma corrisponde a un nome diventa l'id del primo oggetto con quel nome,
+    /// la stessa scelta del Builder.
+    /// </summary>
+    private void NormalizzaSblocchi()
+    {
+        string? Normalizza(string? sblocco)
+        {
+            if (string.IsNullOrEmpty(sblocco) || Oggetti.Any(o => o.Id == sblocco)) return sblocco;
+            return Oggetti.FirstOrDefault(o => o.Nome == sblocco)?.Id ?? sblocco;
+        }
+        foreach (var o in Oggetti) o.OggettoSblocco = Normalizza(o.OggettoSblocco);
+        foreach (var p in Porte) p.OggettoSblocco = Normalizza(p.OggettoSblocco);
     }
 
     /// <summary>Converte il documento nel modello JSON.</summary>

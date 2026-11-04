@@ -27,13 +27,20 @@ public partial class OggettoViewModel : ObservableObject
 {
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Id))]
+    [NotifyPropertyChangedFor(nameof(IdAutomatico))]
     private string _nome = string.Empty;
+
+    /// <summary>Identificatore scelto dall'utente; null se l'id è automatico (segue nome, posizione e flag statico).</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Id))]
+    private string? _idPersonalizzato;
 
     [ObservableProperty] private string _descrizione = string.Empty;
     [ObservableProperty] private string? _descrizioneAperto;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Id))]
+    [NotifyPropertyChangedFor(nameof(IdAutomatico))]
     private string? _posizione;
 
     /// <summary>Contenitore in cui si trova l'oggetto (<c>initem</c>).</summary>
@@ -44,6 +51,7 @@ public partial class OggettoViewModel : ObservableObject
     /// <summary>Oggetto non trasportabile (<c>notportable</c>).</summary>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Id))]
+    [NotifyPropertyChangedFor(nameof(IdAutomatico))]
     private bool? _statico;
 
     [ObservableProperty] private bool? _apribile;
@@ -53,13 +61,17 @@ public partial class OggettoViewModel : ObservableObject
     [ObservableProperty] private bool? _acceso;
     [ObservableProperty] private bool? _eContenitore;
 
-    /// <summary>Identificatore, con la stessa regola di <c>Item.id</c>: "nome@posizione" per gli oggetti statici con posizione, altrimenti il nome.</summary>
-    public string Id => Statico == true && !string.IsNullOrEmpty(Posizione) ? $"{Nome}@{Posizione}" : Nome;
+    /// <summary>Identificatore calcolato con la regola di <c>Item.DefaultId</c>: "nome@posizione" per gli oggetti statici con posizione, altrimenti il nome.</summary>
+    public string IdAutomatico => Item.DefaultId(Nome, Statico, Posizione);
+
+    /// <summary>Identificatore effettivo: quello personalizzato se presente, altrimenti quello automatico.</summary>
+    public string Id => IdPersonalizzato ?? IdAutomatico;
 
     /// <summary>Crea il ViewModel a partire dal modello JSON.</summary>
     public static OggettoViewModel Da(Item i) => new()
     {
         Nome = i.name,
+        IdPersonalizzato = i.id == Item.DefaultId(i.name, i.notportable, i.location) ? null : i.id,
         Descrizione = i.description,
         DescrizioneAperto = i.opendescription,
         Posizione = i.location,
@@ -78,6 +90,7 @@ public partial class OggettoViewModel : ObservableObject
     public Item ToItem() => new()
     {
         name = Nome,
+        id = IdPersonalizzato,
         description = Descrizione,
         opendescription = DescrizioneAperto,
         location = Posizione,

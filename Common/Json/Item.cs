@@ -19,6 +19,7 @@
 
 using System.Text.Json.Serialization;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Casasoft.IFBuilder64.Json;
 
@@ -69,6 +70,7 @@ public class Item
     /// This property follows the JSON naming convention (lowercase `id`).
     /// </remarks>
     [Description("Stable identifier used for references and BASIC defines; defaults to 'name' or 'name@location' for not-portable items.")]
+    [AllowNull]
     public string id
     {
         get => string.IsNullOrWhiteSpace(_id) ? DefaultId(name, notportable, location) : _id;
