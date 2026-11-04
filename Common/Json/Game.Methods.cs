@@ -99,6 +99,20 @@ public partial class Game
     }
 
     /// <summary>
+    /// Looks up the zero-based index of an item referenced by identifier or, failing that, by name.
+    /// </summary>
+    /// <param name="reference">The item reference (identifier or name). May be null or empty.</param>
+    /// <returns>
+    /// The index found by <see cref="getItemIndexById"/>; when that returns <c>255</c>, the index
+    /// found by <see cref="getItemIndexByName"/> (<c>255</c> if neither matches).
+    /// </returns>
+    public byte getItemIndexByRef(string? reference)
+    {
+        byte index = getItemIndexById(reference);
+        return index != 255 ? index : getItemIndexByName(reference);
+    }
+
+    /// <summary>
     /// Returns the directional exit indices in a fixed order.
     /// </summary>
     /// <param name="room">The room-like object implementing <see cref="IExits"/> whose exits will be resolved.</param>

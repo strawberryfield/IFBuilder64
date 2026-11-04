@@ -286,7 +286,7 @@ public class GameBuilder
             byte[] itemsUnlocks = new byte[game.items.Count];
             for (int i = 0; i < game.items.Count; i++)
             {
-                itemsUnlocks[i] = game.getItemIndexByName(game.items[i].unlockitem);
+                itemsUnlocks[i] = game.getItemIndexByRef(game.items[i].unlockitem);
             }
 
             // doors properties
@@ -300,7 +300,7 @@ public class GameBuilder
             byte[] doorsUnlocks = new byte[game.doors.Count];
             for (int i = 0; i < game.doors.Count; i++)
             {
-                doorsUnlocks[i] = game.getItemIndexByName(game.doors[i].unlockitem);
+                doorsUnlocks[i] = game.getItemIndexByRef(game.doors[i].unlockitem);
             }
 
             // maxload

@@ -210,6 +210,71 @@ public class BuilderTests
         Assert.StartsWith("Error: ", r.Log[^1]);
     }
 
+    private static Game EsempioConIdPersonalizzato()
+    {
+        var game = CaricaEsempio();
+        var chiave = game.items.Single(i => i.name == "chiave");
+        chiave.name = "key";
+        chiave.id = "chiave";
+        return game;
+    }
+
+    [Fact]
+    public void Build_IdPersonalizzato_DefinisceLaCostanteConLId()
+    {
+        var dir = Directory.CreateTempSubdirectory().FullName;
+        try
+        {
+            var r = new GameBuilder().Build(EsempioConIdPersonalizzato(), Path.Combine(dir, "esempio"));
+            Assert.True(r.Successo, string.Join(Environment.NewLine, r.Log));
+            var def = File.ReadAllText(Path.Combine(dir, "esempiodef.bas"));
+            Assert.Contains("{def:item_chiave=", def);
+            Assert.DoesNotContain("item_key", def);
+        }
+        finally
+        {
+            Directory.Delete(dir, true);
+        }
+    }
+
+    [Fact]
+    public void Build_IdPersonalizzato_StessiByteDiDbEDef()
+    {
+        var dir = Directory.CreateTempSubdirectory().FullName;
+        try
+        {
+            var r = new GameBuilder().Build(EsempioConIdPersonalizzato(), Path.Combine(dir, "esempio"));
+            Assert.True(r.Successo, string.Join(Environment.NewLine, r.Log));
+            foreach (var nome in new[] { "esempiodb.prg", "esempiodef.bas" })
+            {
+                Assert.Equal(Confronto.Normalizza(Path.Combine(CartellaRiferimenti, nome)), Confronto.Normalizza(Path.Combine(dir, nome)));
+            }
+        }
+        finally
+        {
+            Directory.Delete(dir, true);
+        }
+    }
+
+    [Fact]
+    public void Game_getItemIndexByRef_PerIdPoiPerNome()
+    {
+        var game = new Game
+        {
+            items =
+            [
+                new Item { name = "key", description = "", id = "chiave" },
+                new Item { name = "baule", description = "", notportable = true, location = "torre" },
+            ],
+        };
+        Assert.Equal(0, game.getItemIndexByRef("chiave"));
+        Assert.Equal(1, game.getItemIndexByRef("baule@torre"));
+        Assert.Equal(1, game.getItemIndexByRef("baule"));
+        Assert.Equal(0, game.getItemIndexByRef("key"));
+        Assert.Equal(255, game.getItemIndexByRef("nulla"));
+        Assert.Equal(255, game.getItemIndexByRef(null));
+    }
+
     [Fact]
     public void Build_CartellaInesistente_RestituisceErroreSenzaEccezione()
     {
