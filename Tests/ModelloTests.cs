@@ -38,6 +38,36 @@ public class ModelloTests
         var r2 = JsonSerializer.Deserialize<Room>(JsonSerializer.Serialize(r))!;
         Assert.Equal((2, -1, 1), (r2.map!.x, r2.map.y, r2.map.z));
     }
+
+    [Fact]
+    public void OggettoSenzaId_UsaLaRegola()
+    {
+        Assert.Equal("baule@torre", new Item { name = "baule", description = "", notportable = true, location = "torre" }.id);
+        Assert.Equal("chiave", new Item { name = "chiave", description = "" }.id);
+    }
+
+    [Fact]
+    public void OggettoConId_UsaIlValore() =>
+        Assert.Equal("scopa", new Item { name = "broom", description = "", id = "scopa" }.id);
+
+    [Fact]
+    public void OggettoIdSoloSpazi_UsaLaRegola() =>
+        Assert.Equal("broom", new Item { name = "broom", description = "", id = "  " }.id);
+
+    [Fact]
+    public void OggettoConId_AndataERitorno()
+    {
+        var i = new Item { name = "broom", description = "", id = "scopa" };
+        var i2 = JsonSerializer.Deserialize<Item>(JsonSerializer.Serialize(i))!;
+        Assert.Equal("scopa", i2.id);
+    }
+
+    [Fact]
+    public void OggettoJsonSenzaId_UsaLaRegola()
+    {
+        var i = JsonSerializer.Deserialize<Item>("""{"name":"benches","notportable":true,"location":"aula","description":""}""")!;
+        Assert.Equal("benches@aula", i.id);
+    }
 }
 
 /// <summary>

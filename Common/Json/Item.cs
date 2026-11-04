@@ -44,24 +44,35 @@ public class Item
     public required string name { get; set; }
 
     /// <summary>
-    /// Computed identifier for the item.
+    /// Computes the default identifier of an item.
+    /// </summary>
+    /// <param name="name">The item's name.</param>
+    /// <param name="notportable">The item's not-portable flag.</param>
+    /// <param name="location">The item's location.</param>
+    /// <returns>
+    /// "name@location" when the item is not portable and a location is present;
+    /// otherwise the plain name.
+    /// </returns>
+    public static string DefaultId(string name, bool? notportable, string? location) =>
+        notportable == true && !string.IsNullOrEmpty(location) ? $"{name}@{location}" : name;
+
+    private string? _id;
+
+    /// <summary>
+    /// Gets or sets the stable identifier of the item.
     /// </summary>
     /// <remarks>
-    /// Returns "name@location" when the item is marked as not portable and a
-    /// location is present; otherwise returns the plain name.
+    /// The identifier is used for references between items and for the BASIC
+    /// defines. When not set (null, empty or whitespace) it defaults to
+    /// <see cref="DefaultId"/>: "name@location" for not-portable items with a
+    /// location, otherwise the plain name.
     /// This property follows the JSON naming convention (lowercase `id`).
     /// </remarks>
-    [Description("Computed identifier ('name' or 'name@location' for not-portable items).")]
+    [Description("Stable identifier used for references and BASIC defines; defaults to 'name' or 'name@location' for not-portable items.")]
     public string id
     {
-        get
-        {
-            if (notportable == true && !string.IsNullOrEmpty(location))
-            {
-                return $"{name}@{location}";
-            }
-            return name;
-        }
+        get => string.IsNullOrWhiteSpace(_id) ? DefaultId(name, notportable, location) : _id;
+        set => _id = value;
     }
 
     /// <summary>
