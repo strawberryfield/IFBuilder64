@@ -327,6 +327,16 @@ public class RiferimentiTests
     }
 
     [Fact]
+    public void EliminaStanza_SbloccoVersoOggettoStatico_SegueIlNuovoId()
+    {
+        var d = Esempio();
+        Po(d, "portone").OggettoSblocco = "baule@torre";
+        d.Elimina(d.TrovaStanza("torre")!);
+        Assert.Equal("baule", Og(d, "baule").Id);
+        Assert.Equal("baule", Po(d, "portone").OggettoSblocco);
+    }
+
+    [Fact]
     public void EliminaOggettoPersonalizzato_SvuotaSblocchi()
     {
         var d = Esempio();

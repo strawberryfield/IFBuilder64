@@ -184,6 +184,12 @@ public partial class DocumentoViewModel
         if (elemento is StanzaViewModel { EGiocatore: true })
             throw new InvalidOperationException(Testo("Errore_StanzaGiocatore"));
 
+        // Id (prima dell'eliminazione) degli oggetti collocati nella stanza: perdendo la posizione
+        // l'id automatico cambia e gli sblocchi che lo puntano devono seguirlo.
+        var idVecchi = elemento is StanzaViewModel stanza
+            ? Oggetti.Where(o => o.Posizione == stanza.Nome).Select(o => (o, id: o.Id)).ToList()
+            : [];
+
         foreach (var r in TrovaRiferimenti(elemento))
         {
             switch (r.Elemento)
@@ -208,6 +214,9 @@ public partial class DocumentoViewModel
                     break;
             }
         }
+
+        foreach (var (o, id) in idVecchi)
+            AggiornaRiferimentiId(id, o.Id, o);
 
         switch (elemento)
         {

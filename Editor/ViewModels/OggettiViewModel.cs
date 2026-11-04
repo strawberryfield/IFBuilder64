@@ -166,6 +166,8 @@ public partial class OggettiViewModel : ObservableObject, IDisposable
     {
         if (Selezionato is not { } o) return;
         var copia = OggettoViewModel.Da(o.ToItem());
+        // La copia non eredita l'id personalizzato: prende quello automatico dal nuovo nome.
+        copia.IdPersonalizzato = null;
         copia.Nome = Documento.NomeUnivoco(o.Nome, Documento.Oggetti.Select(x => x.Nome));
         Documento.Oggetti.Insert(Documento.Oggetti.IndexOf(o) + 1, copia);
         Seleziona(copia);

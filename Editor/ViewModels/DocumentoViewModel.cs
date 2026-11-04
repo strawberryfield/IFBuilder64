@@ -95,15 +95,18 @@ public partial class DocumentoViewModel : ObservableObject
 
     /// <summary>
     /// Converte in id gli sblocchi (di oggetti e porte) scritti come nome: uno sblocco che non
-    /// corrisponde ad alcun id ma corrisponde a un nome diventa l'id del primo oggetto con quel nome,
-    /// la stessa scelta del Builder.
+    /// corrisponde ad alcun id ma corrisponde a un nome diventa l'id del primo oggetto con quel nome
+    /// nell'ordine usato dal Builder (<c>Game.SortItems</c>), cioè la stessa scelta del Builder.
     /// </summary>
     private void NormalizzaSblocchi()
     {
+        var ordinati = new Game { items = Oggetti.Select(o => o.ToItem()).ToList() };
+        ordinati.SortItems();
         string? Normalizza(string? sblocco)
         {
             if (string.IsNullOrEmpty(sblocco) || Oggetti.Any(o => o.Id == sblocco)) return sblocco;
-            return Oggetti.FirstOrDefault(o => o.Nome == sblocco)?.Id ?? sblocco;
+            var indice = ordinati.getItemIndexByName(sblocco);
+            return indice == 255 ? sblocco : ordinati.items[indice].id;
         }
         foreach (var o in Oggetti) o.OggettoSblocco = Normalizza(o.OggettoSblocco);
         foreach (var p in Porte) p.OggettoSblocco = Normalizza(p.OggettoSblocco);

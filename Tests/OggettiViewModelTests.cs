@@ -1,4 +1,4 @@
-//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="Tests/OggettiViewModelTests.cs" company="Casasoft">
 //     Author: Roberto Ceccarelli (http://strawberryfield.altervista.org)
 //     Copyright (c) 2026 All rights reserved.
@@ -175,6 +175,22 @@ public sealed class OggettiViewModelTests : IDisposable
         v.Selezionato = chiave;
         v.DuplicaCommand.Execute(null);
         Assert.Equal("chiave2", d.Oggetti[indice + 1].Nome);
+    }
+
+    [Fact]
+    public void Duplica_OggettoConIdPersonalizzato_CopiaConIdAutomatico()
+    {
+        var d = Esempio();
+        var v = Crea(d);
+        var chiave = Og(d, "chiave");
+        Assert.Null(d.ImpostaIdOggetto(chiave, "k"));
+        v.Selezionato = chiave;
+
+        v.DuplicaCommand.Execute(null);
+
+        var copia = d.Oggetti[d.Oggetti.IndexOf(chiave) + 1];
+        Assert.Null(copia.IdPersonalizzato);
+        Assert.Equal("chiave1", copia.Id);
     }
 
     [Fact]

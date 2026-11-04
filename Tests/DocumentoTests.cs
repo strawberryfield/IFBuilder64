@@ -229,6 +229,16 @@ public class DocumentoTests
     }
 
     [Fact]
+    public void Carica_SbloccoPerNomeAmbiguo_StessaSceltaDelBuilder()
+    {
+        // Il Builder ordina gli oggetti (indice 0 fisso, poi statici e posizione) prima di risolvere gli sblocchi.
+        var d = DocumentoViewModel.DaGame(GiocoCon(
+            [It("chiave"), It("forziere", unlockitem: "leva"),
+             It("leva", notportable: true, location: "torre"), It("leva", notportable: true, location: "cantina")]));
+        Assert.Equal("leva@cantina", d.Oggetti[1].OggettoSblocco);
+    }
+
+    [Fact]
     public void Carica_SbloccoGiaId_Invariato()
     {
         var d = DocumentoViewModel.DaGame(GiocoCon([It("chiave"), It("forziere", unlockitem: "chiave")]));
