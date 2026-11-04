@@ -122,6 +122,8 @@ The references will be cleared. Delete it?</value></data>
   <data name="Campo_Descrizione" xml:space="preserve"><value>Description</value></data>
   <data name="Campo_MessaggioNegato" xml:space="preserve"><value>Message when opening is denied</value></data>
   <data name="Campo_OggettoSblocco" xml:space="preserve"><value>Unlock item</value></data>
+  <data name="Campo_Identificatore" xml:space="preserve"><value>Identifier</value></data>
+  <data name="Campo_Identificatore_Suggerimento" xml:space="preserve"><value>Used for references and BASIC constants; leave empty to use the name</value></data>
   <data name="Campo_Aperta" xml:space="preserve"><value>Open</value></data>
   <data name="Nessuno" xml:space="preserve"><value>— none —</value></data>
   <data name="Stanza_Iniziale" xml:space="preserve"><value>Set as initial room</value></data>

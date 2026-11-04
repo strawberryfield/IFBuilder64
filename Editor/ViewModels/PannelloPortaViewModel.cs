@@ -105,7 +105,7 @@ public partial class PannelloPortaViewModel : ObservableObject, IDisposable, ICo
 
     private void AggiornaOggetti()
     {
-        var nomi = _documento.Oggetti.Select(o => o.Nome).Append(Porta.OggettoSblocco)
+        var nomi = _documento.Oggetti.Select(o => o.Id).Append(Porta.OggettoSblocco)
             .Where(n => !string.IsNullOrEmpty(n)).Select(n => n!).Distinct().Order(StringComparer.Ordinal);
         var elenco = new[] { Nessuno }.Concat(nomi).ToList();
         if (elenco.SequenceEqual(OggettiSblocco)) return;

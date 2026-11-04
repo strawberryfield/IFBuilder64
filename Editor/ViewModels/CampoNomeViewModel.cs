@@ -36,6 +36,9 @@ public partial class CampoNomeViewModel : ObservableObject
     /// <summary>Errore dell'ultima conferma, oppure null.</summary>
     [ObservableProperty] private string? _errore;
 
+    /// <summary>Testo segnaposto mostrato quando il campo è vuoto, oppure null.</summary>
+    [ObservableProperty] private string? _suggerimento;
+
     /// <summary>Crea il campo con il nome corrente letto da <paramref name="leggi"/>.</summary>
     /// <param name="leggi">Legge il nome attuale dell'elemento.</param>
     /// <param name="rinomina">Rinomina l'elemento; restituisce null se riuscita, altrimenti l'errore.</param>

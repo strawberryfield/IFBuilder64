@@ -12,6 +12,7 @@
 	<!-- Invio e perdita del focus confermano, Esc annulla; con un errore bordo rosso e messaggio sotto -->
 	<StackPanel Spacing="2">
 		<TextBox x:Name="Campo" Text="{Binding Testo, Mode=TwoWay}"
+		         PlaceholderText="{Binding Suggerimento}"
 		         Classes.errore="{Binding Errore, Converter={x:Static ObjectConverters.IsNotNull}}"
 		         KeyDown="Campo_KeyDown" LostFocus="Campo_LostFocus" />
 		<TextBlock Text="{Binding Errore}" Foreground="Red" TextWrapping="Wrap"

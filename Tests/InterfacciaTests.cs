@@ -256,4 +256,22 @@ public sealed class InterfacciaTests : IDisposable
         Assert.Equal("giardino", nuova.Ovest);
         finestra.Close();
     }
+
+    [AvaloniaFact]
+    public void PannelloOggetto_HaIlCampoIdentificatore()
+    {
+        var (finestra, vm) = ApriFinestra();
+        vm.Documento = ServizioFile.Apri(Path.Combine(AppContext.BaseDirectory, "Dati", "esempio.it.json"));
+        Dispatcher.UIThread.RunJobs();
+
+        vm.ElementoSelezionato = vm.Documento.Oggetti.First(o => o.Nome == "chiave");
+        Dispatcher.UIThread.RunJobs();
+
+        var pannello = finestra.GetVisualDescendants().OfType<PannelloOggetto>().Single();
+        var campo = pannello.FindControl<CampoNomeView>("CampoIdentificatore");
+        Assert.NotNull(campo);
+        var testo = campo.GetVisualDescendants().OfType<TextBox>().First();
+        Assert.Equal("chiave", testo.PlaceholderText);
+        finestra.Close();
+    }
 }

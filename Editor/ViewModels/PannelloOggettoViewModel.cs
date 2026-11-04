@@ -22,7 +22,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Casasoft.IFBuilder64.Editor.ViewModels;
 
-/// <summary>Pannello proprietà di un oggetto: nome, descrizioni e oggetto di sblocco.</summary>
+/// <summary>Pannello proprietà di un oggetto: nome, identificatore, descrizioni e oggetto di sblocco.</summary>
 public partial class PannelloOggettoViewModel : ObservableObject, IDisposable, IConfermabile
 {
     private readonly DocumentoViewModel _documento;
@@ -34,6 +34,11 @@ public partial class PannelloOggettoViewModel : ObservableObject, IDisposable, I
         _documento = documento;
         Oggetto = oggetto;
         Nome = new CampoNomeViewModel(() => oggetto.Nome, nuovo => documento.RinominaOggetto(oggetto, nuovo));
+        Identificatore = new CampoNomeViewModel(() => oggetto.IdPersonalizzato ?? string.Empty,
+            nuovo => documento.ImpostaIdOggetto(oggetto, nuovo))
+        {
+            Suggerimento = oggetto.IdAutomatico
+        };
         AggiornaOggetti();
         documento.ContenutoCambiato += DocumentoCambiato;
     }
@@ -44,10 +49,13 @@ public partial class PannelloOggettoViewModel : ObservableObject, IDisposable, I
     /// <summary>Campo del nome.</summary>
     public CampoNomeViewModel Nome { get; }
 
+    /// <summary>Campo dell'identificatore: vuoto se automatico, con l'id automatico come segnaposto.</summary>
+    public CampoNomeViewModel Identificatore { get; }
+
     /// <summary>Voce che rappresenta l'assenza di oggetto di sblocco.</summary>
     public static string Nessuno => Testi.Nessuno;
 
-    /// <summary>"Nessuno" seguito dai nomi degli altri oggetti (distinti, in ordine alfabetico); include lo sblocco corrente anche se non esiste più.</summary>
+    /// <summary>"Nessuno" seguito dagli id degli altri oggetti (distinti, in ordine alfabetico); include lo sblocco corrente anche se non esiste più.</summary>
     public IReadOnlyList<string> OggettiSblocco
     {
         get => _oggettiSblocco;
@@ -83,16 +91,24 @@ public partial class PannelloOggettoViewModel : ObservableObject, IDisposable, I
     }
 
     /// <inheritdoc />
-    public void ConfermaModifiche() => Nome.ConfermaSeModificato();
+    public void ConfermaModifiche()
+    {
+        Nome.ConfermaSeModificato();
+        Identificatore.ConfermaSeModificato();
+    }
 
     /// <inheritdoc />
     public void Dispose() => _documento.ContenutoCambiato -= DocumentoCambiato;
 
-    private void DocumentoCambiato(object? sender, EventArgs e) => AggiornaOggetti();
+    private void DocumentoCambiato(object? sender, EventArgs e)
+    {
+        Identificatore.Suggerimento = Oggetto.IdAutomatico;
+        AggiornaOggetti();
+    }
 
     private void AggiornaOggetti()
     {
-        var nomi = _documento.Oggetti.Where(o => o != Oggetto).Select(o => o.Nome).Append(Oggetto.OggettoSblocco)
+        var nomi = _documento.Oggetti.Where(o => o != Oggetto).Select(o => o.Id).Append(Oggetto.OggettoSblocco)
             .Where(n => !string.IsNullOrEmpty(n)).Select(n => n!).Distinct().Order(StringComparer.Ordinal);
         var elenco = new[] { Nessuno }.Concat(nomi).ToList();
         if (elenco.SequenceEqual(OggettiSblocco)) return;

@@ -9,6 +9,9 @@
 		<StackPanel Spacing="6">
 			<TextBlock Text="{x:Static r:Testi.Campo_Nome}" FontWeight="SemiBold" />
 			<v:CampoNomeView x:Name="CampoNome" DataContext="{Binding Nome}" />
+			<TextBlock Text="{x:Static r:Testi.Campo_Identificatore}" FontWeight="SemiBold"
+			           ToolTip.Tip="{x:Static r:Testi.Campo_Identificatore_Suggerimento}" />
+			<v:CampoNomeView x:Name="CampoIdentificatore" DataContext="{Binding Identificatore}" />
 			<TextBlock Text="{x:Static r:Testi.Campo_Descrizione}" FontWeight="SemiBold" />
 			<TextBox x:Name="Descrizione" Text="{Binding Oggetto.Descrizione, Mode=TwoWay}"
 			         AcceptsReturn="True" TextWrapping="Wrap" MinHeight="90" />

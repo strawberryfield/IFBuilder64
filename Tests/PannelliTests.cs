@@ -293,4 +293,54 @@ public class PannelliTests
         Assert.Single(finestra.GetVisualDescendants().OfType<PannelloPorta>());
         finestra.Close();
     }
+
+    private static PannelloOggettoViewModel PannelloOggetto(DocumentoViewModel d, string nome) =>
+        new(d, d.Oggetti.First(o => o.Nome == nome));
+
+    [Fact]
+    public void PannelloOggetto_Identificatore_VuotoConSuggerimento()
+    {
+        using var p = PannelloOggetto(Esempio(), "chiave");
+        Assert.Equal("", p.Identificatore.Testo);
+        Assert.Equal("chiave", p.Identificatore.Suggerimento);
+    }
+
+    [Fact]
+    public void PannelloOggetto_ConfermaIdentificatore_ImpostaId()
+    {
+        using var p = PannelloOggetto(Esempio(), "chiave");
+        p.Identificatore.Testo = "k";
+        p.Identificatore.Conferma();
+        Assert.Equal("k", p.Oggetto.IdPersonalizzato);
+        Assert.Null(p.Identificatore.Errore);
+    }
+
+    [Fact]
+    public void PannelloOggetto_IdentificatoreDuplicato_Errore()
+    {
+        using var p = PannelloOggetto(Esempio(), "moneta");
+        p.Identificatore.Testo = "chiave";
+        p.Identificatore.Conferma();
+        Assert.NotNull(p.Identificatore.Errore);
+        Assert.Equal("chiave", p.Identificatore.Testo);
+    }
+
+    [Fact]
+    public void PannelloOggetto_Suggerimento_SegueLaRinomina()
+    {
+        using var p = PannelloOggetto(Esempio(), "chiave");
+        p.Nome.Testo = "key";
+        p.Nome.Conferma();
+        Assert.Equal("key", p.Identificatore.Suggerimento);
+    }
+
+    [Fact]
+    public void PannelloPorta_OggettiSblocco_ElencaGliId()
+    {
+        var d = Esempio();
+        using var p = new PannelloPortaViewModel(d, d.Porte.First(x => x.Nome == "portone"));
+        Assert.Contains("baule@torre", p.OggettiSblocco);
+        Assert.Contains("pozzo@cortile", p.OggettiSblocco);
+        Assert.DoesNotContain("baule", p.OggettiSblocco);
+    }
 }

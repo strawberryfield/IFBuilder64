@@ -122,6 +122,8 @@ I riferimenti verranno svuotati. Eliminarla?</value></data>
   <data name="Campo_Descrizione" xml:space="preserve"><value>Descrizione</value></data>
   <data name="Campo_MessaggioNegato" xml:space="preserve"><value>Messaggio se l'apertura è negata</value></data>
   <data name="Campo_OggettoSblocco" xml:space="preserve"><value>Oggetto che sblocca</value></data>
+  <data name="Campo_Identificatore" xml:space="preserve"><value>Identificatore</value></data>
+  <data name="Campo_Identificatore_Suggerimento" xml:space="preserve"><value>Usato per i riferimenti e le costanti BASIC; lascia vuoto per usare il nome</value></data>
   <data name="Campo_Aperta" xml:space="preserve"><value>Aperta</value></data>
   <data name="Nessuno" xml:space="preserve"><value>— nessuno —</value></data>
   <data name="Stanza_Iniziale" xml:space="preserve"><value>Imposta come stanza iniziale</value></data>
