@@ -55,6 +55,13 @@ public class ModelloTests
         Assert.Equal("broom", new Item { name = "broom", description = "", id = "  " }.id);
 
     [Fact]
+    public void OggettoJsonIdConSpazi_Ripulito()
+    {
+        var i = JsonSerializer.Deserialize<Item>("""{"name":"key","id":"  chiave ","description":""}""")!;
+        Assert.Equal("chiave", i.id);
+    }
+
+    [Fact]
     public void OggettoConId_AndataERitorno()
     {
         var i = new Item { name = "broom", description = "", id = "scopa" };

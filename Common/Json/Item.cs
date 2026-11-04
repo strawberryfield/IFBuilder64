@@ -64,7 +64,8 @@ public class Item
     /// </summary>
     /// <remarks>
     /// The identifier is used for references between items and for the BASIC
-    /// defines. When not set (null, empty or whitespace) it defaults to
+    /// defines. Leading and trailing spaces are removed; when not set (null, empty
+    /// or whitespace) it defaults to
     /// <see cref="DefaultId"/>: "name@location" for not-portable items with a
     /// location, otherwise the plain name.
     /// This property follows the JSON naming convention (lowercase `id`).
@@ -74,7 +75,7 @@ public class Item
     public string id
     {
         get => string.IsNullOrWhiteSpace(_id) ? DefaultId(name, notportable, location) : _id;
-        set => _id = value;
+        set => _id = value?.Trim();
     }
 
     /// <summary>

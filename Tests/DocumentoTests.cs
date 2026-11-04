@@ -193,6 +193,14 @@ public class DocumentoTests
     }
 
     [Fact]
+    public void Carica_IdConSpazi_RipulitoEAutomatico()
+    {
+        var d = DocumentoViewModel.DaGame(GiocoCon([It("chiave", "chiave "), It("key", " k ")]));
+        Assert.Null(d.Oggetti[0].IdPersonalizzato);
+        Assert.Equal("k", d.Oggetti[1].IdPersonalizzato);
+    }
+
+    [Fact]
     public void Carica_IdDiverso_Personalizzato()
     {
         var d = DocumentoViewModel.DaGame(GiocoCon([It("key", "chiave")]));

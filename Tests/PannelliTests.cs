@@ -316,6 +316,16 @@ public class PannelliTests
     }
 
     [Fact]
+    public void PannelloOggetto_IdentificatoreConSpazi_Ripulito()
+    {
+        using var p = PannelloOggetto(Esempio(), "chiave");
+        p.Identificatore.Testo = " k  ";
+        p.Identificatore.Conferma();
+        Assert.Equal("k", p.Oggetto.IdPersonalizzato);
+        Assert.Equal("k", p.Identificatore.Testo);
+    }
+
+    [Fact]
     public void PannelloOggetto_IdentificatoreDuplicato_Errore()
     {
         using var p = PannelloOggetto(Esempio(), "moneta");
