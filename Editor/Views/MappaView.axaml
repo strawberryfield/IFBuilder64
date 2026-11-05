@@ -9,6 +9,12 @@
 		<!-- Barra degli strumenti: livello, zoom, disposizione automatica -->
 		<StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="4">
 			<TextBlock Text="{x:Static r:Testi.Mappa_Livello}" VerticalAlignment="Center" />
+			<StackPanel.Styles>
+				<!-- Nel tema Fluent la ComboBox e' allineata in alto: tutto centrato in verticale -->
+				<Style Selector="StackPanel > ComboBox, StackPanel > Button">
+					<Setter Property="VerticalAlignment" Value="Center" />
+				</Style>
+			</StackPanel.Styles>
 			<ComboBox x:Name="SelettoreLivello" MinWidth="70"
 			          ItemsSource="{Binding Livelli}"
 			          SelectedItem="{Binding LivelloCorrente, Mode=TwoWay}" />

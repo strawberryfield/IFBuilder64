@@ -30,12 +30,26 @@
 	<ItemGroup>
 		<EmbeddedResource Update="Risorse\Testi.resx">
 			<Generator>MSBuild:Compile</Generator>
-			<StronglyTypedFileName>$(IntermediateOutputPath)Testi.Designer.cs</StronglyTypedFileName>
+			<StronglyTypedFileName>Risorse\Testi.Designer.cs</StronglyTypedFileName>
 			<StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
 			<StronglyTypedNamespace>Casasoft.IFBuilder64.Editor.Risorse</StronglyTypedNamespace>
 			<StronglyTypedClassName>Testi</StronglyTypedClassName>
 			<PublicClass>true</PublicClass>
 		</EmbeddedResource>
+		<Compile Update="Risorse\Testi.Designer.cs" DependentUpon="Testi.resx" AutoGen="True" DesignTime="True" />
 	</ItemGroup>
+
+	<!--
+		La classe Testi viene rigenerata a ogni build dentro Risorse/ (e versionata) cosi'
+		che anche gli strumenti design-time (estensione Avalonia di Visual Studio, IntelliSense)
+		la vedano senza una build. GenerateResource aggiunge il file a Compile, ma e' gia'
+		incluso dal glob del progetto: qui si elimina il doppione.
+	-->
+	<Target Name="RimuoviDoppioneTesti" AfterTargets="CoreResGen">
+		<ItemGroup>
+			<Compile Remove="Risorse\Testi.Designer.cs" />
+			<Compile Include="Risorse\Testi.Designer.cs" />
+		</ItemGroup>
+	</Target>
 
 </Project>
