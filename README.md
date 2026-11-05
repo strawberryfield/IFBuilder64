@@ -35,6 +35,36 @@ The `Editor` project is a cross-platform desktop application (Avalonia) to creat
 - User guide: see the "Uso dell'editor grafico" / "Using the graphical editor" sections of the manuals in this repository.
 - Third-party licenses: `Editor/THIRD-PARTY-NOTICES.txt` (also shown in Help → About).
 
+### Linux requirements
+On Linux the editor uses Avalonia's X11 backend, which loads native system libraries that minimal installations (e.g. a fresh WSL distribution) may not include. A missing library shows up at startup as an error like `libICE.so.6: cannot open shared object file`. On Debian/Ubuntu install them with:
+
+```bash
+sudo apt update
+sudo apt install -y libice6 libsm6 libx11-6 libx11-xcb1 libxext6 libxrandr2 \
+    libxcursor1 libxi6 libxrender1 libfontconfig1 libfreetype6
+```
+
+- The .NET 10 runtime is also required (`sudo apt install -y dotnet-runtime-10.0` or see the Microsoft documentation for your distribution).
+- Under WSL a graphical server is needed: WSLg (included in Windows 11) provides it; `echo $DISPLAY` should print something like `:0`.
+- If another `.so` is reported missing, install the package that provides it (e.g. `libSM.so.6` → `libsm6`).
+
+### macOS notes
+> **Untested:** the maintainer has no Mac available, so the following notes are based on how .NET and macOS usually behave and have not been verified. Reports and corrections are welcome.
+
+- **Apple Silicon only.** The release package is `osx-arm64` (M1 and later). On Intel Macs build from source (`dotnet run --project Editor`) or publish with `-r osx-x64`.
+- **.NET 10 runtime.** Install the Arm64 .NET 10 runtime from the Microsoft download page (the `.pkg` installer puts it in `/usr/local/share/dotnet`, where the executables look for it). If the runtime is installed elsewhere (e.g. via Homebrew), set `DOTNET_ROOT` to its folder.
+- **Gatekeeper.** The executables are not signed with an Apple Developer ID nor notarized, so macOS blocks files downloaded from the internet ("cannot be opened because the developer cannot be verified"). After extracting the zip, remove the quarantine attribute from the whole folder:
+  ```bash
+  xattr -dr com.apple.quarantine /path/to/IFBuilder64-osx-arm64
+  ```
+  Alternatively, after the first blocked attempt use System Settings → Privacy & Security → "Open Anyway"; this may have to be repeated for each native library.
+- **No `.app` bundle.** The editor is a plain executable: start it from Terminal with `./Casasoft.IFBuilder64.Editor` (double-clicking it in Finder also opens a Terminal window). There is no Dock/Launchpad integration.
+- **"Killed: 9" at startup.** Apple Silicon refuses to run unsigned native code. If the executables are terminated immediately, apply an ad-hoc signature:
+  ```bash
+  codesign --force --sign - Casasoft.IFBuilder64.Editor IFBuilder64
+  ```
+- **Permissions.** The zip stores the executables with mode `0755`; if they are not executable after extraction, run `chmod +x Casasoft.IFBuilder64.Editor IFBuilder64`.
+
 ## Tests
 - `dotnet test Tests/Tests.csproj` (xUnit v3, including headless Avalonia UI tests).
 
