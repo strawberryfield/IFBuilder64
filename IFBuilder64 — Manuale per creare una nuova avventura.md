@@ -217,6 +217,38 @@ Puoi aggiungere sinonimi o rimuovere verbi, ma non inventare codici nuovi: un co
 
 Oltre al JSON scritto a mano puoi costruire il mondo con l'editor grafico, che apre e salva lo stesso formato `.json` e usa lo stesso builder della riga di comando. Serve il runtime .NET 10; avvialo con `dotnet run --project Editor` oppure dalla cartella pubblicata (`dotnet Casasoft.IFBuilder64.Editor.dll`, o l'eseguibile accanto alla DLL).
 
+### Installazione su Linux
+
+Su Linux l'editor usa il backend X11 di Avalonia, che carica librerie native di sistema che le installazioni minimali (per esempio una distribuzione WSL appena creata) possono non avere. Una libreria mancante si presenta all'avvio con un errore come `libICE.so.6: cannot open shared object file`. Su Debian/Ubuntu installale con:
+
+```bash
+sudo apt update
+sudo apt install -y libice6 libsm6 libx11-6 libx11-xcb1 libxext6 libxrandr2 \
+    libxcursor1 libxi6 libxrender1 libfontconfig1 libfreetype6
+```
+
+- Serve anche il runtime .NET 10 (`sudo apt install -y dotnet-runtime-10.0` oppure segui la documentazione Microsoft per la tua distribuzione).
+- In WSL serve un server grafico: lo fornisce WSLg (incluso in Windows 11); `echo $DISPLAY` deve stampare qualcosa come `:0`.
+- Se viene segnalata mancante un'altra `.so`, installa il pacchetto che la fornisce (es. `libSM.so.6` → `libsm6`).
+
+### Note per macOS
+
+> **Non verificato:** il manutentore non dispone di un Mac, quindi queste note si basano sul comportamento abituale di .NET e macOS e non sono state provate. Segnalazioni e correzioni sono benvenute.
+
+- **Solo Apple Silicon.** Il pacchetto di rilascio è `osx-arm64` (M1 e successivi). Sui Mac Intel compila dai sorgenti (`dotnet run --project Editor`) oppure pubblica con `-r osx-x64`.
+- **Runtime .NET 10.** Installa il runtime .NET 10 per Arm64 dalla pagina di download Microsoft (l'installer `.pkg` lo mette in `/usr/local/share/dotnet`, dove gli eseguibili lo cercano). Se il runtime è installato altrove (per esempio con Homebrew), imposta `DOTNET_ROOT` sulla sua cartella.
+- **Gatekeeper.** Gli eseguibili non sono firmati con un Apple Developer ID né notarizzati, quindi macOS blocca i file scaricati da internet ("impossibile aprire perché lo sviluppatore non può essere verificato"). Dopo aver estratto lo zip, rimuovi l'attributo di quarantena da tutta la cartella:
+  ```bash
+  xattr -dr com.apple.quarantine /percorso/di/IFBuilder64-osx-arm64
+  ```
+  In alternativa, dopo il primo tentativo bloccato usa Impostazioni di Sistema → Privacy e sicurezza → "Apri comunque"; potrebbe essere necessario ripeterlo per ogni libreria nativa.
+- **Nessun bundle `.app`.** L'editor è un semplice eseguibile: avvialo dal Terminale con `./Casasoft.IFBuilder64.Editor` (il doppio clic nel Finder apre comunque una finestra di Terminale). Non c'è integrazione con Dock o Launchpad.
+- **"Killed: 9" all'avvio.** Apple Silicon rifiuta di eseguire codice nativo non firmato. Se gli eseguibili vengono terminati subito, applica una firma ad-hoc:
+  ```bash
+  codesign --force --sign - Casasoft.IFBuilder64.Editor IFBuilder64
+  ```
+- **Permessi.** Lo zip memorizza gli eseguibili con modo `0755`; se dopo l'estrazione non risultano eseguibili, lancia `chmod +x Casasoft.IFBuilder64.Editor IFBuilder64`.
+
 ### Aprire e creare
 
 - **File → Nuovo** (Ctrl+N) chiede la lingua (italiano o inglese) e parte dal template, con verbi, messaggi e direzioni già pronti.
